@@ -1,57 +1,22 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import ReactFlow, {
-    MiniMap,
-    Controls,
-    Background,
-    useNodesState,
-    useEdgesState,
-    addEdge,
-} from 'reactflow';
+// frontend/src/pages/HomePage.js
+// 此文件作为Homepage应用程序的主入口点，负责导入和组合各个模块。
+import React from 'react';
+import useFlowData from '../hooks/useFlowData';
+import FlowCanvas from '../components/FlowCanvas';
 
-import 'reactflow/dist/style.css';
-import './HomePage.css';
+import '../pages/HomePage.css';
 
 const App = () => {
-    const [nodes, setNodes, onNodesChange] = useNodesState([]);
-    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-
-    useEffect(() => {
-        const fetchNodesAndEdges = async () => {
-            try {
-                const nodesResponse = await fetch('http://127.0.0.1:5000/api/nodes');
-                const nodesData = await nodesResponse.json();
-                console.log('Fetched nodes:', nodesData);
-                setNodes(nodesData);
-
-                const edgesResponse = await fetch('http://127.0.0.1:5000/api/edges');
-                const edgesData = await edgesResponse.json();
-                console.log('Fetched edges:', edgesData);
-                setEdges(edgesData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchNodesAndEdges();
-    }, [setNodes, setEdges]);
-
-    const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+    const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = useFlowData();
 
     return (
-        <div style={{ width: '100vw', height: '100vh' }}>
-            <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
-                fitView
-            >
-                <Controls />
-                <MiniMap />
-                <Background variant="dots" gap={12} size={1} />
-            </ReactFlow>
-        </div>
+        <FlowCanvas
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+        />
     );
 };
 

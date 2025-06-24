@@ -1,0 +1,31 @@
+.navbar {
+    background-color: #333;
+    padding: 10px 20px;
+    color: white;
+    width: 100%;
+    box-sizing: border-box;
+    /* 确保内边距和边框包含在宽度内 */
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-start;
+    /* 将链接靠左对齐 */
+}
+
+.nav-links li {
+    margin-right: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
