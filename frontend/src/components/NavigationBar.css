@@ -1,7 +1,7 @@
 .navbar {
-    background-color: #333;
-    padding: 10px 20px;
-    color: white;
+    background-color: #3d3d3d;
+    padding: 5px 20px;
+    color: rgb(255, 255, 255);
     width: 100%;
     box-sizing: border-box;
     /* 确保内边距和边框包含在宽度内 */
@@ -17,15 +17,85 @@
 }
 
 .nav-links li {
-    margin-right: 20px;
+    margin-right: 3px;
 }
 
-.nav-links a {
+.nav-links button {
+    background: none;
     color: white;
-    text-decoration: none;
-    font-weight: bold;
+    border: none;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-size: 0.5em;
+    /* font-weight: bold; */
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+    /* 为淡色按钮添加圆角 */
 }
 
-.nav-links a:hover {
-    text-decoration: underline;
+.nav-links button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    /* 淡色背景 */
+}
+
+.nav-links button:active {
+    background-color: rgba(255, 255, 255, 0.1);
+    /* 保持淡色背景 */
+}
+
+/* 下拉菜单容器 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* 下拉按钮 */
+.dropbtn {
+    background: none;
+    color: white;
+    border: none;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-size: 0.5em;
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+}
+
+/* 下拉菜单内容（隐藏） */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #4a4a4a;
+    /* 菜单背景色 */
+    min-width: 80px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    /* 确保子项圆角可见 */
+}
+
+/* 下拉菜单中的按钮 */
+.dropdown-content button {
+    color: white;
+    padding: 8px 10px;
+    text-decoration: none;
+    display: block;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.5em;
+    transition: background-color 0.3s ease;
+}
+
+/* 鼠标悬停时改变下拉菜单按钮的背景色 */
+.dropdown-content button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 显示下拉菜单 */
+.dropdown:hover .dropdown-content {
+    display: block;
 }
