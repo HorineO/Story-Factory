@@ -31,12 +31,32 @@ const useFlowData = () => {
 
     const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
+    const deleteNode = useCallback(async (nodeId) => {
+        try {
+            // Delete node from backend
+            await fetch(`http://127.0.0.1:5000/api/nodes/${nodeId}`, {
+                method: 'DELETE',
+            });
+            // Delete related edges from backend
+            await fetch(`http://127.0.0.1:5000/api/edges/related_to/${nodeId}`, {
+                method: 'DELETE',
+            });
+
+            // Update frontend state
+            setNodes((nds) => nds.filter((node) => node.id !== nodeId));
+            setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
+        } catch (error) {
+            console.error('Error deleting node:', error);
+        }
+    }, [setNodes, setEdges]);
+
     return {
         nodes,
         edges,
         onNodesChange,
         onEdgesChange,
         onConnect,
+        deleteNode,
     };
 };
 

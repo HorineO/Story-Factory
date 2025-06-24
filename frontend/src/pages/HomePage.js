@@ -10,8 +10,7 @@ import FlowCanvas from '../components/FlowCanvas';
 
 import '../pages/HomePage.css';
 
-const App = () => {
-    const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = useFlowData();
+const HomePage = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode }) => {
 
     return (
         <FlowCanvas
@@ -20,8 +19,9 @@ const App = () => {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
+            deleteNode={deleteNode}
         />
     );
 };
 
-export default App;
+export default HomePage;
