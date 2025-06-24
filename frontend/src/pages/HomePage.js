@@ -18,12 +18,14 @@ const App = () => {
     useEffect(() => {
         const fetchNodesAndEdges = async () => {
             try {
-                const nodesResponse = await fetch('/api/nodes');
+                const nodesResponse = await fetch('http://127.0.0.1:5000/api/nodes');
                 const nodesData = await nodesResponse.json();
+                console.log('Fetched nodes:', nodesData);
                 setNodes(nodesData);
 
-                const edgesResponse = await fetch('/api/edges');
+                const edgesResponse = await fetch('http://127.0.0.1:5000/api/edges');
                 const edgesData = await edgesResponse.json();
+                console.log('Fetched edges:', edgesData);
                 setEdges(edgesData);
             } catch (error) {
                 console.error('Error fetching data:', error);
