@@ -1,3 +1,7 @@
+/**
+ * @file 定义了一个 React 导航栏组件。
+ * @description 该组件包含应用标题和导航链接。
+ */
 import React from 'react';
 import './NavigationBar.css'; // 导入CSS文件
 

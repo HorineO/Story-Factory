@@ -1,3 +1,7 @@
+/**
+ * 这是 React 应用程序的入口点。
+ * 它负责将根组件渲染到 DOM，并设置了严格模式和性能报告。
+ */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/index.css';

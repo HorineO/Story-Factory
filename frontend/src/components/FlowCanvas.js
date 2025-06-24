@@ -1,3 +1,7 @@
+/**
+ * 该文件定义了一个用于可视化和编辑故事流程图的 React 组件。
+ * 它处理节点和边的交互，并与后端数据进行同步。
+ */
 import React from 'react';
 import ReactFlow, {
     MiniMap,

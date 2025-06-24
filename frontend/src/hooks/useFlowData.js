@@ -1,3 +1,7 @@
+/**
+ * @file 定义了一个自定义 React Hook，用于管理和操作流程图数据。
+ * @description 提供了添加、更新和删除节点及边的功能。
+ */
 import { useState, useEffect, useCallback } from 'react';
 import { addEdge, useNodesState, useEdgesState } from 'reactflow';
 
