@@ -21,6 +21,7 @@ const NavigationBar = () => {
                     <button className="dropbtn">文件</button>
                     <div className="dropdown-content">
                         <button>新建节点项目文件</button>
+                        <button>打开节点项目文件</button>
                         <button>保存节点项目文件</button>
                     </div>
                 </li>
@@ -29,6 +30,11 @@ const NavigationBar = () => {
                     <div className="dropdown-content">
                         <button>撤销(Ctrl+Z)</button>
                         <button>重做(Ctrl+Y)</button>
+                        <button>剪切(Ctrl+X)</button>
+                        <button>复制(Ctrl+C)</button>
+                        <button>粘贴(Ctrl+V)</button>
+                        <div className="dropdown-divider" />
+                        <button>新建节点</button>
                     </div>
                 </li>
                 <li className="dropdown">
