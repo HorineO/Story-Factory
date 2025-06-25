@@ -33,7 +33,6 @@ const NavigationBar = () => {
                         <button>剪切(Ctrl+X)</button>
                         <button>复制(Ctrl+C)</button>
                         <button>粘贴(Ctrl+V)</button>
-                        <div className="dropdown-divider" />
                         <button>新建节点</button>
                     </div>
                 </li>
