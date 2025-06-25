@@ -40,3 +40,7 @@ coverage/
 .cache/
 .temp/
 .tmp/
+
+# 其他配置文件
+.roo/mcp.json
+.gitignore
