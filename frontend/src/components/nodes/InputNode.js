@@ -7,6 +7,7 @@ const InputNode = ({ data }) => {
         <div className="input-node">
             <Handle type="source" position={Position.Bottom} />
             <div>{data.label}</div>
+            {data.text && <div className="node-text">{data.text.length > 20 ? data.text.substring(0, 20) + '...' : data.text}</div>}
         </div>
     );
 };

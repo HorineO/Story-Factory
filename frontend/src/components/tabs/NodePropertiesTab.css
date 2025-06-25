@@ -30,8 +30,7 @@
 }
 
 .node-properties-tab input[type="text"] {
-    width: calc(100% - 12px);
-    /* Account for padding */
+    width: 90%;
     padding: 6px;
     margin-top: 5px;
     margin-bottom: 15px;
@@ -45,11 +44,29 @@
     font-size: 0.9em;
 }
 
-.node-properties-tab input[type="text"]:focus {
+.node-properties-tab input[type="text"]:focus,
+.node-properties-tab textarea:focus {
     outline: none;
     border-color: #007acc;
     /* VSCode focus border color */
     box-shadow: 0 0 0 1px #007acc;
+}
+
+.node-properties-tab textarea {
+    width: 90%;
+    padding: 6px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #3c3c3c;
+    /* VSCode input border */
+    background-color: #333333;
+    /* VSCode input background */
+    color: #cccccc;
+    /* VSCode input text color */
+    border-radius: 3px;
+    font-size: 0.9em;
+    resize: vertical;
+    /* 允许垂直调整大小 */
 }
 
 .node-properties-tab .no-node-selected {
