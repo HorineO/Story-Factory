@@ -20,7 +20,7 @@ const NavigationBar = () => {
                 <li className="dropdown">
                     <button className="dropbtn">编辑</button>
                     <div className="dropdown-content">
-                        <button onClick={() => handleNavigation('/edit')}>编辑</button>
+                        <button>编辑</button>
                     </div>
                 </li>
                 <li className="dropdown">

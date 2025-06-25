@@ -2,9 +2,9 @@
     background-color: #3d3d3d;
     padding: 5px 20px;
     color: rgb(255, 255, 255);
+    border: 1px solid #000000;
     width: 100%;
     box-sizing: border-box;
-    /* 确保内边距和边框包含在宽度内 */
 }
 
 .nav-links {
@@ -66,16 +66,13 @@
     display: none;
     position: absolute;
     background-color: #3d3d3d;
-    /* 菜单背景色 */
     min-width: 80px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     border-radius: 8px;
     overflow: hidden;
-    /* 确保子项圆角可见 */
 }
 
-/* 下拉菜单中的按钮 */
 .dropdown-content button {
     color: white;
     padding: 8px 10px;

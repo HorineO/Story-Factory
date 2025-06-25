@@ -1,0 +1,29 @@
+.context-menu {
+    position: absolute;
+    background-color: #3d3d3d;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    box-shadow: 0 4px 12px rgba(82, 82, 82, 0.5);
+    z-index: 1000;
+    padding: 0px 0;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.menu-item {
+    padding: 4px 12px;
+    color: #d4d4d4;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.menu-item:hover {
+    background-color: #2a2d2e;
+}
+
+/* 分隔线样式 */
+.menu-divider {
+    border-top: 1px solid #404040;
+    /* 浅灰色分隔线 */
+    margin: 2px 0;
+}
