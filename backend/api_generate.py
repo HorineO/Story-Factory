@@ -1,33 +1,43 @@
+import os
+from typing import Optional
 from openai import OpenAI
 
 
-class OpenAIGenerator:
+class Generator:
     def __init__(
         self,
-        base_url: str = "https://xiaohumini.site/v1",
-        api_key: str = "sk-8mP2ANPxanMXHYQ0GQHQVJkeqTiU2iWoSu9lvt00SR8wjKHS",
+        base_url: str = "https://api.siliconflow.cn/v1",
+        api_key: str = os.getenv("OPENAI_API_KEY"),
+        default_model: str = "deepseek-ai/DeepSeek-R1",
     ):
         self.client = OpenAI(
             base_url=base_url,
             api_key=api_key,
         )
+        self.default_model = default_model
 
-    def generate_response(self, model: str, messages: list) -> str:
+    def generate_response(self, messages: list, model: Optional[str] = None) -> str:
+        if model is None:
+            model = self.default_model
         response = self.client.chat.completions.create(
             model=model,
             messages=messages,
         )
         return response.choices[0].message.content
 
-    def generate_with_default_messages(self, model: str, user_content: str) -> str:
+    def generate_with_default_messages(
+        self, user_content: str, model: Optional[str] = None
+    ) -> str:
+        if model is None:
+            model = self.default_model
         messages = [
             {
                 "role": "system",
-                "content": "You are a coding assistant that talks like a pirate.",
+                "content": "You are a helpful assistant.",
             },
             {
                 "role": "user",
                 "content": user_content,
             },
         ]
-        return self.generate_response(model, messages)
+        return self.generate_response(messages, model)

@@ -3,7 +3,7 @@ from flask_cors import CORS
 import os
 
 app = Flask(__name__, static_folder="../frontend/build", static_url_path="/")
-CORS(app)  # 允许跨域请求
+CORS(app)
 
 # 示例节点数据
 initial_nodes = [
@@ -12,17 +12,21 @@ initial_nodes = [
         "type": "input",
         "data": {"label": "Input Node"},
         "position": {"x": 250, "y": 5},
+        "sourcePosition": "right",
     },
     {
         "id": "2",
         "data": {"label": "Default Node"},
         "position": {"x": 100, "y": 100},
+        "sourcePosition": "right",
+        "targetPosition": "left",
     },
     {
         "id": "3",
         "type": "output",
         "data": {"label": "Output Node"},
         "position": {"x": 400, "y": 200},
+        "targetPosition": "left",
     },
 ]
 
@@ -47,7 +51,6 @@ def get_edges():
     return jsonify(initial_edges)
 
 
-# 如果前端路由未匹配，则回退到 index.html
 @app.route("/<path:path>")
 def serve_static(path):
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
