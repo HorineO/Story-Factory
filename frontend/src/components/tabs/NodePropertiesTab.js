@@ -6,14 +6,17 @@ const NodePropertiesTab = ({ selectedNode }) => {
     const { setNodes } = useReactFlow();
     const [nodeLabel, setNodeLabel] = useState('');
     const [nodeText, setNodeText] = useState(''); // 新增状态用于文本输入框
+    const [generatedText, setGeneratedText] = useState(''); // 新增状态用于生成结果预览
 
     useEffect(() => {
         if (selectedNode) {
             setNodeLabel(selectedNode.data?.label || '');
             setNodeText(selectedNode.data?.text || ''); // 初始化文本输入框的值
+            setGeneratedText(selectedNode.data?.generatedText || ''); // 初始化生成结果预览
         } else {
             setNodeLabel('');
             setNodeText('');
+            setGeneratedText('');
         }
     }, [selectedNode]);
 
@@ -45,6 +48,21 @@ const NodePropertiesTab = ({ selectedNode }) => {
         }
     };
 
+    const handleGenerateClick = () => {
+        // 模拟生成文本，实际应用中会调用后端API
+        const newGeneratedText = `这是根据输入节点文本 "${nodeText}" 生成的内容。`;
+        setGeneratedText(newGeneratedText);
+        if (selectedNode) {
+            setNodes((nds) =>
+                nds.map((node) =>
+                    node.id === selectedNode.id
+                        ? { ...node, data: { ...node.data, generatedText: newGeneratedText } }
+                        : node
+                )
+            );
+        }
+    };
+
     if (!selectedNode) {
         return <div className="node-properties-tab no-node-selected">选择节点，就可以修改节点属性了</div>;
     }
@@ -69,6 +87,32 @@ const NodePropertiesTab = ({ selectedNode }) => {
                         id="nodeText"
                         value={nodeText}
                         onChange={handleTextChange}
+                        rows="5" // 初始行数
+                        style={{ resize: 'vertical' }} // 允许垂直调整大小
+                    />
+                </div>
+            )}
+
+            {selectedNode.type === 'generate' && (
+                <div>
+                    <button onClick={handleGenerateClick}>生成</button>
+                    <textarea
+                        readOnly
+                        value={generatedText}
+                        placeholder="生成结果预览"
+                        rows="5" // 初始行数
+                        style={{ resize: 'vertical' }} // 允许垂直调整大小
+                    />
+                </div>
+            )}
+
+            {selectedNode.type === 'output' && ( // 只有当节点类型是 'output' 时才显示文本预览框
+                <div>
+                    <label htmlFor="nodeText">文本内容:</label>
+                    <textarea
+                        id="nodeText"
+                        value={nodeText}
+                        readOnly // 设置为只读
                         rows="5" // 初始行数
                         style={{ resize: 'vertical' }} // 允许垂直调整大小
                     />

@@ -17,20 +17,13 @@
 .node-text {
     margin-top: 10px;
     padding: 5px;
-    /* 调整padding */
     border: 1px solid #007bff;
-    /* 与input-node边框颜色一致 */
     border-radius: 5px;
-    /* 与input-node圆角一致 */
     background-color: #e6f2ff;
-    /* 与input-node背景颜色一致 */
     text-align: left;
     white-space: pre-wrap;
-    /* 保留空白符和换行符 */
     word-wrap: break-word;
-    /* 自动换行 */
     min-height: 30px;
-    /* 最小高度 */
 }
 
 .output-node {
@@ -38,5 +31,13 @@
     border: 1px solid #28a745;
     border-radius: 5px;
     background-color: #e2ffe6;
+    text-align: center;
+}
+
+.generate-node {
+    padding: 5px;
+    border: 1px solid #ffc107;
+    border-radius: 5px;
+    background-color: #fff3cd;
     text-align: center;
 }

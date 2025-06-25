@@ -7,6 +7,7 @@ const OutputNode = ({ data }) => {
         <div className="output-node">
             <Handle type="target" position={Position.Top} />
             <div>{data.label}</div>
+            {data.text && <div className="node-text">{data.text.length > 20 ? data.text.substring(0, 20) + '...' : data.text}</div>}
         </div>
     );
 };

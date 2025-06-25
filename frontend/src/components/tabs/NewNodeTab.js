@@ -10,8 +10,8 @@ const NewNodeTab = ({ onDragStart }) => {
             <div className="dndnode" onDragStart={(event) => onDragStart(event, 'input')} draggable>
                 输入节点
             </div>
-            <div className="dndnode" onDragStart={(event) => onDragStart(event, 'default')} draggable>
-                生成节点 (Default)
+            <div className="dndnode" onDragStart={(event) => onDragStart(event, 'generate')} draggable>
+                生成节点
             </div>
             <div className="dndnode" onDragStart={(event) => onDragStart(event, 'output')} draggable>
                 输出节点
