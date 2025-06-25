@@ -29,6 +29,12 @@ const ContextMenu = ({ x, y, onDelete, onClose }) => {
         >
             <div
                 className="menu-item"
+                onClick={() => console.log('编辑')}
+            >
+                编辑
+            </div>
+            <div
+                className="menu-item"
                 onClick={onDelete}
             >
                 删除

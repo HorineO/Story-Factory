@@ -18,6 +18,12 @@ const NavigationBar = () => {
             <ul className="nav-links">
                 <li><button onClick={() => handleNavigation('/')}>主页</button></li>
                 <li className="dropdown">
+                    <button className="dropbtn">文件</button>
+                    <div className="dropdown-content">
+                        <button>新建文件</button>
+                    </div>
+                </li>
+                <li className="dropdown">
                     <button className="dropbtn">编辑</button>
                     <div className="dropdown-content">
                         <button>编辑</button>
