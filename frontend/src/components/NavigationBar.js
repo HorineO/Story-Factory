@@ -17,6 +17,7 @@ const NavigationBar = () => {
         <nav className="navbar">
             <ul className="nav-links">
                 <li><button onClick={() => handleNavigation('/')}>主页</button></li>
+                <li><button onClick={() => handleNavigation('/edit')}>编辑</button></li>
                 <li className="dropdown">
                     <button className="dropbtn">帮助</button>
                     <div className="dropdown-content">
