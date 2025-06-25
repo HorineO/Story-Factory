@@ -3,6 +3,7 @@
  * 它处理节点和边的交互，并与后端数据进行同步。
  */
 import React, { useState, useCallback } from 'react';
+import LeftPanel from './LeftPanel'; // 引入左侧面板组件
 import ReactFlow, {
     MiniMap,
     Controls,
@@ -37,21 +38,28 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
     }, [nodeIdToDelete, deleteNode]);
 
     return (
-        <div style={{ width: '100%', height: '100%' }}>
-            <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
-                onNodeContextMenu={handleNodeContextMenu}
-                onPaneClick={handlePaneClick}
-                fitView
-            >
-                <Controls />
-                <MiniMap />
-                <Background variant="dots" gap={12} size={1} />
-            </ReactFlow>
+        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '100%' }}>
+            {/* 使用独立左侧面板组件 */}
+            <LeftPanel />
+
+            {/* 右侧流程图区域 */}
+            <div style={{ flex: 1 }}>
+                <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    onConnect={onConnect}
+                    onNodeContextMenu={handleNodeContextMenu}
+                    onPaneClick={handlePaneClick}
+                    fitView
+                >
+                    <Controls />
+                    <MiniMap />
+                    <Background variant="dots" gap={12} size={1} />
+                </ReactFlow>
+            </div>
+
             {showContextMenu && (
                 <ContextMenu
                     x={contextMenuPosition.x}

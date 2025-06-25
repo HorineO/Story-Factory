@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import './ContextMenu.css'; // 导入CSS文件
+import './ContextMenu.css';
 
 const ContextMenu = ({ x, y, onDelete, onClose }) => {
     const menuRef = useRef(null);
@@ -20,7 +20,7 @@ const ContextMenu = ({ x, y, onDelete, onClose }) => {
     return (
         <div
             ref={menuRef}
-            className="context-menu" // 添加CSS类名
+            className="context-menu"
             style={{
                 position: 'absolute',
                 top: y,
@@ -28,10 +28,10 @@ const ContextMenu = ({ x, y, onDelete, onClose }) => {
             }}
         >
             <div
-                className="menu-item" // 添加CSS类名
+                className="menu-item"
                 onClick={onDelete}
             >
-                删除节点
+                删除
             </div>
         </div>
     );
