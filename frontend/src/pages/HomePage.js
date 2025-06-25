@@ -4,7 +4,7 @@
  */
 // frontend/src/pages/HomePage.js
 // 此文件作为Homepage应用程序的主入口点，负责导入和组合各个模块。
-import React from 'react';
+import React, { useState } from 'react';
 import { ReactFlowProvider } from 'reactflow';
 import useFlowData from '../hooks/useFlowData';
 import FlowCanvas from '../components/FlowCanvas';
@@ -12,6 +12,15 @@ import FlowCanvas from '../components/FlowCanvas';
 import '../pages/HomePage.css';
 
 const HomePage = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode }) => {
+    const [selectedNode, setSelectedNode] = useState(null);
+
+    const onNodeClick = (event, node) => {
+        setSelectedNode(node);
+    };
+
+    const onPaneClick = () => {
+        setSelectedNode(null);
+    };
 
     return (
         <ReactFlowProvider>
@@ -22,6 +31,9 @@ const HomePage = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, delet
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 deleteNode={deleteNode}
+                onNodeClick={onNodeClick}
+                onPaneClick={onPaneClick}
+                selectedNode={selectedNode}
             />
         </ReactFlowProvider>
     );

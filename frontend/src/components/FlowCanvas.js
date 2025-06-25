@@ -15,7 +15,7 @@ import nodeTypes from './nodes/NodeTypes';
 import 'reactflow/dist/style.css';
 import ContextMenu from './ContextMenu'; // 引入 ContextMenu 组件
 
-const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode }) => {
+const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode, onNodeClick, onPaneClick, selectedNode }) => {
     const reactFlowInstance = useReactFlow();
     const [showContextMenu, setShowContextMenu] = useState(false);
     const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
@@ -58,9 +58,18 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
         setShowContextMenu(true);
     }, []);
 
-    const handlePaneClick = useCallback(() => {
+    const handlePaneClickInternal = useCallback(() => {
         setShowContextMenu(false);
-    }, []);
+        if (onPaneClick) {
+            onPaneClick();
+        }
+    }, [onPaneClick]);
+
+    const handleNodeClickInternal = useCallback((event, node) => {
+        if (onNodeClick) {
+            onNodeClick(event, node);
+        }
+    }, [onNodeClick]);
 
     const handleDelete = useCallback(() => {
         if (nodeIdToDelete) {
@@ -73,7 +82,7 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
     return (
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '100%' }}>
             {/* 使用独立左侧面板组件 */}
-            <LeftPanel />
+            <LeftPanel selectedNode={selectedNode} />
 
             {/* 右侧流程图区域 */}
             <div style={{ flex: 1 }}>
@@ -84,15 +93,17 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
                     onEdgesChange={onEdgesChange}
                     onConnect={onConnect}
                     onNodeContextMenu={handleNodeContextMenu}
-                    onPaneClick={handlePaneClick}
+                    onPaneClick={handlePaneClickInternal}
+                    onNodeClick={handleNodeClickInternal}
                     onDragOver={onDragOver}
                     onDrop={onDrop}
                     nodeTypes={nodeTypes}
                     fitView
                     style={{ backgroundColor: '#e0e0e0' }}
+                    proOptions={{ hideAttribution: true }}
                 >
                     <Controls />
-                    <MiniMap />
+                    <MiniMap style={{ opacity: 0.9 }} />
                     <Background variant="dots" gap={12} size={1} />
                 </ReactFlow>
             </div>

@@ -5,7 +5,7 @@ import NewNodeTab from './tabs/NewNodeTab';
 import DirectoryTab from './tabs/DirectoryTab';
 import OtherTab from './tabs/OtherTab';
 
-const LeftPanel = () => {
+const LeftPanel = ({ selectedNode }) => {
     const onDragStart = (event, nodeType) => {
         event.dataTransfer.setData('application/reactflow', nodeType);
         event.dataTransfer.effectAllowed = 'move';
@@ -13,7 +13,7 @@ const LeftPanel = () => {
 
     // 定义标签页
     const tabs = [
-        { id: 'tab1', label: '节点属性', content: <NodePropertiesTab /> },
+        { id: 'tab1', label: '节点属性', content: <NodePropertiesTab selectedNode={selectedNode} /> },
         { id: 'tab2', label: '新建节点', content: <NewNodeTab onDragStart={onDragStart} /> },
         { id: 'tab3', label: '目录', content: <DirectoryTab /> },
         { id: 'tab5', label: '其他', content: <OtherTab /> },
