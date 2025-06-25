@@ -10,6 +10,7 @@ import ReactFlow, {
     Background,
     useReactFlow,
 } from 'reactflow';
+import nodeTypes from './nodes/NodeTypes';
 
 import 'reactflow/dist/style.css';
 import ContextMenu from './ContextMenu'; // 引入 ContextMenu 组件
@@ -86,6 +87,7 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
                     onPaneClick={handlePaneClick}
                     onDragOver={onDragOver}
                     onDrop={onDrop}
+                    nodeTypes={nodeTypes}
                     fitView
                     style={{ backgroundColor: '#e0e0e0' }}
                 >

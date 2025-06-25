@@ -1,0 +1,23 @@
+.default-node {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    text-align: center;
+}
+
+.input-node {
+    padding: 10px;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    background-color: #e6f2ff;
+    text-align: center;
+}
+
+.output-node {
+    padding: 10px;
+    border: 1px solid #28a745;
+    border-radius: 5px;
+    background-color: #e2ffe6;
+    text-align: center;
+}

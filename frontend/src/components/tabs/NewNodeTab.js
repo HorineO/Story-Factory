@@ -11,7 +11,7 @@ const NewNodeTab = ({ onDragStart }) => {
                 输入节点
             </div>
             <div className="dndnode" onDragStart={(event) => onDragStart(event, 'default')} draggable>
-                生成节点
+                生成节点 (Default)
             </div>
             <div className="dndnode" onDragStart={(event) => onDragStart(event, 'output')} draggable>
                 输出节点
