@@ -66,11 +66,17 @@
     display: none;
     position: absolute;
     background-color: #3d3d3d;
-    min-width: 80px;
+    min-width: 160px;
+    /* 增加最小宽度 */
+    max-height: 300px;
+    /* 添加最大高度 */
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     border-radius: 8px;
-    overflow: hidden;
+    overflow-y: auto;
+    /* 启用垂直滚动 */
+    overflow-x: hidden;
+    /* 禁用水平滚动 */
 }
 
 .dropdown-content button {
@@ -85,6 +91,12 @@
     cursor: pointer;
     font-size: 0.5em;
     transition: background-color 0.3s ease;
+    white-space: nowrap;
+    /* 防止文本换行 */
+    overflow: hidden;
+    /* 隐藏超出内容 */
+    text-overflow: ellipsis;
+    /* 超长文本显示省略号 */
 }
 
 /* 鼠标悬停时改变下拉菜单按钮的背景色 */

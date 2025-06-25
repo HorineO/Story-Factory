@@ -20,13 +20,15 @@ const NavigationBar = () => {
                 <li className="dropdown">
                     <button className="dropbtn">文件</button>
                     <div className="dropdown-content">
-                        <button>新建文件</button>
+                        <button>新建节点项目文件</button>
+                        <button>保存节点项目文件</button>
                     </div>
                 </li>
                 <li className="dropdown">
                     <button className="dropbtn">编辑</button>
                     <div className="dropdown-content">
-                        <button>编辑</button>
+                        <button>撤销(Ctrl+Z)</button>
+                        <button>重做(Ctrl+Y)</button>
                     </div>
                 </li>
                 <li className="dropdown">
