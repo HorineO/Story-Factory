@@ -33,7 +33,7 @@ class Generator:
         messages = [
             {
                 "role": "system",
-                "content": "You are a helpful assistant.",
+                "content": "You are a human secretary who is good at summarizing and generating text.",
             },
             {
                 "role": "user",

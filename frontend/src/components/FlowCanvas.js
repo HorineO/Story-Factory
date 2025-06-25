@@ -103,7 +103,7 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
                     proOptions={{ hideAttribution: true }}
                 >
                     <Controls />
-                    <MiniMap style={{ opacity: 0.9 }} />
+                    <MiniMap style={{ opacity: 0.85 }} />
                     <Background variant="dots" gap={12} size={1} />
                 </ReactFlow>
             </div>

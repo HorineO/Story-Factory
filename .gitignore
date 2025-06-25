@@ -44,3 +44,4 @@ coverage/
 # 其他配置文件
 .roo/mcp.json
 .gitignore
+backend/__pycache__/routes.cpython-313.pyc
