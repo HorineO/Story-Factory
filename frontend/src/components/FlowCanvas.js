@@ -99,12 +99,12 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
                     onDrop={onDrop}
                     nodeTypes={useMemo(() => nodeTypes, [])}
                     fitView
-                    style={{ backgroundColor: '#e0e0e0' }}
+                    style={{ backgroundColor: '#282c34' }}
                     proOptions={{ hideAttribution: true }}
                 >
                     <Controls />
                     <MiniMap style={{ opacity: 0.85 }} />
-                    <Background variant="dots" gap={12} size={1} />
+                    <Background variant="dots" gap={12} size={1} color="#cccccc" />
                 </ReactFlow>
             </div>
 

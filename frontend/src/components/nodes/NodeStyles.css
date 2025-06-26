@@ -41,3 +41,8 @@
     background-color: #fff3cd;
     text-align: center;
 }
+
+.react-flow__node.selected {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px #007bff, 0 0 0 4px rgba(0, 123, 255, 0.5);
+}

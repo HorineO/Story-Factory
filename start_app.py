@@ -73,7 +73,7 @@ def start_backend():
     backend_path = _get_project_path(os.path.join("backend", "app.py"))
     # 使用Popen在后台启动，不阻塞主进程
     process = subprocess.Popen(
-        [sys.executable, backend_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        [sys.executable, backend_path], stdout=sys.stdout, stderr=sys.stderr
     )
     running_processes.append(process)  # 将进程添加到列表中
     return process
@@ -87,8 +87,8 @@ def start_frontend():
     process = subprocess.Popen(
         [npm_path, "start"],
         cwd=frontend_dir,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stdout=sys.stdout,
+        stderr=sys.stderr,
     )
     running_processes.append(process)  # 将进程添加到列表中
     return process
@@ -101,8 +101,6 @@ if __name__ == "__main__":
     atexit.register(_cleanup_processes)
 
     # 安装依赖
-    install_python_dependencies()
-    install_frontend_dependencies()
 
     # 启动后端
     backend_process = start_backend()
