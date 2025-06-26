@@ -2,7 +2,7 @@
  * 该文件定义了一个用于可视化和编辑故事流程图的 React 组件。
  * 它处理节点和边的交互，并与后端数据进行同步。
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import LeftPanel from './LeftPanel'; // 引入左侧面板组件
 import ReactFlow, {
     MiniMap,
@@ -97,7 +97,7 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
                     onNodeClick={handleNodeClickInternal}
                     onDragOver={onDragOver}
                     onDrop={onDrop}
-                    nodeTypes={nodeTypes}
+                    nodeTypes={useMemo(() => nodeTypes, [])}
                     fitView
                     style={{ backgroundColor: '#e0e0e0' }}
                     proOptions={{ hideAttribution: true }}
