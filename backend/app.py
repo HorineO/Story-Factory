@@ -1,12 +1,20 @@
 from flask import Flask, send_from_directory
 from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 import os
 from routes import api_bp
 
 app = Flask(__name__, static_folder="../frontend/build", static_url_path="/")
 CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 app.register_blueprint(api_bp, url_prefix="/api")
+
+
+@socketio.on("node_status_update")
+def handle_node_status_update(json):
+    # 广播节点状态更新到所有客户端
+    emit("node_status_push", json, broadcast=True)
 
 
 @app.route("/")
@@ -23,4 +31,4 @@ def serve_static(path):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, port=5000, debug=True)

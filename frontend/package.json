@@ -11,6 +11,7 @@
         "react-router-dom": "^7.6.2",
         "react-scripts": "5.0.1",
         "reactflow": "latest",
+        "socket.io-client": "^4.8.1",
         "web-vitals": "latest"
     },
     "scripts": {

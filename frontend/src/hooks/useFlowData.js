@@ -50,7 +50,16 @@ const useFlowData = () => {
         }
     }, [setNodes, setEdges]);
 
+    const updateNodeStatus = useCallback((nodeId, status) => {
+        setNodes((nds) =>
+            nds.map((node) =>
+                node.id === nodeId ? { ...node, data: { ...node.data, status } } : node
+            )
+        );
+    }, [setNodes]);
+
     return {
+        updateNodeStatus,
         nodes,
         edges,
         onNodesChange,

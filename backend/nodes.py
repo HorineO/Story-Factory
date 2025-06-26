@@ -17,7 +17,7 @@ initial_nodes = [
         "id": "3",
         "type": "output",
         "data": {"label": "Output Node"},
-        "position": {"x": 400, "y": 200},
+        "position": {"x": 250, "y": 200},
         "targetPosition": "left",
     },
 ]
