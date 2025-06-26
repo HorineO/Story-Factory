@@ -1,42 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import './ContextMenu.css';
 
-const ContextMenu = ({ x, y, onDelete, onClose }) => {
-    const menuRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
-                onClose();
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [onClose]);
+const ContextMenu = ({ top, left, right, bottom, onDelete, onClose, onDuplicate }) => {
+    const positionStyles = {
+        position: 'absolute',
+        ...(top !== false && { top }),
+        ...(left !== false && { left }),
+        ...(right !== false && { right }),
+        ...(bottom !== false && { bottom })
+    };
 
     return (
-        <div
-            ref={menuRef}
-            className="context-menu"
-            style={{
-                position: 'absolute',
-                top: y,
-                left: x,
-            }}
-        >
-            <div
-                className="menu-item"
-                onClick={() => console.log('编辑')}
-            >
-                编辑
+        <div className="context-menu" style={positionStyles}>
+            <div className="menu-item" onClick={onDuplicate}>
+                复制节点
             </div>
-            <div
-                className="menu-item"
-                onClick={onDelete}
-            >
+            <div className="menu-item" onClick={onDelete}>
                 删除
             </div>
         </div>

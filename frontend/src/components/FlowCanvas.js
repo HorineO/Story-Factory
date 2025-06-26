@@ -2,7 +2,7 @@
  * 该文件定义了一个用于可视化和编辑故事流程图的 React 组件。
  * 它处理节点和边的交互，并与后端数据进行同步。
  */
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import LeftPanel from './LeftPanel'; // 引入左侧面板组件
 import ReactFlow, {
     MiniMap,
@@ -17,9 +17,8 @@ import ContextMenu from './ContextMenu'; // 引入 ContextMenu 组件
 
 const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode, onNodeClick, onPaneClick, selectedNode }) => {
     const reactFlowInstance = useReactFlow();
-    const [showContextMenu, setShowContextMenu] = useState(false);
-    const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
-    const [nodeIdToDelete, setNodeIdToDelete] = useState(null);
+    const flowRef = useRef(null);
+    const [menu, setMenu] = useState(null);
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -30,8 +29,6 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
         event.preventDefault();
 
         const type = event.dataTransfer.getData('application/reactflow');
-
-        // check if the dropped element is valid
         if (typeof type === 'undefined' || !type) {
             return;
         }
@@ -53,13 +50,19 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
 
     const handleNodeContextMenu = useCallback((event, node) => {
         event.preventDefault();
-        setNodeIdToDelete(node.id);
-        setContextMenuPosition({ x: event.clientX, y: event.clientY });
-        setShowContextMenu(true);
+
+        const pane = flowRef.current.getBoundingClientRect();
+        setMenu({
+            id: node.id,
+            top: event.clientY < pane.height - 200 && event.clientY,
+            left: event.clientX < pane.width - 200 && event.clientX,
+            right: event.clientX >= pane.width - 200 && pane.width - event.clientX,
+            bottom: event.clientY >= pane.height - 200 && pane.height - event.clientY,
+        });
     }, []);
 
     const handlePaneClickInternal = useCallback(() => {
-        setShowContextMenu(false);
+        setMenu(null);
         if (onPaneClick) {
             onPaneClick();
         }
@@ -72,21 +75,37 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
     }, [onNodeClick]);
 
     const handleDelete = useCallback(() => {
-        if (nodeIdToDelete) {
-            deleteNode(nodeIdToDelete);
-            setShowContextMenu(false);
-            setNodeIdToDelete(null);
+        if (menu?.id) {
+            deleteNode(menu.id);
+            setMenu(null);
         }
-    }, [nodeIdToDelete, deleteNode]);
+    }, [menu, deleteNode]);
+
+    const handleDuplicate = useCallback(() => {
+        if (menu?.id) {
+            const nodeToDuplicate = nodes.find(n => n.id === menu.id);
+            if (nodeToDuplicate) {
+                const newNode = {
+                    ...nodeToDuplicate,
+                    id: `node_${Date.now()}`,
+                    position: {
+                        x: nodeToDuplicate.position.x + 50,
+                        y: nodeToDuplicate.position.y + 50,
+                    }
+                };
+                reactFlowInstance.setNodes(nds => nds.concat(newNode));
+                setMenu(null);
+            }
+        }
+    }, [menu, nodes, reactFlowInstance]);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '100%' }}>
-            {/* 使用独立左侧面板组件 */}
             <LeftPanel selectedNode={selectedNode} />
 
-            {/* 右侧流程图区域 */}
             <div style={{ flex: 1 }}>
                 <ReactFlow
+                    ref={flowRef}
                     nodes={nodes}
                     edges={edges}
                     onNodesChange={onNodesChange}
@@ -108,12 +127,12 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
                 </ReactFlow>
             </div>
 
-            {showContextMenu && (
+            {menu && (
                 <ContextMenu
-                    x={contextMenuPosition.x}
-                    y={contextMenuPosition.y}
+                    {...menu}
                     onDelete={handleDelete}
-                    onClose={() => setShowContextMenu(false)}
+                    onDuplicate={handleDuplicate}
+                    onClose={() => setMenu(null)}
                 />
             )}
         </div>
