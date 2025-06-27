@@ -7,10 +7,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NavigationBar from './components/NavigationBar';
 import HomePage from './pages/HomePage';
-import useFlowData from './hooks/useFlowData'; // 引入 useFlowData
-
 const App = () => {
-    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode } = useFlowData(); // 解构 deleteNode
 
     return (
         <Router>
@@ -21,14 +18,7 @@ const App = () => {
                         <Route
                             path="/"
                             element={
-                                <HomePage
-                                    nodes={nodes}
-                                    edges={edges}
-                                    onNodesChange={onNodesChange}
-                                    onEdgesChange={onEdgesChange}
-                                    onConnect={onConnect}
-                                    deleteNode={deleteNode} // 传递 deleteNode prop
-                                />
+                                <HomePage />
                             }
                         />
                         <Route path="/about" element={<div>关于页面</div>} /> {/* 示例关于页面 */}

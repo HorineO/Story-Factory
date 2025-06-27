@@ -7,12 +7,17 @@
 import React, { useState, useEffect } from 'react';
 import { io } from "socket.io-client";
 import { ReactFlowProvider } from 'reactflow';
-import useFlowData from '../hooks/useFlowData';
+import useStore from '../stores/useStore';
 import FlowCanvas from '../components/FlowCanvas';
 
 import '../pages/HomePage.css';
 
-const HomePage = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode, updateNodeStatus }) => {
+const HomePage = () => {
+    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode, updateNodeStatus, fetchNodesAndEdges } = useStore();
+
+    useEffect(() => {
+        fetchNodesAndEdges();
+    }, [fetchNodesAndEdges]);
     const [selectedNode, setSelectedNode] = useState(null);
 
     useEffect(() => {
