@@ -38,15 +38,18 @@ const HomePage = () => {
     };
 
     const handleSave = () => {
-        const flowData = { nodes, edges };
-        const json = JSON.stringify(flowData);
-        const blob = new Blob([json], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'project.storyfactory';
-        a.click();
-        URL.revokeObjectURL(url);
+        const filename = window.prompt("Enter filename (e.g., my_project):", "project");
+        if (filename) {
+            const flowData = { nodes, edges };
+            const json = JSON.stringify(flowData);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}.storyfactory`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
     };
 
     const handleOpen = () => {
