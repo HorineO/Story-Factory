@@ -1,6 +1,5 @@
 import React from 'react';
 import TabPanel from './TabPanel'; // 导入 TabPanel 组件
-import NodePropertiesTab from './tabs/NodePropertiesTab';
 import NewNodeTab from './tabs/NewNodeTab';
 import DirectoryTab from './tabs/DirectoryTab';
 import OtherTab from './tabs/OtherTab';
@@ -13,7 +12,6 @@ const LeftPanel = ({ selectedNode }) => {
 
     // 定义标签页
     const tabs = [
-        { id: 'tab1', label: '节点属性', content: <NodePropertiesTab selectedNode={selectedNode} /> },
         { id: 'tab2', label: '新建节点', content: <NewNodeTab onDragStart={onDragStart} /> },
         { id: 'tab3', label: '目录', content: <DirectoryTab /> },
         { id: 'tab5', label: '其他', content: <OtherTab /> },
