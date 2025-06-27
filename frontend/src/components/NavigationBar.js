@@ -6,7 +6,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'; // 导入 useNavigate
 import './NavigationBar.css'; // 导入CSS文件
 
-const NavigationBar = () => {
+const NavigationBar = ({ onSave, onOpen }) => {
     const navigate = useNavigate(); // 获取 navigate 函数
 
     const handleNavigation = (path) => {
@@ -21,8 +21,8 @@ const NavigationBar = () => {
                     <button className="dropbtn">文件</button>
                     <div className="dropdown-content">
                         <button>新建节点项目文件</button>
-                        <button>打开节点项目文件</button>
-                        <button>保存节点项目文件</button>
+                        <button onClick={onOpen}>打开节点项目文件</button>
+                        <button onClick={onSave}>保存节点项目文件</button>
                     </div>
                 </li>
                 <li className="dropdown">

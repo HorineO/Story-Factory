@@ -5,14 +5,13 @@
  */
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import NavigationBar from './components/NavigationBar';
+
 import HomePage from './pages/HomePage';
 const App = () => {
 
     return (
         <Router>
             <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-                <NavigationBar />
                 <div style={{ flexGrow: 1, overflow: 'hidden' }}>
                     <Routes>
                         <Route

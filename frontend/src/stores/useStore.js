@@ -66,6 +66,10 @@ const useStore = create((set, get) => ({
       ),
     }));
   },
+
+  setNodesAndEdges: (nodes, edges) => {
+    set({ nodes, edges });
+  },
 }));
  
 export default useStore;
