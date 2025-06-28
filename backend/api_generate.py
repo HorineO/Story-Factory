@@ -4,11 +4,12 @@ from openai import OpenAI
 
 
 class Generator:
+
     def __init__(
         self,
-        base_url: str = "https://api.siliconflow.cn/v1",
+        base_url: str = "https://xiaohumini.site/v1",
         api_key: str = os.getenv("OPENAI_API_KEY"),
-        default_model: str = "deepseek-ai/DeepSeek-R1",
+        default_model: str = "gemini-2.5-flash-lite-preview-06-17",
     ):
         self.client = OpenAI(
             base_url=base_url,
@@ -33,7 +34,7 @@ class Generator:
         messages = [
             {
                 "role": "system",
-                "content": "You are a human secretary who is good at summarizing and generating text.",
+                "content": "You are a human.",
             },
             {
                 "role": "user",

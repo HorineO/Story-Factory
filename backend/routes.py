@@ -1,11 +1,10 @@
-
 from flask import Blueprint, jsonify, request
 from backend.nodes import initial_nodes, initial_edges
 import uuid
 from backend.extensions import socketio
+from backend.api_generate import Generator
 
 api_bp = Blueprint("api", __name__)
-
 
 
 @api_bp.route("/nodes", methods=["GET"])
@@ -20,7 +19,14 @@ def create_node():
     new_node = {
         "id": str(uuid.uuid4()),
         "type": node_data.get("type", "default"),
-        "data": node_data.get("data", {}) if node_data.get("type") != "text" else {"label": node_data.get("data", {}).get("label", "Text Node"), "text": ""},
+        "data": (
+            node_data.get("data", {})
+            if node_data.get("type") != "text"
+            else {
+                "label": node_data.get("data", {}).get("label", "Text Node"),
+                "text": "",
+            }
+        ),
         "position": node_data.get("position", {"x": 0, "y": 0}),
         "sourcePosition": node_data.get("sourcePosition"),
         "targetPosition": node_data.get("targetPosition"),
@@ -134,3 +140,19 @@ def delete_related_edges(id):
         edge for edge in initial_edges if edge["source"] != id and edge["target"] != id
     ]
     return jsonify({"message": f"Edges related to node {id} deleted"}), 200
+
+
+@api_bp.route("/generate", methods=["POST"])
+def generate_text():
+    try:
+        data = request.get_json()
+        user_content = data.get("user_content")
+        if not user_content:
+            return jsonify({"error": "user_content is required"}), 400
+
+        generator = Generator()
+        generated_text = generator.generate_with_default_messages(user_content)
+        return jsonify({"generated_text": generated_text}), 200
+    except Exception as e:
+        print(f"Error in generate_text: {e}")
+        return jsonify({"error": str(e)}), 500
