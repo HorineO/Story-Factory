@@ -35,13 +35,13 @@ const NewNodeTab = ({ onDragStart }) => {
             </div>
             {!isBasicNodesCollapsed && (
                 <div className="collapsible-content">
-                    <div className="dndnode" draggable>
+                    <div className="dndnode" onDragStart={(event) => onDragStart(event, 'generate')} draggable>
                         生成节点
                     </div>
-                    <div className="dndnode" draggable>
+                    <div className="dndnode" onDragStart={(event) => onDragStart(event, 'text')} draggable>
                         文本节点
                     </div>
-                    <div className="dndnode" draggable>
+                    <div className="dndnode" onDragStart={(event) => onDragStart(event, 'chapter')} draggable>
                         章节节点
                     </div>
                     {/* 可以添加更多类型的节点 */}
