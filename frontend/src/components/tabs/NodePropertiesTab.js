@@ -9,7 +9,12 @@ const NodePropertiesTab = ({ selectedNode }) => {
         console.log('NodePropertiesTab - selectedNode changed:', selectedNode);
         if (selectedNode && selectedNode.type === 'text') {
             setNodeText(selectedNode.data.text || '');
-        } else {
+        } else if (selectedNode && selectedNode.type === 'generate') {
+            setNodeText(selectedNode.data.generatedText || ''); // Assuming generatedText will be stored in node data
+        } else if (selectedNode && selectedNode.type === 'chapter') {
+            setNodeText(selectedNode.data.chapterText || ''); // Assuming chapterText will be stored in node data
+        }
+        else {
             setNodeText('');
         }
     }, [selectedNode]);
@@ -45,6 +50,60 @@ const NodePropertiesTab = ({ selectedNode }) => {
                                     border: '1px solid #555',
                                     padding: '5px',
                                     boxSizing: 'border-box'
+                                }}
+                            />
+                        </div>
+                    )}
+                    {selectedNode.type === 'generate' && (
+                        <div style={{ marginTop: '10px' }}>
+                            <button
+                                onClick={() => alert('生成功能待实现！')} // Placeholder for generate logic
+                                style={{
+                                    padding: '8px 15px',
+                                    backgroundColor: '#007bff',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    marginBottom: '10px'
+                                }}
+                            >
+                                生成
+                            </button>
+                            <label htmlFor="generatedTextPreview" style={{ display: 'block', marginBottom: '5px' }}>生成内容预览:</label>
+                            <textarea
+                                id="generatedTextPreview"
+                                value={nodeText} // Use nodeText for preview
+                                readOnly
+                                style={{
+                                    width: '100%',
+                                    minHeight: '150px',
+                                    backgroundColor: '#333',
+                                    color: 'white',
+                                    border: '1px solid #555',
+                                    padding: '5px',
+                                    boxSizing: 'border-box',
+                                    resize: 'vertical'
+                                }}
+                            />
+                        </div>
+                    )}
+                    {selectedNode.type === 'chapter' && (
+                        <div style={{ marginTop: '10px' }}>
+                            <label htmlFor="chapterTextPreview" style={{ display: 'block', marginBottom: '5px' }}>章节内容预览:</label>
+                            <textarea
+                                id="chapterTextPreview"
+                                value={nodeText} // Use nodeText for preview
+                                readOnly
+                                style={{
+                                    width: '100%',
+                                    minHeight: '150px',
+                                    backgroundColor: '#333',
+                                    color: 'white',
+                                    border: '1px solid #555',
+                                    padding: '5px',
+                                    boxSizing: 'border-box',
+                                    resize: 'vertical'
                                 }}
                             />
                         </div>
