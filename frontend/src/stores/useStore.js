@@ -5,7 +5,7 @@ import {
   applyNodeChanges,
   applyEdgeChanges,
 } from 'reactflow';
- 
+
 const useStore = create((set, get) => ({
   nodes: [],
   edges: [],
@@ -20,6 +20,26 @@ const useStore = create((set, get) => ({
       set({ edges: edgesData });
     } catch (error) {
       console.error('Error fetching data:', error);
+    }
+  },
+
+  addNode: async (nodeData) => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/nodes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(nodeData),
+      });
+      const newNode = await response.json();
+      set((state) => ({
+        nodes: state.nodes.concat(newNode),
+      }));
+      return newNode;
+    } catch (error) {
+      console.error('Error adding node:', error);
+      return null;
     }
   },
 
@@ -71,5 +91,5 @@ const useStore = create((set, get) => ({
     set({ nodes, edges });
   },
 }));
- 
+
 export default useStore;

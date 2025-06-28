@@ -11,6 +11,7 @@ import ReactFlow, {
     useReactFlow,
 } from 'reactflow';
 import nodeTypes from './nodes/NodeTypes';
+import useStore from '../stores/useStore'; // 引入 useStore
 
 import 'reactflow/dist/style.css';
 import ContextMenu from './ContextMenu'; // 引入 ContextMenu 组件
@@ -19,13 +20,14 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
     const reactFlowInstance = useReactFlow();
     const flowRef = useRef(null);
     const [menu, setMenu] = useState(null);
+    const addNode = useStore((state) => state.addNode); // 从 store 中获取 addNode 函数
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = 'move';
     }, []);
 
-    const onDrop = useCallback((event) => {
+    const onDrop = useCallback(async (event) => { // 将 onDrop 设为 async
         event.preventDefault();
 
         const type = event.dataTransfer.getData('application/reactflow');
@@ -38,15 +40,17 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
             y: event.clientY,
         });
 
-        const newNode = {
-            id: `node_${Date.now()}`,
+        const newNodeData = { // 更改变量名以避免与 addNode 返回的 newNode 冲突
             type,
             position,
             data: { label: `${type} Node` },
         };
 
-        reactFlowInstance.setNodes((nds) => nds.concat(newNode));
-    }, [reactFlowInstance]);
+        const newNode = await addNode(newNodeData); // 调用 addNode 并等待其完成
+        if (newNode) {
+            reactFlowInstance.setNodes((nds) => nds.concat(newNode));
+        }
+    }, [reactFlowInstance, addNode]); // 添加 addNode 到依赖数组
 
     const handleNodeContextMenu = useCallback((event, node) => {
         event.preventDefault();
