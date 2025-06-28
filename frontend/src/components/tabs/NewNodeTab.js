@@ -44,6 +44,12 @@ const NewNodeTab = ({ onDragStart }) => {
                     <div className="dndnode" onDragStart={(event) => onDragStart(event, 'chapter')} draggable>
                         章节节点
                     </div>
+                    <div className="dndnode" onDragStart={(event) => onDragStart(event, 'start')} draggable>
+                        开始节点
+                    </div>
+                    <div className="dndnode" onDragStart={(event) => onDragStart(event, 'end')} draggable>
+                        结束节点
+                    </div>
                     {/* 可以添加更多类型的节点 */}
                 </div>
             )}
