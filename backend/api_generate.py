@@ -9,7 +9,7 @@ class Generator:
         self,
         base_url: str = "https://xiaohumini.site/v1",
         api_key: str = os.getenv("OPENAI_API_KEY"),
-        default_model: str = "gemini-2.5-flash-lite-preview-06-17",
+        default_model: str = "grok-3-mini",
     ):
         self.client = OpenAI(
             base_url=base_url,
