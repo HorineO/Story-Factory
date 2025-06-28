@@ -3,15 +3,16 @@ import os
 import sys
 import time
 import shutil
-import atexit  # 新增导入
+import atexit
+import threading
 
-running_processes = []  # 新增列表
+running_processes = []
 
 
 def _get_npm_path():
     npm_path = shutil.which("npm")
     if not npm_path:
-        print("错误: npm 命令未找到。请确保 Node.js 和 npm 已安装并配置在 PATH 中。")
+        print("错误: 未找到 npm。请安装 Node.js 并配置 PATH。")
         sys.exit(1)
     return npm_path
 
@@ -21,116 +22,112 @@ def _get_project_path(sub_path):
 
 
 def _cleanup_processes():
-    print("\n正在执行清理操作，终止所有子进程...")
+    print("\n清理中，终止子进程...")
     for proc in running_processes:
-        if proc.poll() is None:  # 检查进程是否仍在运行
+        if proc.poll() is None:
             proc.terminate()
             try:
-                proc.wait(timeout=5)  # 等待进程终止
+                proc.wait(timeout=5)
             except subprocess.TimeoutExpired:
-                proc.kill()  # 如果仍未终止，则强制杀死
+                proc.kill()
             print(f"进程 {proc.pid} 已终止。")
-    print("所有子进程已清理。")
+    print("清理完成。")
 
 
-def install_python_dependencies():
-    print("正在安装后端 Python 依赖...")
+def install_dependencies():
+    print("安装后端依赖...")
     try:
         subprocess.check_call(
             [sys.executable, "-m", "pip", "install", "Flask", "Flask-CORS"],
             stdout=subprocess.DEVNULL,  # 隐藏pip的详细输出
             stderr=subprocess.PIPE,
         )
-        print("后端 Python 依赖安装成功。")
+        print("后端依赖安装成功。")
     except subprocess.CalledProcessError as e:
-        print(
-            f"安装后端 Python 依赖失败。命令: {' '.join(e.cmd)}, 返回码: {e.returncode}, 错误输出: {e.stderr.decode().strip()}"
-        )
+        print(f"后端依赖安装失败: {e.stderr.decode().strip()}")
         sys.exit(1)
 
-
-def install_frontend_dependencies():
-    print("正在安装前端 Node.js 依赖...")
-    frontend_dir = _get_project_path("frontend")
-    npm_path = _get_npm_path()
+    print("安装前端依赖...")
     try:
         subprocess.check_call(
-            [npm_path, "install"],
-            cwd=frontend_dir,
+            [_get_npm_path(), "install"],
+            cwd=_get_project_path("frontend"),
             stdout=subprocess.DEVNULL,  # 隐藏npm的详细输出
             stderr=subprocess.PIPE,
         )
-        print("前端 Node.js 依赖安装成功。")
+        print("前端依赖安装成功。")
     except subprocess.CalledProcessError as e:
-        print(
-            f"安装前端 Node.js 依赖失败。命令: {' '.join(e.cmd)}, 返回码: {e.returncode}, 错误输出: {e.stderr.decode().strip()}"
-        )
+        print(f"前端依赖安装失败: {e.stderr.decode().strip()}")
         sys.exit(1)
 
 
 def start_backend():
-    print("正在启动后端服务...")
-    backend_path = _get_project_path(os.path.join("backend", "app.py"))
-    # 使用Popen在后台启动，不阻塞主进程
+    print("启动后端服务...")
     process = subprocess.Popen(
-        [sys.executable, backend_path], stdout=sys.stdout, stderr=sys.stderr
+        [sys.executable, _get_project_path(os.path.join("backend", "app.py"))],
+        stdout=sys.stdout,
+        stderr=sys.stderr,
     )
-    running_processes.append(process)  # 将进程添加到列表中
+    running_processes.append(process)
     return process
 
 
 def start_frontend():
-    print("正在启动前端应用...")
-    frontend_dir = _get_project_path("frontend")
-    npm_path = _get_npm_path()
+    print("启动前端应用...")
     env = os.environ.copy()
-    env["BROWSER"] = "none"  # 阻止自动打开浏览器
-    # 使用Popen在后台启动，不阻塞主进程
+    env["BROWSER"] = "none"
     process = subprocess.Popen(
-        [npm_path, "start"],
-        cwd=frontend_dir,
+        [_get_npm_path(), "start"],
+        cwd=_get_project_path("frontend"),
         stdout=sys.stdout,
         stderr=sys.stderr,
-        env=env,  # 添加这一行
+        env=env,
     )
-    running_processes.append(process)  # 将进程添加到列表中
+    running_processes.append(process)
     return process
 
 
+def start_backend_async(result_holder):
+    result_holder["backend"] = start_backend()
+
+
+def start_frontend_async(result_holder):
+    result_holder["frontend"] = start_frontend()
+
+
 if __name__ == "__main__":
-    print("正在准备启动 Story Factory 应用...")
+    print("准备启动 Story Factory 应用...")
 
-    # 注册清理函数，确保在脚本退出时终止所有子进程
     atexit.register(_cleanup_processes)
+    # install_dependencies()  # 如需自动安装依赖，取消注释
 
-    # 安装依赖
+    result = {}
+    threads = [
+        threading.Thread(target=start_backend_async, args=(result,)),
+        threading.Thread(target=start_frontend_async, args=(result,)),
+    ]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
 
-    # 启动后端
-    backend_process = start_backend()
-    print("后端服务已启动。")
+    backend_process = result["backend"]
+    frontend_process = result["frontend"]
 
-    # 等待后端启动，给它一些时间
-    time.sleep(5)
-
-    # 启动前端
-    frontend_process = start_frontend()
-    print("前端应用已启动。")
-
-    print("\n应用已启动。")
-    print("后端服务运行在: http://127.0.0.1:5000")
-    print("前端应用运行在: http://localhost:3000")
-    print("请在浏览器中访问 http://localhost:3000")
-    print("按 Ctrl+C 停止所有服务。")
-
+    print(
+        "后端: http://127.0.0.1:5000\n前端: http://localhost:3000\n按 Ctrl+C 停止服务。"
+    )
     try:
-        # 保持脚本运行，直到用户中断
-        # 注意：这里不再手动终止进程，因为atexit会处理
-        backend_process.wait()
-        frontend_process.wait()
+        while True:
+            if (
+                backend_process.poll() is not None
+                or frontend_process.poll() is not None
+            ):
+                break
+            time.sleep(1)
     except KeyboardInterrupt:
-        print("\n检测到 Ctrl+C。atexit 钩子将处理服务关闭。")
-        # 正常退出，atexit会触发清理
+        print("\n检测到 Ctrl+C，正在关闭服务。")
         sys.exit(0)
     except Exception as e:
-        print(f"发生未预期错误: {e}")
+        print(f"发生错误: {e}")
         sys.exit(1)
