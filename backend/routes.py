@@ -1,8 +1,11 @@
+
 from flask import Blueprint, jsonify, request
-from nodes import initial_nodes, initial_edges
+from backend.nodes import initial_nodes, initial_edges
 import uuid
+from backend.extensions import socketio
 
 api_bp = Blueprint("api", __name__)
+
 
 
 @api_bp.route("/nodes", methods=["GET"])
@@ -53,38 +56,45 @@ def get_edges():
 
 @api_bp.route("/edges", methods=["POST"])
 def create_edge():
-    global initial_edges
-    edge_data = request.get_json()
-    new_edge = {
-        "id": str(uuid.uuid4()),
-        "source": edge_data["source"],
-        "target": edge_data["target"],
-        "sourceHandle": edge_data.get("sourceHandle"),
-        "targetHandle": edge_data.get("targetHandle"),
-        "type": edge_data.get("type"),
-        "data": edge_data.get("data", {}),
-        "animated": edge_data.get("animated", False),
-        "selected": edge_data.get("selected", False),
-        "label": edge_data.get("label"),
-        "labelStyle": edge_data.get("labelStyle", {}),
-        "labelShowBg": edge_data.get("labelShowBg", False),
-        "labelBgStyle": edge_data.get("labelBgStyle", {}),
-        "labelBgPadding": edge_data.get("labelBgPadding", [2, 4]),
-        "labelBgBorderRadius": edge_data.get("labelBgBorderRadius", 2),
-        "style": edge_data.get("style", {}),
-        "className": edge_data.get("className"),
-        "markerEnd": edge_data.get("markerEnd"),
-        "markerStart": edge_data.get("markerStart"),
-        "zIndex": edge_data.get("zIndex"),
-        "ariaLabel": edge_data.get("ariaLabel"),
-        "focusable": edge_data.get("focusable", True),
-        "deletable": edge_data.get("deletable", True),
-        "updatable": edge_data.get("updatable", True),
-        "selected": edge_data.get("selected", False),
-        "hidden": edge_data.get("hidden", False),
-    }
-    initial_edges.append(new_edge)
-    return jsonify(new_edge), 201
+    try:
+        global initial_edges
+        edge_data = request.get_json()
+        new_edge = {
+            "id": str(uuid.uuid4()),
+            "source": edge_data["source"],
+            "target": edge_data["target"],
+            "sourceHandle": edge_data.get("sourceHandle"),
+            "targetHandle": edge_data.get("targetHandle"),
+            "type": edge_data.get("type"),
+            "data": edge_data.get("data", {}),
+            "animated": edge_data.get("animated", False),
+            "selected": edge_data.get("selected", False),
+            "label": edge_data.get("label"),
+            "labelStyle": edge_data.get("labelStyle", {}),
+            "labelShowBg": edge_data.get("labelShowBg", False),
+            "labelBgStyle": edge_data.get("labelBgStyle", {}),
+            "labelBgPadding": edge_data.get("labelBgPadding", [2, 4]),
+            "labelBgBorderRadius": edge_data.get("labelBgBorderRadius", 2),
+            "style": edge_data.get("style", {}),
+            "className": edge_data.get("className"),
+            "zIndex": edge_data.get("zIndex"),
+            "ariaLabel": edge_data.get("ariaLabel"),
+            "focusable": edge_data.get("focusable", True),
+            "deletable": edge_data.get("deletable", True),
+            "updatable": edge_data.get("updatable", True),
+            "selected": edge_data.get("selected", False),
+            "hidden": edge_data.get("hidden", False),
+        }
+        if "markerEnd" in edge_data:
+            new_edge["markerEnd"] = edge_data.get("markerEnd")
+        if "markerStart" in edge_data:
+            new_edge["markerStart"] = edge_data.get("markerStart")
+        initial_edges.append(new_edge)
+        socketio.emit("edges_update", {"edges": initial_edges})
+        return jsonify(new_edge), 201
+    except Exception as e:
+        print(f"Error in create_edge: {e}")
+        return jsonify({"error": str(e)}), 500
 
 
 @api_bp.route("/edges/<id>", methods=["PUT"])
