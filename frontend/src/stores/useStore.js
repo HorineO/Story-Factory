@@ -130,6 +130,38 @@ const useStore = create((set, get) => ({
   setNodesAndEdges: (nodes, edges) => {
     set({ nodes, edges });
   },
+
+  updateNodeText: async (nodeId, text) => {
+    // Optimistically update the node text in the store
+    set((state) => ({
+      nodes: state.nodes.map((node) =>
+        node.id === nodeId ? { ...node, data: { ...node.data, text: text } } : node
+      ),
+    }));
+
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/api/nodes/${nodeId}/text`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text }),
+      });
+      if (!response.ok) {
+        // If the backend update fails, you might want to revert the change or show an error
+        console.error('Failed to update node text on backend.');
+        // Optional: Revert the state if the backend update fails
+        // set((state) => ({
+        //   nodes: state.nodes.map((node) =>
+        //     node.id === nodeId ? { ...node, data: { ...node.data, text: originalText } } : node
+        //   ),
+        // }));
+      }
+    } catch (error) {
+      console.error('Error updating node text:', error);
+      // Optional: Revert the state if there's a network error
+    }
+  },
 }));
 
 export default useStore;

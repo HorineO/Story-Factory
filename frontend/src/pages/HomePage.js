@@ -19,18 +19,30 @@ const HomePage = () => {
     useEffect(() => {
         fetchNodesAndEdges();
     }, [fetchNodesAndEdges]);
+    const [selectedNodeId, setSelectedNodeId] = useState(null);
     const [selectedNode, setSelectedNode] = useState(null);
 
     useEffect(() => {
         initSocketListeners();
     }, [initSocketListeners]);
 
+    useEffect(() => {
+        if (selectedNodeId) {
+            const node = nodes.find(n => n.id === selectedNodeId);
+            setSelectedNode(node);
+        } else {
+            setSelectedNode(null);
+        }
+    }, [selectedNodeId, nodes]);
+
     const onNodeClick = (event, node) => {
-        setSelectedNode(node);
+        setSelectedNodeId(node.id);
+        console.log('HomePage - selectedNode after click:', nodes.find(n => n.id === node.id));
     };
 
     const onPaneClick = () => {
-        setSelectedNode(null);
+        setSelectedNodeId(null);
+        console.log('HomePage - selectedNode after pane click: null');
     };
 
     const handleSave = () => {

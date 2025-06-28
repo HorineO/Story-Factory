@@ -9,8 +9,7 @@ const TextNode = ({ data }) => {
                 {data.label}
             </div>
             <div className="node-body">
-                {/* Node-specific content can go here */}
-                Text Node Content
+                {data.text}
             </div>
             <Handle type="source" position={Position.Right} className="react-flow__handle-right" />
         </div>

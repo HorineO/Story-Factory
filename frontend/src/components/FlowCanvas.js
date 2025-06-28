@@ -87,7 +87,9 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
 
     const handleDuplicate = useCallback(() => {
         if (menu?.id) {
-            const nodeToDuplicate = nodes.find(n => n.id === menu.id);
+            // Get the latest nodes directly from the store
+            const currentNodes = useStore.getState().nodes;
+            const nodeToDuplicate = currentNodes.find(n => n.id === menu.id);
             if (nodeToDuplicate) {
                 const newNode = {
                     ...nodeToDuplicate,
@@ -101,7 +103,7 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
                 setMenu(null);
             }
         }
-    }, [menu, nodes, reactFlowInstance]);
+    }, [menu, reactFlowInstance]);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '100%' }}>

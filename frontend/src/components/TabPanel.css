@@ -8,8 +8,6 @@
     display: flex;
     border-bottom: 1px solid #444;
     background-color: rgb(75, 75, 75);
-    overflow-x: scroll;
-    /* 始终显示滚动条 */
     white-space: nowrap;
     /* 防止标签换行 */
     -webkit-overflow-scrolling: touch;

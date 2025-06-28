@@ -20,7 +20,7 @@ def create_node():
     new_node = {
         "id": str(uuid.uuid4()),
         "type": node_data.get("type", "default"),
-        "data": node_data.get("data", {}),
+        "data": node_data.get("data", {}) if node_data.get("type") != "text" else {"label": node_data.get("data", {}).get("label", "Text Node"), "text": ""},
         "position": node_data.get("position", {"x": 0, "y": 0}),
         "sourcePosition": node_data.get("sourcePosition"),
         "targetPosition": node_data.get("targetPosition"),
@@ -45,6 +45,18 @@ def update_node(id):
             initial_nodes[i]["type"] = node_data.get("type", node["type"])
             initial_nodes[i]["data"] = node_data.get("data", node["data"])
             initial_nodes[i]["position"] = node_data.get("position", node["position"])
+            return jsonify(initial_nodes[i]), 200
+    return jsonify({"message": f"Node {id} not found"}), 404
+
+
+@api_bp.route("/nodes/<id>/text", methods=["PUT"])
+def update_node_text(id):
+    global initial_nodes
+    text_data = request.get_json()
+    new_text = text_data.get("text", "")
+    for i, node in enumerate(initial_nodes):
+        if node["id"] == id:
+            initial_nodes[i]["data"]["text"] = new_text
             return jsonify(initial_nodes[i]), 200
     return jsonify({"message": f"Node {id} not found"}), 404
 
