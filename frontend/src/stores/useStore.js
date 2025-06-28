@@ -132,6 +132,9 @@ const useStore = create((set, get) => ({
   },
 
   updateNodeText: async (nodeId, text) => {
+    const originalNodes = get().nodes; // Store current nodes for potential rollback
+    const originalText = originalNodes.find(node => node.id === nodeId)?.data?.text;
+
     // Optimistically update the node text in the store
     set((state) => ({
       nodes: state.nodes.map((node) =>
@@ -148,18 +151,22 @@ const useStore = create((set, get) => ({
         body: JSON.stringify({ text }),
       });
       if (!response.ok) {
-        // If the backend update fails, you might want to revert the change or show an error
         console.error('Failed to update node text on backend.');
-        // Optional: Revert the state if the backend update fails
-        // set((state) => ({
-        //   nodes: state.nodes.map((node) =>
-        //     node.id === nodeId ? { ...node, data: { ...node.data, text: originalText } } : node
-        //   ),
-        // }));
+        // Revert the state if the backend update fails
+        set((state) => ({
+          nodes: state.nodes.map((node) =>
+            node.id === nodeId ? { ...node, data: { ...node.data, text: originalText } } : node
+          ),
+        }));
       }
     } catch (error) {
       console.error('Error updating node text:', error);
-      // Optional: Revert the state if there's a network error
+      // Revert the state if there's a network error
+      set((state) => ({
+        nodes: state.nodes.map((node) =>
+          node.id === nodeId ? { ...node, data: { ...node.data, text: originalText } } : node
+        ),
+      }));
     }
   },
 }));

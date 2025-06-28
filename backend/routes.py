@@ -32,6 +32,7 @@ def create_node():
         "targetPosition": node_data.get("targetPosition"),
     }
     initial_nodes.append(new_node)
+    socketio.emit("nodes_update", {"nodes": initial_nodes})
     return jsonify(new_node), 201
 
 
@@ -39,6 +40,7 @@ def create_node():
 def delete_node(id):
     global initial_nodes
     initial_nodes = [node for node in initial_nodes if node["id"] != id]
+    socketio.emit("nodes_update", {"nodes": initial_nodes})
     return jsonify({"message": f"Node {id} deleted"}), 200
 
 
@@ -51,6 +53,7 @@ def update_node(id):
             initial_nodes[i]["type"] = node_data.get("type", node["type"])
             initial_nodes[i]["data"] = node_data.get("data", node["data"])
             initial_nodes[i]["position"] = node_data.get("position", node["position"])
+            socketio.emit("nodes_update", {"nodes": initial_nodes})
             return jsonify(initial_nodes[i]), 200
     return jsonify({"message": f"Node {id} not found"}), 404
 
@@ -63,6 +66,7 @@ def update_node_text(id):
     for i, node in enumerate(initial_nodes):
         if node["id"] == id:
             initial_nodes[i]["data"]["text"] = new_text
+            socketio.emit("nodes_update", {"nodes": initial_nodes})
             return jsonify(initial_nodes[i]), 200
     return jsonify({"message": f"Node {id} not found"}), 404
 
@@ -139,6 +143,7 @@ def delete_related_edges(id):
     initial_edges = [
         edge for edge in initial_edges if edge["source"] != id and edge["target"] != id
     ]
+    socketio.emit("edges_update", {"edges": initial_edges})
     return jsonify({"message": f"Edges related to node {id} deleted"}), 200
 
 
@@ -156,3 +161,15 @@ def generate_text():
     except Exception as e:
         print(f"Error in generate_text: {e}")
         return jsonify({"error": str(e)}), 500
+
+
+@socketio.on("node_status_update")
+def handle_node_status_update(data):
+    global initial_nodes
+    node_id = data.get("nodeId")
+    status = data.get("status")
+    for node in initial_nodes:
+        if node["id"] == node_id:
+            node["data"]["status"] = status
+            socketio.emit("node_status_push", {"nodeId": node_id, "status": status})
+            break
