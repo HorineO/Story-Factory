@@ -5,6 +5,9 @@ import {
   applyNodeChanges,
   applyEdgeChanges,
 } from 'reactflow';
+import { io } from 'socket.io-client';
+
+const socket = io('http://127.0.0.1:5000');
 
 const useStore = create((set, get) => ({
   nodes: [],
@@ -85,6 +88,35 @@ const useStore = create((set, get) => ({
         node.id === nodeId ? { ...node, data: { ...node.data, status } } : node
       ),
     }));
+    // 通过WebSocket发送状态更新
+    socket.emit('node_status_update', { nodeId, status });
+  },
+
+  // 初始化WebSocket监听
+  initSocketListeners: () => {
+    socket.on('node_status_push', (data) => {
+      set((state) => ({
+        nodes: state.nodes.map((node) =>
+          node.id === data.nodeId ? { ...node, data: { ...node.data, status: data.status } } : node
+        ),
+      }));
+    });
+
+    socket.on('nodes_update', (data) => {
+      set({ nodes: data.nodes });
+    });
+
+    socket.on('edges_update', (data) => {
+      set({ edges: data.edges });
+    });
+
+    socket.on('connect', () => {
+      console.log('WebSocket connected');
+    });
+
+    socket.on('disconnect', () => {
+      console.log('WebSocket disconnected');
+    });
   },
 
   setNodesAndEdges: (nodes, edges) => {

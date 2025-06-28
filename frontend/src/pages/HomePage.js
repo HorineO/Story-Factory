@@ -14,7 +14,7 @@ import NavigationBar from '../components/NavigationBar';
 import '../pages/HomePage.css';
 
 const HomePage = () => {
-    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode, updateNodeStatus, fetchNodesAndEdges, setNodesAndEdges } = useStore();
+    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode, updateNodeStatus, fetchNodesAndEdges, setNodesAndEdges, initSocketListeners } = useStore();
 
     useEffect(() => {
         fetchNodesAndEdges();
@@ -22,12 +22,8 @@ const HomePage = () => {
     const [selectedNode, setSelectedNode] = useState(null);
 
     useEffect(() => {
-        const socket = io('http://localhost:5000');
-        socket.on('node_status_push', (data) => {
-            updateNodeStatus(data.nodeId, data.status);
-        });
-        return () => socket.disconnect();
-    }, [updateNodeStatus]);
+        initSocketListeners();
+    }, [initSocketListeners]);
 
     const onNodeClick = (event, node) => {
         setSelectedNode(node);
