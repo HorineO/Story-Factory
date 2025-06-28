@@ -163,6 +163,15 @@ def generate_text():
         return jsonify({"error": str(e)}), 500
 
 
+@api_bp.route("/generate/basic_straight", methods=["POST"])
+def generate_text_basic_straight():
+    return jsonify(
+        {
+            "generated_text": "This is a basic straight generation response. No complex logic applied."
+        }
+    )
+
+
 @socketio.on("node_status_update")
 def handle_node_status_update(data):
     global initial_nodes
