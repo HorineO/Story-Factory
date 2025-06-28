@@ -83,12 +83,15 @@ def start_frontend():
     print("正在启动前端应用...")
     frontend_dir = _get_project_path("frontend")
     npm_path = _get_npm_path()
+    env = os.environ.copy()
+    env["BROWSER"] = "none"  # 阻止自动打开浏览器
     # 使用Popen在后台启动，不阻塞主进程
     process = subprocess.Popen(
         [npm_path, "start"],
         cwd=frontend_dir,
         stdout=sys.stdout,
         stderr=sys.stderr,
+        env=env,  # 添加这一行
     )
     running_processes.append(process)  # 将进程添加到列表中
     return process

@@ -4,10 +4,15 @@ import './NodeStyles.css';
 
 const TextNode = ({ data }) => {
     return (
-        <div className="text-node">
-            <Handle type="target" position={Position.Left} />
-            <div>{data.label}</div>
-            <Handle type="source" position={Position.Right} />
+        <div className="node-base text-node">
+            <div className="node-header">
+                {data.label}
+            </div>
+            <div className="node-body">
+                {/* Node-specific content can go here */}
+                Text Node Content
+            </div>
+            <Handle type="source" position={Position.Right} className="react-flow__handle-right" />
         </div>
     );
 };

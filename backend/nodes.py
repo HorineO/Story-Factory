@@ -10,7 +10,7 @@ initial_nodes = [
         "id": "2",
         "type": "generate",
         "data": {"label": "Generate Node"},
-        "position": {"x": 150, "y": 100},
+        "position": {"x": 150, "y": -100},
         "sourcePosition": "right",
         "targetPosition": "left",
     },
@@ -18,7 +18,7 @@ initial_nodes = [
         "id": "3",
         "type": "chapter",
         "data": {"label": "Chapter Node"},
-        "position": {"x": 350, "y": -100},
+        "position": {"x": 350, "y": -200},
         "targetPosition": "left",
     },
 ]
