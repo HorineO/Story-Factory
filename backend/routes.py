@@ -206,6 +206,21 @@ def generate_text_basic_straight():
         return jsonify({"error": str(e)}), 500
 
 
+@socketio.on("node_move")
+def handle_node_move(data):
+    global initial_nodes
+    node_id = data.get("nodeId")
+    x = data.get("x")
+    y = data.get("y")
+    for i, node in enumerate(initial_nodes):
+        if node["id"] == node_id:
+            initial_nodes[i]["position"] = {"x": x, "y": y}
+            socketio.emit(
+                "node_updated", {"nodeId": node_id, "x": x, "y": y}, include_self=False
+            )
+            break
+
+
 @socketio.on("node_status_update")
 def handle_node_status_update(data):
     global initial_nodes

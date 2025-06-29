@@ -47,8 +47,21 @@ const useStore = create((set, get) => ({
   },
 
   onNodesChange: (changes) => {
-    set({
-      nodes: applyNodeChanges(changes, get().nodes),
+    const nodes = applyNodeChanges(changes, get().nodes);
+    set({ nodes });
+
+    // 发送节点位置更新到后端
+    changes.forEach(change => {
+      if (change.type === 'position' && change.dragging) {
+        const node = nodes.find(n => n.id === change.id);
+        if (node) {
+          socket.emit('node_move', {
+            nodeId: node.id,
+            x: node.position.x,
+            y: node.position.y
+          });
+        }
+      }
     });
   },
 
@@ -112,6 +125,16 @@ const useStore = create((set, get) => ({
 
     socket.on('nodes_update', (data) => {
       set({ nodes: data.nodes });
+    });
+
+    socket.on('node_updated', (data) => {
+      set(state => ({
+        nodes: state.nodes.map(node =>
+          node.id === data.nodeId
+            ? { ...node, position: { x: data.x, y: data.y } }
+            : node
+        )
+      }));
     });
 
     socket.on('edges_update', (data) => {
