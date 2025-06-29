@@ -12,6 +12,8 @@ const socket = io('http://127.0.0.1:5000');
 const useStore = create((set, get) => ({
   nodes: [],
   edges: [],
+  activeTab: 'tab1', // 默认标签页
+  setActiveTab: (tabId) => set({ activeTab: tabId }),
   fetchNodesAndEdges: async () => {
     try {
       const nodesResponse = await fetch('http://127.0.0.1:5000/api/nodes');

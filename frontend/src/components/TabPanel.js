@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import './TabPanel.css'; // Assuming you'll create this CSS file
+import React from 'react';
+import './TabPanel.css';
+import useStore from '../stores/useStore';
 
 const TabPanel = ({ tabs }) => {
-    const [activeTab, setActiveTab] = useState(tabs[0].id);
+    const activeTab = useStore((state) => state.activeTab);
+    const setActiveTab = useStore((state) => state.setActiveTab);
 
     return (
         <div className="tab-panel">

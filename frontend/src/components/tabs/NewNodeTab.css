@@ -1,19 +1,48 @@
 .dndnode {
-    background-color: #333;
     color: #fff;
     padding: 10px 15px;
     margin-bottom: 10px;
     border-radius: 5px;
     cursor: grab;
-    border: 1px solid #555;
     text-align: center;
     font-weight: bold;
     transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
+.dndnode[data-type="text"] {
+    background-color: #17a2b8;
+    border: 1px solid #17a2b8;
+}
+
+.dndnode[data-type="chapter"] {
+    background-color: #6f42c1;
+    border: 1px solid #6f42c1;
+}
+
+.dndnode[data-type="generate"] {
+    background-color: #ffc107;
+    border: 1px solid #ffc107;
+}
+
+.dndnode[data-type="start"] {
+    background-color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.dndnode[data-type="end"] {
+    background-color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.dndnode[data-type="default"],
+.dndnode[data-type="input"],
+.dndnode[data-type="output"] {
+    background-color: #333;
+    border: 1px solid #555;
+}
+
 .dndnode:hover {
-    background-color: #444;
-    border-color: #007bff;
+    opacity: 0.9;
 }
 
 .collapsible-header {

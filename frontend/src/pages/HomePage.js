@@ -14,7 +14,7 @@ import NavigationBar from '../components/NavigationBar';
 import '../pages/HomePage.css';
 
 const HomePage = () => {
-    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode, updateNodeStatus, fetchNodesAndEdges, setNodesAndEdges, initSocketListeners } = useStore();
+    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode, updateNodeStatus, fetchNodesAndEdges, setNodesAndEdges, initSocketListeners, setActiveTab } = useStore();
 
     useEffect(() => {
         fetchNodesAndEdges();
@@ -37,6 +37,7 @@ const HomePage = () => {
 
     const onNodeClick = (event, node) => {
         setSelectedNodeId(node.id);
+        setActiveTab('tab4'); // 切换到节点属性标签页
         console.log('HomePage - selectedNode after click:', nodes.find(n => n.id === node.id));
     };
 
