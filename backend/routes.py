@@ -165,11 +165,45 @@ def generate_text():
 
 @api_bp.route("/generate/basic_straight", methods=["POST"])
 def generate_text_basic_straight():
-    return jsonify(
-        {
-            "generated_text": "This is a basic straight generation response. No complex logic applied."
-        }
-    )
+    try:
+        data = request.get_json()
+        node_id = data.get("nodeId")
+        if not node_id:
+            return jsonify({"error": "nodeId is required"}), 400
+
+        # 查找连接到当前节点的边
+        related_edge = next(
+            (edge for edge in initial_edges if edge["target"] == node_id), None
+        )
+        if not related_edge:
+            return jsonify({"error": "No connected source node found"}), 404
+
+        # 查找源文本节点
+        source_node = next(
+            (
+                node
+                for node in initial_nodes
+                if node["id"] == related_edge["source"] and node["type"] == "text"
+            ),
+            None,
+        )
+        if not source_node:
+            return jsonify({"error": "No connected text node found"}), 404
+
+        generate_text = Generator().generate_with_default_messages(
+            source_node["data"].get("text", "")
+        )
+
+        return jsonify(
+            {
+                "generated_text": generate_text,
+                "node_id": node_id,
+                "source_node_id": related_edge["source"],
+            }
+        )
+    except Exception as e:
+        print(f"Error in generate_text_basic_straight: {e}")
+        return jsonify({"error": str(e)}), 500
 
 
 @socketio.on("node_status_update")

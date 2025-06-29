@@ -57,7 +57,28 @@ const NodePropertiesTab = ({ selectedNode }) => {
                     {selectedNode.type === 'generate' && (
                         <div style={{ marginTop: '10px' }}>
                             <button
-                                onClick={() => alert('生成功能待实现！')} // Placeholder for generate logic
+                                onClick={async () => {
+                                    try {
+                                        const response = await fetch('http://127.0.0.1:5000/api/generate/basic_straight', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ nodeId: selectedNode.id }), // Pass node ID if needed by backend
+                                        });
+                                        if (!response.ok) {
+                                            throw new Error(`HTTP error! status: ${response.status}`);
+                                        }
+                                        const data = await response.json();
+                                        // Assuming the API returns an object with a 'generated_text' field
+                                        const generatedContent = data.generated_text || 'No content generated.';
+                                        updateNodeText(selectedNode.id, generatedContent); // Update the node's text
+                                        setNodeText(generatedContent); // Update local state for preview
+                                    } catch (error) {
+                                        console.error('Error generating content:', error);
+                                        alert('生成内容失败: ' + error.message);
+                                    }
+                                }}
                                 style={{
                                     padding: '8px 15px',
                                     backgroundColor: '#007bff',
