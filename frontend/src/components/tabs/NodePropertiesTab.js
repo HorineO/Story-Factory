@@ -4,13 +4,14 @@ import useStore from '../../stores/useStore';
 const NodePropertiesTab = ({ selectedNode }) => {
     const updateNodeText = useStore((state) => state.updateNodeText);
     const [nodeText, setNodeText] = useState('');
+    const [isGenerating, setIsGenerating] = useState(false);
 
     useEffect(() => {
         console.log('NodePropertiesTab - selectedNode changed:', selectedNode);
         if (selectedNode && selectedNode.type === 'text') {
             setNodeText(selectedNode.data.text || '');
         } else if (selectedNode && selectedNode.type === 'generate') {
-            setNodeText(selectedNode.data.generatedText || ''); // Assuming generatedText will be stored in node data
+            setNodeText(selectedNode.data.text || selectedNode.data.generatedText || ''); // Support both data.text and data.generatedText
         } else if (selectedNode && selectedNode.type === 'chapter') {
             setNodeText(selectedNode.data.chapterText || ''); // Assuming chapterText will be stored in node data
         }
@@ -58,6 +59,7 @@ const NodePropertiesTab = ({ selectedNode }) => {
                         <div style={{ marginTop: '10px' }}>
                             <button
                                 onClick={async () => {
+                                    setIsGenerating(true);
                                     try {
                                         const response = await fetch('http://127.0.0.1:5000/api/generate/basic_straight', {
                                             method: 'POST',
@@ -77,6 +79,8 @@ const NodePropertiesTab = ({ selectedNode }) => {
                                     } catch (error) {
                                         console.error('Error generating content:', error);
                                         alert('生成内容失败: ' + error.message);
+                                    } finally {
+                                        setIsGenerating(false);
                                     }
                                 }}
                                 style={{
@@ -89,7 +93,21 @@ const NodePropertiesTab = ({ selectedNode }) => {
                                     marginBottom: '10px'
                                 }}
                             >
-                                生成
+                                {isGenerating ? (
+                                    <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                                        <span style={{
+                                            display: 'inline-block',
+                                            width: '16px',
+                                            height: '16px',
+                                            border: '2px solid rgba(255,255,255,0.3)',
+                                            borderRadius: '50%',
+                                            borderTopColor: 'white',
+                                            animation: 'spin 1s linear infinite',
+                                            marginRight: '8px'
+                                        }}></span>
+                                        生成中...
+                                    </span>
+                                ) : '生成'}
                             </button>
                             <label htmlFor="generatedTextPreview" style={{ display: 'block', marginBottom: '5px' }}>生成内容预览:</label>
                             <textarea
@@ -139,3 +157,12 @@ const NodePropertiesTab = ({ selectedNode }) => {
 };
 
 export default NodePropertiesTab;
+
+// Add CSS animation
+const styles = document.createElement('style');
+styles.textContent = `
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+`;
+document.head.appendChild(styles);
