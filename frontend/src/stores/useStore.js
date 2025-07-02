@@ -1,7 +1,6 @@
 
 import { create } from 'zustand';
 import {
-  addEdge,
   applyNodeChanges,
   applyEdgeChanges,
 } from 'reactflow';
