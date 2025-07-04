@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useStore from '../../stores/useStore';
+import { API_BASE_URL } from '../../config';
 
 const NodePropertiesTab = () => {
     const selectedNode = useStore((state) => state.selectedNode);
@@ -62,7 +63,7 @@ const NodePropertiesTab = () => {
                                 onClick={async () => {
                                     setIsGenerating(true);
                                     try {
-                                        const response = await fetch('http://127.0.0.1:5000/api/generate/basic_straight', {
+                                        const response = await fetch(`${API_BASE_URL}/api/generate/basic_straight`, {
                                             method: 'POST',
                                             headers: {
                                                 'Content-Type': 'application/json',

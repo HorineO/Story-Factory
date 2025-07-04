@@ -1,4 +1,6 @@
-const BASE_URL = 'http://127.0.0.1:5000/api';
+import { API_BASE_URL } from '../config';
+
+const BASE_URL = `${API_BASE_URL}/api`;
 
 const handleResponse = async (response) => {
     if (!response.ok) {

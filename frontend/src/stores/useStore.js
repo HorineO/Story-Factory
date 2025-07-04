@@ -15,7 +15,9 @@ import {
   updateNodeTextApi,
 } from '../utils/api';
 
-const socket = io('http://127.0.0.1:5000');
+import { API_BASE_URL } from '../config';
+
+const socket = io(API_BASE_URL);
 
 const useStore = create((set, get) => ({
   nodes: [],
