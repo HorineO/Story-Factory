@@ -4,6 +4,7 @@
  */
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import LeftPanel from './LeftPanel'; // 引入左侧面板组件
+import './FlowCanvas.css'; // 引入样式文件
 import ReactFlow, {
     MiniMap,
     Controls,
@@ -16,7 +17,18 @@ import useStore from '../stores/useStore'; // 引入 useStore
 import 'reactflow/dist/style.css';
 import ContextMenu from './ContextMenu'; // 引入 ContextMenu 组件
 
-const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, deleteNode, onNodeClick, onPaneClick, selectedNode }) => {
+const FlowCanvas = () => {
+    const {
+        nodes,
+        edges,
+        onNodesChange,
+        onEdgesChange,
+        onConnect,
+        deleteNode,
+        onNodeClick,
+        onPaneClick,
+        selectedNode
+    } = useStore();
     const reactFlowInstance = useReactFlow();
     const flowRef = useRef(null);
     const [menu, setMenu] = useState(null);
@@ -55,27 +67,29 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
     const handleNodeContextMenu = useCallback((event, node) => {
         event.preventDefault();
 
-        const pane = flowRef.current.getBoundingClientRect();
+        const viewport = reactFlowInstance.getViewport();
+        const { width, height } = reactFlowInstance.getViewport();
+        const { x: flowX, y: flowY } = reactFlowInstance.project({
+            x: event.clientX,
+            y: event.clientY
+        });
+
         setMenu({
             id: node.id,
-            top: event.clientY < pane.height - 200 && event.clientY,
-            left: event.clientX < pane.width - 200 && event.clientX,
-            right: event.clientX >= pane.width - 200 && pane.width - event.clientX,
-            bottom: event.clientY >= pane.height - 200 && pane.height - event.clientY,
+            top: flowY < height - 200 && flowY,
+            left: flowX < width - 200 && flowX,
+            right: flowX >= width - 200 && width - flowX,
+            bottom: flowY >= height - 200 && height - flowY,
         });
-    }, []);
+    }, [reactFlowInstance]);
 
     const handlePaneClickInternal = useCallback(() => {
         setMenu(null);
-        if (onPaneClick) {
-            onPaneClick();
-        }
+        onPaneClick();
     }, [onPaneClick]);
 
     const handleNodeClickInternal = useCallback((event, node) => {
-        if (onNodeClick) {
-            onNodeClick(event, node);
-        }
+        onNodeClick(event, node);
     }, [onNodeClick]);
 
     const handleDelete = useCallback(() => {
@@ -106,10 +120,10 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
     }, [menu, reactFlowInstance]);
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '100%' }}>
-            <LeftPanel selectedNode={selectedNode} />
+        <div className="flow-container">
+            <LeftPanel />
 
-            <div style={{ flex: 1 }}>
+            <div className="flow-canvas-wrapper">
                 <ReactFlow
                     ref={flowRef}
                     nodes={nodes}
@@ -122,13 +136,13 @@ const FlowCanvas = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, del
                     onNodeClick={handleNodeClickInternal}
                     onDragOver={onDragOver}
                     onDrop={onDrop}
-                    nodeTypes={useMemo(() => nodeTypes, [])}
+                    nodeTypes={nodeTypes}
                     fitView
-                    style={{ backgroundColor: '#282c34' }}
+                    className="flow-canvas"
                     proOptions={{ hideAttribution: true }}
                 >
                     <Controls />
-                    <MiniMap style={{ opacity: 0.85 }} />
+                    <MiniMap className="minimap" />
                     <Background variant="dots" gap={12} size={1} color="#cccccc" />
                 </ReactFlow>
             </div>

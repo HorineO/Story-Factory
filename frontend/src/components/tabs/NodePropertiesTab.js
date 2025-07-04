@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import useStore from '../../stores/useStore';
 
-const NodePropertiesTab = ({ selectedNode }) => {
+const NodePropertiesTab = () => {
+    const selectedNode = useStore((state) => state.selectedNode);
     const updateNodeText = useStore((state) => state.updateNodeText);
     const [nodeText, setNodeText] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);

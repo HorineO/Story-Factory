@@ -12,7 +12,11 @@ const useStore = create((set, get) => ({
   nodes: [],
   edges: [],
   activeTab: 'tab1', // 默认标签页
+  selectedNode: null, // 新增 selectedNode 状态
   setActiveTab: (tabId) => set({ activeTab: tabId }),
+  setSelectedNode: (node) => set({ selectedNode: node }),
+  onNodeClick: (event, node) => set({ selectedNode: node }),
+  onPaneClick: () => set({ selectedNode: null }),
   fetchNodesAndEdges: async () => {
     try {
       const nodesResponse = await fetch('http://127.0.0.1:5000/api/nodes');
