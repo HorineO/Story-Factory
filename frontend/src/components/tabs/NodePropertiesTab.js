@@ -158,12 +158,3 @@ const NodePropertiesTab = () => {
 };
 
 export default NodePropertiesTab;
-
-// Add CSS animation
-const styles = document.createElement('style');
-styles.textContent = `
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-`;
-document.head.appendChild(styles);

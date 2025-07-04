@@ -5,6 +5,15 @@ import {
   applyEdgeChanges,
 } from 'reactflow';
 import { io } from 'socket.io-client';
+import {
+  getNodes,
+  getEdges,
+  addNodeApi,
+  addEdgeApi,
+  deleteNodeApi,
+  deleteRelatedEdgesApi,
+  updateNodeTextApi,
+} from '../utils/api';
 
 const socket = io('http://127.0.0.1:5000');
 
@@ -19,28 +28,20 @@ const useStore = create((set, get) => ({
   onPaneClick: () => set({ selectedNode: null }),
   fetchNodesAndEdges: async () => {
     try {
-      const nodesResponse = await fetch('http://127.0.0.1:5000/api/nodes');
-      const nodesData = await nodesResponse.json();
+      const nodesData = await getNodes();
       set({ nodes: nodesData });
 
-      const edgesResponse = await fetch('http://127.0.0.1:5000/api/edges');
-      const edgesData = await edgesResponse.json();
+      const edgesData = await getEdges();
       set({ edges: edgesData });
     } catch (error) {
-      console.error('Error fetching data:', error);
+      // 错误已在api.js中处理，此处仅为捕获可能发生的意外错误
+      console.error('Error fetching nodes and edges:', error);
     }
   },
 
   addNode: async (nodeData) => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/nodes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(nodeData),
-      });
-      const newNode = await response.json();
+      const newNode = await addNodeApi(nodeData);
       set((state) => ({
         nodes: state.nodes.concat(newNode),
       }));
@@ -78,13 +79,7 @@ const useStore = create((set, get) => ({
 
   onConnect: async (connection) => {
     try {
-      await fetch('http://127.0.0.1:5000/api/edges', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(connection),
-      });
+      await addEdgeApi(connection);
     } catch (error) {
       console.error('Error adding edge:', error);
     }
@@ -92,12 +87,8 @@ const useStore = create((set, get) => ({
 
   deleteNode: async (nodeId) => {
     try {
-      await fetch(`http://127.0.0.1:5000/api/nodes/${nodeId}`, {
-        method: 'DELETE',
-      });
-      await fetch(`http://127.0.0.1:5000/api/edges/related_to/${nodeId}`, {
-        method: 'DELETE',
-      });
+      await deleteNodeApi(nodeId);
+      await deleteRelatedEdgesApi(nodeId);
 
       set((state) => ({
         nodes: state.nodes.filter((node) => node.id !== nodeId),
@@ -171,25 +162,10 @@ const useStore = create((set, get) => ({
     }));
 
     try {
-      const response = await fetch(`http://127.0.0.1:5000/api/nodes/${nodeId}/text`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text }),
-      });
-      if (!response.ok) {
-        console.error('Failed to update node text on backend.');
-        // Revert the state if the backend update fails
-        set((state) => ({
-          nodes: state.nodes.map((node) =>
-            node.id === nodeId ? { ...node, data: { ...node.data, text: originalText } } : node
-          ),
-        }));
-      }
+      await updateNodeTextApi(nodeId, text);
     } catch (error) {
       console.error('Error updating node text:', error);
-      // Revert the state if there's a network error
+      // Revert the state if the backend update fails or there's a network error
       set((state) => ({
         nodes: state.nodes.map((node) =>
           node.id === nodeId ? { ...node, data: { ...node.data, text: originalText } } : node

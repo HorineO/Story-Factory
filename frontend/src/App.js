@@ -3,11 +3,17 @@
  * @description React 应用的主组件，负责定义应用的整体结构和路由。
  * 它集成了导航栏和主页组件。
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import useStore from './stores/useStore';
 
 import HomePage from './pages/HomePage';
 const App = () => {
+    const initSocketListeners = useStore((state) => state.initSocketListeners);
+
+    useEffect(() => {
+        initSocketListeners();
+    }, [initSocketListeners]);
 
     return (
         <Router>

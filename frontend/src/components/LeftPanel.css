@@ -1,0 +1,13 @@
+/* frontend/src/components/LeftPanel.css */
+.left-panel {
+    width: 250px;
+    background-color: rgb(75, 75, 75);
+    border-right: 1px solid #ddd;
+    border: 1px solid rgb(46, 46, 46);
+    display: flex;
+    /* 使用 flexbox 布局 */
+    flex-direction: column;
+    /* 垂直方向排列 */
+    height: 100%;
+    /* 填充父容器高度 */
+}

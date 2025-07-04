@@ -1,4 +1,5 @@
 import React from 'react';
+import './LeftPanel.css';
 import TabPanel from './TabPanel'; // 导入 TabPanel 组件
 import NewNodeTab from './tabs/NewNodeTab';
 import DirectoryTab from './tabs/DirectoryTab';
@@ -22,15 +23,6 @@ const LeftPanel = () => {
     return (
         <div
             className="left-panel"
-            style={{
-                width: '250px',
-                backgroundColor: 'rgb(75, 75, 75)',
-                borderRight: '1px solid #ddd',
-                border: '1px solid rgb(46, 46, 46)',
-                display: 'flex', // 使用 flexbox 布局
-                flexDirection: 'column', // 垂直方向排列
-                height: '100%' // 填充父容器高度
-            }}
         >
             {/* 将 TabPanel 组件放置在 LeftPanel 中 */}
             <TabPanel tabs={tabs} />
