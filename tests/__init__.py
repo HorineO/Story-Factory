@@ -8,7 +8,21 @@ from .tests import (
     TestDatabase, 
     TestServices, 
     TestGenerationService, 
-    TestAPIEndpoints
+    TestAPIEndpoints,
+    TestAPIIntegration
+)
+
+# 导出集成测试类
+from .integration_test import IntegrationTest
+
+# 导出性能测试类
+from .performance_test import (
+    GetAllNodesTest,
+    CreateNodeTest,
+    GenerateTextTest,
+    UpdateNodeTextTest,
+    ComplexWorkflowTest,
+    BulkOperationsTest
 )
 
 __all__ = [
@@ -16,5 +30,13 @@ __all__ = [
     'TestDatabase',
     'TestServices',
     'TestGenerationService',
-    'TestAPIEndpoints'
+    'TestAPIEndpoints',
+    'TestAPIIntegration',
+    'IntegrationTest',
+    'GetAllNodesTest',
+    'CreateNodeTest',
+    'GenerateTextTest',
+    'UpdateNodeTextTest',
+    'ComplexWorkflowTest',
+    'BulkOperationsTest'
 ] 

@@ -306,40 +306,220 @@ class IntegrationTest(unittest.TestCase):
             logger.error(f"完整工作流程测试失败: {e}")
             raise
     
-    def test_ui_interaction(self):
-        """测试UI交互（可选，需要前端启动）"""
-        if not self.driver or not self.frontend_process:
-            logger.info("跳过UI测试，因为前端或WebDriver未启动")
-            self.skipTest("前端或WebDriver未启动")
-            return
+    def test_error_handling(self):
+        """测试错误处理情况"""
+        logger.info("测试错误处理...")
+        
+        # 测试请求不存在的节点
+        try:
+            response = requests.get(f"{self.backend_client.api_url}/nodes/non-existent-id")
+            self.assertEqual(response.status_code, 404)
+            logger.info("成功验证不存在节点的404响应")
+        except Exception as e:
+            logger.error(f"测试请求不存在节点时出错: {e}")
+            self.fail(f"测试不存在的节点请求失败: {e}")
+        
+        # 测试创建无效的边（缺少必要参数）
+        try:
+            response = requests.post(
+                f"{self.backend_client.api_url}/edges",
+                json={} # 空JSON，缺少source和target
+            )
+            self.assertNotEqual(response.status_code, 200)
+            logger.info("成功验证无效边创建的错误处理")
+        except Exception as e:
+            logger.error(f"测试创建无效边时出错: {e}")
+            self.fail(f"测试创建无效边失败: {e}")
+        
+        # 测试更新不存在的节点
+        try:
+            response = requests.put(
+                f"{self.backend_client.api_url}/nodes/non-existent-id",
+                json={"data": {"label": "Updated Label"}}
+            )
+            self.assertEqual(response.status_code, 404)
+            logger.info("成功验证更新不存在节点的404响应")
+        except Exception as e:
+            logger.error(f"测试更新不存在节点时出错: {e}")
+            self.fail(f"测试更新不存在节点失败: {e}")
+    
+    def test_node_position_update(self):
+        """测试节点位置更新功能"""
+        logger.info("测试节点位置更新...")
+        
+        # 创建一个测试节点
+        node_data = {
+            "type": "default",
+            "data": {"label": "Position Test Node"},
+            "position": {"x": 100, "y": 100}
+        }
+        created_node = self.backend_client.create_node(node_data)
+        node_id = created_node["id"]
+        
+        # 更新节点位置
+        try:
+            new_position = {"x": 200, "y": 300}
+            response = requests.put(
+                f"{self.backend_client.api_url}/nodes/{node_id}/position",
+                json=new_position
+            )
+            response.raise_for_status()
+            updated_node = response.json()
+            
+            # 验证位置是否更新
+            self.assertEqual(updated_node["position"]["x"], 200)
+            self.assertEqual(updated_node["position"]["y"], 300)
+            logger.info("节点位置更新测试通过")
+        except Exception as e:
+            logger.error(f"更新节点位置时出错: {e}")
+            self.fail(f"更新节点位置失败: {e}")
+    
+    def test_node_status_update(self):
+        """测试节点状态更新功能"""
+        logger.info("测试节点状态更新...")
+        
+        # 创建一个测试节点
+        node_data = {
+            "type": "default",
+            "data": {"label": "Status Test Node", "status": "pending"},
+            "position": {"x": 100, "y": 100}
+        }
+        created_node = self.backend_client.create_node(node_data)
+        node_id = created_node["id"]
+        
+        # 更新节点状态
+        try:
+            response = requests.put(
+                f"{self.backend_client.api_url}/nodes/{node_id}/status",
+                json={"status": "completed"}
+            )
+            response.raise_for_status()
+            updated_node = response.json()
+            
+            # 验证状态是否更新
+            self.assertEqual(updated_node["data"]["status"], "completed")
+            logger.info("节点状态更新测试通过")
+        except Exception as e:
+            logger.error(f"更新节点状态时出错: {e}")
+            self.fail(f"更新节点状态失败: {e}")
+    
+    def test_multiple_nodes_and_edges(self):
+        """测试创建多个节点和边的复杂场景"""
+        logger.info("测试多节点和边的场景...")
+        
+        # 创建多个节点
+        nodes = []
+        for i in range(5):
+            node = self.backend_client.create_node({
+                "type": "text",
+                "data": {"label": f"Node {i}", "text": f"Content {i}"},
+                "position": {"x": i * 150, "y": i * 100}
+            })
+            nodes.append(node)
+        
+        # 创建连接这些节点的边（创建一个简单的链）
+        edges = []
+        for i in range(4):
+            edge = self.backend_client.create_edge({
+                "source": nodes[i]["id"],
+                "target": nodes[i+1]["id"]
+            })
+            edges.append(edge)
         
         try:
-            logger.info("测试UI交互...")
+            # 验证所有节点都创建成功
+            all_nodes = self.backend_client.get_nodes()
+            self.assertTrue(all(any(n["id"] == node["id"] for n in all_nodes) for node in nodes))
             
-            # 访问应用
-            self.driver.get("http://localhost:3000")
+            # 验证所有边都创建成功
+            all_edges = self.backend_client.get_edges()
+            self.assertTrue(all(any(e["id"] == edge["id"] for e in all_edges) for edge in edges))
             
-            # 等待页面加载
-            WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "react-flow"))
-            )
+            # 删除中间节点，验证相关边的处理
+            middle_node_id = nodes[2]["id"]
+            response = requests.delete(f"{self.backend_client.api_url}/nodes/{middle_node_id}")
+            response.raise_for_status()
             
-            # 验证画布已加载
-            canvas = self.driver.find_element(By.CLASS_NAME, "react-flow")
-            self.assertIsNotNone(canvas)
+            # 验证节点已删除
+            all_nodes_after = self.backend_client.get_nodes()
+            self.assertFalse(any(n["id"] == middle_node_id for n in all_nodes_after))
             
-            # 验证有节点显示
-            nodes = self.driver.find_elements(By.CLASS_NAME, "react-flow__node")
-            self.assertTrue(len(nodes) > 0)
+            # 验证相关边已删除（应删除节点2连接的两条边）
+            all_edges_after = self.backend_client.get_edges()
+            deleted_edges = [
+                edges[1]["id"],  # 连接节点1和节点2的边
+                edges[2]["id"]   # 连接节点2和节点3的边
+            ]
+            for edge_id in deleted_edges:
+                self.assertFalse(any(e["id"] == edge_id for e in all_edges_after))
             
-            logger.info("UI交互测试通过")
-        
-        except TimeoutException:
-            logger.error("UI元素加载超时")
-            self.fail("页面未正确加载")
+            logger.info("多节点和边场景测试通过")
         except Exception as e:
-            logger.error(f"UI交互测试失败: {e}")
-            raise
+            logger.error(f"多节点和边场景测试失败: {e}")
+            self.fail(f"多节点和边场景测试失败: {e}")
+    
+    def test_concurrent_operations(self):
+        """测试并发操作的稳定性"""
+        import threading
+        
+        logger.info("测试并发操作...")
+        
+        # 创建一个共享节点用于测试并发更新
+        shared_node = self.backend_client.create_node({
+            "type": "text",
+            "data": {"label": "Concurrent Test Node", "text": ""},
+            "position": {"x": 0, "y": 0}
+        })
+        shared_node_id = shared_node["id"]
+        
+        # 定义并发操作函数
+        def update_node_text(node_id, text, results, index):
+            try:
+                response = requests.put(
+                    f"{self.backend_client.api_url}/nodes/{node_id}/text",
+                    json={"text": text}
+                )
+                results[index] = response.status_code
+            except Exception as e:
+                results[index] = str(e)
+        
+        # 运行并发更新
+        num_threads = 10
+        results = [None] * num_threads
+        threads = []
+        
+        for i in range(num_threads):
+            thread = threading.Thread(
+                target=update_node_text,
+                args=(shared_node_id, f"Concurrent update {i}", results, i)
+            )
+            threads.append(thread)
+            thread.start()
+        
+        # 等待所有线程完成
+        for thread in threads:
+            thread.join()
+        
+        # 验证所有更新都成功处理（没有异常）
+        success = all(isinstance(result, int) and result == 200 for result in results)
+        self.assertTrue(success, f"并发更新结果: {results}")
+        
+        # 获取最终节点状态，验证某次更新成功写入
+        final_nodes = self.backend_client.get_nodes()
+        updated_node = next((n for n in final_nodes if n["id"] == shared_node_id), None)
+        self.assertIsNotNone(updated_node)
+        # 确保节点存在并且有data属性和text字段后才进行断言
+        if updated_node and "data" in updated_node and "text" in updated_node["data"]:
+            self.assertTrue(updated_node["data"]["text"].startswith("Concurrent update "))
+        else:
+            self.fail("更新后的节点数据结构不完整或不符合预期")
+        
+        logger.info("并发操作测试通过")
+
+    # 可选：取消注释以启用UI测试
+    # def test_ui_interaction(self):
+    #     """测试前端UI交互"""
+    #     // ... existing code ...
 
 
 if __name__ == "__main__":

@@ -6,6 +6,8 @@ import logging
 from datetime import datetime
 import time
 import colorama
+import coverage
+import shutil  # 导入shutil来获取终端尺寸
 
 # 添加项目路径到系统路径
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -55,9 +57,30 @@ class CustomTestResult(unittest.TestResult):
         self.completed = 0
         self.start_time = None
         self.test_stats = {'pass': 0, 'fail': 0, 'error': 0, 'skip': 0}
+        # 获取终端大小
+        try:
+            self.terminal_columns, self.terminal_rows = shutil.get_terminal_size()
+        except:
+            self.terminal_columns, self.terminal_rows = 80, 24
         
     def getDescription(self, test):
         return str(test)
+    
+    def _print_at_bottom(self, message):
+        """在终端底部打印消息"""
+        if self.stream and hasattr(self.stream, 'write'):
+            # 保存当前光标位置
+            self.stream.write("\033[s")
+            # 移动到终端底部
+            self.stream.write(f"\033[{self.terminal_rows};1H")
+            # 清除当前行
+            self.stream.write("\033[K")
+            # 写入消息
+            self.stream.write(message)
+            # 恢复光标位置
+            self.stream.write("\033[u")
+            if hasattr(self.stream, 'flush'):
+                self.stream.flush()
         
     def startTest(self, test):
         super().startTest(test)
@@ -65,43 +88,62 @@ class CustomTestResult(unittest.TestResult):
             self.start_time = time.time()
         self.completed += 1
         
-        # 更新进度条
+        # 更新进度条，显示在终端底部
         if self.stream and hasattr(self.stream, 'write'):
             progress = int((self.completed / self.total_tests) * 40) if self.total_tests else 0
             bar = f"[{'=' * progress}{' ' * (40 - progress)}]"
             percent = (self.completed / self.total_tests) * 100 if self.total_tests else 0
             
-            self.stream.write(f"\r{Colors.INFO}Running tests: {bar} {percent:.1f}% ({self.completed}/{self.total_tests}){Colors.RESET}")
-            if hasattr(self.stream, 'flush'):
-                self.stream.flush()
+            progress_message = f"{Colors.INFO}Running tests: {bar} {percent:.1f}% ({self.completed}/{self.total_tests}){Colors.RESET}"
+            self._print_at_bottom(progress_message)
         
     def addSuccess(self, test):
         super().addSuccess(test)
         self.test_stats['pass'] += 1
         if self.showAll and self.stream and hasattr(self.stream, 'write'):
-            self.stream.write("\r" + " " * 80 + "\r")  # 清除当前行
             self.stream.write(f"{Colors.PASS}✓ {test.id()}{Colors.RESET}\n")
+            # 更新进度条
+            progress = int((self.completed / self.total_tests) * 40) if self.total_tests else 0
+            bar = f"[{'=' * progress}{' ' * (40 - progress)}]"
+            percent = (self.completed / self.total_tests) * 100 if self.total_tests else 0
+            progress_message = f"{Colors.INFO}Running tests: {bar} {percent:.1f}% ({self.completed}/{self.total_tests}){Colors.RESET}"
+            self._print_at_bottom(progress_message)
     
     def addError(self, test, err):
         super().addError(test, err)
         self.test_stats['error'] += 1
         if self.showAll and self.stream and hasattr(self.stream, 'write'):
-            self.stream.write("\r" + " " * 80 + "\r")  # 清除当前行
             self.stream.write(f"{Colors.ERROR}E {test.id()}{Colors.RESET}\n")
+            # 更新进度条
+            progress = int((self.completed / self.total_tests) * 40) if self.total_tests else 0
+            bar = f"[{'=' * progress}{' ' * (40 - progress)}]"
+            percent = (self.completed / self.total_tests) * 100 if self.total_tests else 0
+            progress_message = f"{Colors.INFO}Running tests: {bar} {percent:.1f}% ({self.completed}/{self.total_tests}){Colors.RESET}"
+            self._print_at_bottom(progress_message)
     
     def addFailure(self, test, err):
         super().addFailure(test, err)
         self.test_stats['fail'] += 1
         if self.showAll and self.stream and hasattr(self.stream, 'write'):
-            self.stream.write("\r" + " " * 80 + "\r")  # 清除当前行
             self.stream.write(f"{Colors.FAIL}F {test.id()}{Colors.RESET}\n")
+            # 更新进度条
+            progress = int((self.completed / self.total_tests) * 40) if self.total_tests else 0
+            bar = f"[{'=' * progress}{' ' * (40 - progress)}]"
+            percent = (self.completed / self.total_tests) * 100 if self.total_tests else 0
+            progress_message = f"{Colors.INFO}Running tests: {bar} {percent:.1f}% ({self.completed}/{self.total_tests}){Colors.RESET}"
+            self._print_at_bottom(progress_message)
     
     def addSkip(self, test, reason):
         super().addSkip(test, reason)
         self.test_stats['skip'] += 1
         if self.showAll and self.stream and hasattr(self.stream, 'write'):
-            self.stream.write("\r" + " " * 80 + "\r")  # 清除当前行
             self.stream.write(f"{Colors.CYAN}S {test.id()} (跳过: {reason}){Colors.RESET}\n")
+            # 更新进度条
+            progress = int((self.completed / self.total_tests) * 40) if self.total_tests else 0
+            bar = f"[{'=' * progress}{' ' * (40 - progress)}]"
+            percent = (self.completed / self.total_tests) * 100 if self.total_tests else 0
+            progress_message = f"{Colors.INFO}Running tests: {bar} {percent:.1f}% ({self.completed}/{self.total_tests}){Colors.RESET}"
+            self._print_at_bottom(progress_message)
 
 class ProgressTestRunner:
     """自定义测试运行器，带进度条"""
@@ -133,9 +175,9 @@ class ProgressTestRunner:
             end_time = time.time()
             run_time = end_time - start_time
             
-            # 清除进度条
+            # 清除进度条（在完成时使用一个回车换行）
             if hasattr(self.stream, 'write'):
-                self.stream.write("\r" + " " * 80 + "\r")
+                self.stream.write("\n")
                 
                 # 打印简洁的结果摘要
                 self.stream.write("\n" + "=" * 60 + "\n")
@@ -162,12 +204,15 @@ class ProgressTestRunner:
         
         return result
 
-def run_tests():
+def run_tests(with_coverage=False):
     """运行所有测试并生成报告"""
     logger.info("开始运行Story Factory测试套件...")
     
     # 从tests模块导入测试套件
-    from tests import TestModels, TestDatabase, TestServices, TestGenerationService, TestAPIEndpoints
+    from tests import (
+        TestModels, TestDatabase, TestServices, 
+        TestGenerationService, TestAPIEndpoints, TestAPIIntegration
+    )
     
     # 创建测试加载器
     loader = unittest.TestLoader()
@@ -181,15 +226,45 @@ def run_tests():
         TestDatabase,
         TestServices,
         TestGenerationService,
-        TestAPIEndpoints
+        TestAPIEndpoints,
+        TestAPIIntegration  # 新增的API集成测试
     ]
     
     for test_class in test_classes:
         suite.addTest(loader.loadTestsFromTestCase(test_class))
     
+    # 是否启用覆盖率测试
+    if with_coverage:
+        # 配置覆盖率
+        cov = coverage.Coverage(
+            source=["backend"],
+            omit=["*/__pycache__/*", "*/test*", "*/__init__.py"],
+        )
+        cov.start()
+        
     # 运行测试，使用自定义测试运行器
     runner = ProgressTestRunner(verbosity=2)
     result = runner.run(suite)
+    
+    # 如果启用了覆盖率测试，生成报告
+    if with_coverage:
+        cov.stop()
+        cov.save()
+        
+        # 输出覆盖率摘要
+        logger.info("生成覆盖率报告...")
+        print(f"\n{Colors.BOLD}代码覆盖率报告:{Colors.RESET}")
+        cov.report()
+        
+        # 生成HTML覆盖率报告
+        reports_dir = os.path.join(parent_dir, 'reports', 'coverage')
+        os.makedirs(reports_dir, exist_ok=True)
+        cov.html_report(directory=reports_dir)
+        
+        # 记录覆盖率报告路径
+        report_path = os.path.join(reports_dir, 'index.html')
+        print(f"\n{Colors.INFO}详细HTML覆盖率报告已生成: {report_path}{Colors.RESET}\n")
+        logger.info(f"详细HTML覆盖率报告已生成: {report_path}")
     
     # 日志记录测试结果摘要
     logger.info(f"测试完成: 运行了 {result.testsRun} 个测试")
@@ -200,5 +275,19 @@ def run_tests():
     return result.wasSuccessful()
 
 if __name__ == "__main__":
-    success = run_tests()
+    import argparse
+    
+    # 解析命令行参数
+    parser = argparse.ArgumentParser(description='运行Story Factory测试套件')
+    parser.add_argument('--coverage', action='store_true', help='启用代码覆盖率测试')
+    parser.add_argument('--verbose', action='store_true', help='显示详细输出')
+    
+    args = parser.parse_args()
+    
+    # 调整日志级别
+    if args.verbose:
+        logging.getLogger('story_factory_tests').setLevel(logging.DEBUG)
+    
+    # 运行测试
+    success = run_tests(with_coverage=args.coverage)
     sys.exit(0 if success else 1) 
