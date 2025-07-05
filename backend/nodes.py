@@ -1,21 +1,6 @@
-initial_nodes = [
-    {
-        "id": "1",
-        "type": "start",
-        "data": {"label": "start Node"},
-        "position": {"x": 0, "y": 0},
-        "sourcePosition": "right",
-    },
-    {
-        "id": "2",
-        "type": "end",
-        "data": {"label": "end Node"},
-        "position": {"x": 250, "y": -150},
-        "sourcePosition": "right",
-        "targetPosition": "left",
-    },
-]
+# 为了向后兼容，使用新创建的models和database
+from backend.models import initial_nodes, initial_edges
+from backend.database import get_all_nodes, get_all_edges
 
-initial_edges = [
-    {"id": "e1-2", "source": "1", "target": "2"},
-]
+# 导出这些变量和函数以保持向后兼容
+__all__ = ['initial_nodes', 'initial_edges', 'get_all_nodes', 'get_all_edges']

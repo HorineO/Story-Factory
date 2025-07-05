@@ -1,119 +1,84 @@
 from flask import Blueprint, jsonify, request
-from backend.nodes import initial_nodes, initial_edges
-import uuid
+from flask_socketio import emit
+from backend.services import NodeService, EdgeService, GenerationService
 from backend.extensions import socketio
-from backend.api_generate import Generator
 
 api_bp = Blueprint("api", __name__)
 
+# 实例化服务
+node_service = NodeService()
+edge_service = EdgeService()
+generation_service = GenerationService()
 
+
+# 节点相关路由
 @api_bp.route("/nodes", methods=["GET"])
 def get_nodes():
-    return jsonify(initial_nodes)
+    """获取所有节点"""
+    return jsonify(node_service.get_all_nodes())
 
 
 @api_bp.route("/nodes", methods=["POST"])
 def create_node():
-    global initial_nodes
+    """创建新节点"""
     node_data = request.get_json()
-    new_node = {
-        "id": str(uuid.uuid4()),
-        "type": node_data.get("type", "default"),
-        "data": (
-            node_data.get("data", {})
-            if node_data.get("type") != "text"
-            else {
-                "label": node_data.get("data", {}).get("label", "Text Node"),
-                "text": "",
-            }
-        ),
-        "position": node_data.get("position", {"x": 0, "y": 0}),
-        "sourcePosition": node_data.get("sourcePosition"),
-        "targetPosition": node_data.get("targetPosition"),
-    }
-    initial_nodes.append(new_node)
-    socketio.emit("nodes_update", {"nodes": initial_nodes})
-    return jsonify(new_node), 201
+    try:
+        new_node = node_service.create_node(node_data)
+        socketio.emit("nodes_update", {"nodes": node_service.get_all_nodes()})
+        return jsonify(new_node), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 
 @api_bp.route("/nodes/<id>", methods=["DELETE"])
 def delete_node(id):
-    global initial_nodes
-    initial_nodes = [node for node in initial_nodes if node["id"] != id]
-    socketio.emit("nodes_update", {"nodes": initial_nodes})
-    return jsonify({"message": f"Node {id} deleted"}), 200
+    """删除节点"""
+    if node_service.delete_node(id):
+        socketio.emit("nodes_update", {"nodes": node_service.get_all_nodes()})
+        return jsonify({"message": f"Node {id} deleted"}), 200
+    return jsonify({"error": f"Node {id} not found"}), 404
 
 
 @api_bp.route("/nodes/<id>", methods=["PUT"])
 def update_node(id):
-    global initial_nodes
+    """更新节点"""
     node_data = request.get_json()
-    for i, node in enumerate(initial_nodes):
-        if node["id"] == id:
-            initial_nodes[i]["type"] = node_data.get("type", node["type"])
-            initial_nodes[i]["data"] = node_data.get("data", node["data"])
-            initial_nodes[i]["position"] = node_data.get("position", node["position"])
-            socketio.emit("nodes_update", {"nodes": initial_nodes})
-            return jsonify(initial_nodes[i]), 200
-    return jsonify({"message": f"Node {id} not found"}), 404
+    updated_node = node_service.update_node(id, node_data)
+    if updated_node:
+        socketio.emit("nodes_update", {"nodes": node_service.get_all_nodes()})
+        return jsonify(updated_node), 200
+    return jsonify({"error": f"Node {id} not found"}), 404
 
 
 @api_bp.route("/nodes/<id>/text", methods=["PUT"])
 def update_node_text(id):
-    global initial_nodes
+    """更新节点文本内容"""
     text_data = request.get_json()
     new_text = text_data.get("text", "")
-    for i, node in enumerate(initial_nodes):
-        if node["id"] == id:
-            initial_nodes[i]["data"]["text"] = new_text
-            socketio.emit("nodes_update", {"nodes": initial_nodes})
-            return jsonify(initial_nodes[i]), 200
-    return jsonify({"message": f"Node {id} not found"}), 404
+    updated_node = node_service.update_node_text(id, new_text)
+    if updated_node:
+        socketio.emit("nodes_update", {"nodes": node_service.get_all_nodes()})
+        return jsonify(updated_node), 200
+    return jsonify({"error": f"Node {id} not found"}), 404
 
 
+# 边相关路由
 @api_bp.route("/edges", methods=["GET"])
 def get_edges():
-    return jsonify(initial_edges)
+    """获取所有边"""
+    return jsonify(edge_service.get_all_edges())
 
 
 @api_bp.route("/edges", methods=["POST"])
 def create_edge():
+    """创建新边"""
     try:
-        global initial_edges
         edge_data = request.get_json()
-        new_edge = {
-            "id": str(uuid.uuid4()),
-            "source": edge_data["source"],
-            "target": edge_data["target"],
-            "sourceHandle": edge_data.get("sourceHandle"),
-            "targetHandle": edge_data.get("targetHandle"),
-            "type": edge_data.get("type"),
-            "data": edge_data.get("data", {}),
-            "animated": edge_data.get("animated", False),
-            "selected": edge_data.get("selected", False),
-            "label": edge_data.get("label"),
-            "labelStyle": edge_data.get("labelStyle", {}),
-            "labelShowBg": edge_data.get("labelShowBg", False),
-            "labelBgStyle": edge_data.get("labelBgStyle", {}),
-            "labelBgPadding": edge_data.get("labelBgPadding", [2, 4]),
-            "labelBgBorderRadius": edge_data.get("labelBgBorderRadius", 2),
-            "style": edge_data.get("style", {}),
-            "className": edge_data.get("className"),
-            "zIndex": edge_data.get("zIndex"),
-            "ariaLabel": edge_data.get("ariaLabel"),
-            "focusable": edge_data.get("focusable", True),
-            "deletable": edge_data.get("deletable", True),
-            "updatable": edge_data.get("updatable", True),
-            "selected": edge_data.get("selected", False),
-            "hidden": edge_data.get("hidden", False),
-        }
-        if "markerEnd" in edge_data:
-            new_edge["markerEnd"] = edge_data.get("markerEnd")
-        if "markerStart" in edge_data:
-            new_edge["markerStart"] = edge_data.get("markerStart")
-        initial_edges.append(new_edge)
-        socketio.emit("edges_update", {"edges": initial_edges})
+        new_edge = edge_service.create_edge(edge_data)
+        socketio.emit("edges_update", {"edges": edge_service.get_all_edges()})
         return jsonify(new_edge), 201
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
     except Exception as e:
         print(f"Error in create_edge: {e}")
         return jsonify({"error": str(e)}), 500
@@ -121,42 +86,42 @@ def create_edge():
 
 @api_bp.route("/edges/<id>", methods=["PUT"])
 def update_edge(id):
-    global initial_edges
+    """更新边"""
     edge_data = request.get_json()
-    for i, edge in enumerate(initial_edges):
-        if edge["id"] == id:
-            initial_edges[i].update(edge_data)
-            return jsonify(initial_edges[i]), 200
-    return jsonify({"message": f"Edge {id} not found"}), 404
+    updated_edge = edge_service.update_edge(id, edge_data)
+    if updated_edge:
+        return jsonify(updated_edge), 200
+    return jsonify({"error": f"Edge {id} not found"}), 404
 
 
 @api_bp.route("/edges/<id>", methods=["DELETE"])
 def delete_edge(id):
-    global initial_edges
-    initial_edges = [edge for edge in initial_edges if edge["id"] != id]
-    return jsonify({"message": f"Edge {id} deleted"}), 200
+    """删除边"""
+    if edge_service.delete_edge(id):
+        return jsonify({"message": f"Edge {id} deleted"}), 200
+    return jsonify({"error": f"Edge {id} not found"}), 404
 
 
 @api_bp.route("/edges/related_to/<id>", methods=["DELETE"])
 def delete_related_edges(id):
-    global initial_edges
-    initial_edges = [
-        edge for edge in initial_edges if edge["source"] != id and edge["target"] != id
-    ]
-    socketio.emit("edges_update", {"edges": initial_edges})
-    return jsonify({"message": f"Edges related to node {id} deleted"}), 200
+    """删除与节点相关的所有边"""
+    if edge_service.delete_related_to_node(id):
+        socketio.emit("edges_update", {"edges": edge_service.get_all_edges()})
+        return jsonify({"message": f"Edges related to node {id} deleted"}), 200
+    return jsonify({"message": "No edges were deleted"}), 200
 
 
+# 生成相关路由
 @api_bp.route("/generate", methods=["POST"])
 def generate_text():
+    """生成文本"""
     try:
         data = request.get_json()
         user_content = data.get("user_content")
         if not user_content:
             return jsonify({"error": "user_content is required"}), 400
 
-        generator = Generator()
-        generated_text = generator.generate_with_default_messages(user_content)
+        generated_text = generation_service.generate_text(user_content)
         return jsonify({"generated_text": generated_text}), 200
     except Exception as e:
         print(f"Error in generate_text: {e}")
@@ -165,69 +130,43 @@ def generate_text():
 
 @api_bp.route("/generate/basic_straight", methods=["POST"])
 def generate_text_basic_straight():
+    """从连接节点生成文本"""
     try:
         data = request.get_json()
         node_id = data.get("nodeId")
         if not node_id:
             return jsonify({"error": "nodeId is required"}), 400
 
-        # 查找连接到当前节点的边
-        related_edge = next(
-            (edge for edge in initial_edges if edge["target"] == node_id), None
-        )
-        if not related_edge:
+        generated_text, target_id, source_id = generation_service.generate_text_from_connected_node(node_id)
+        
+        if not generated_text:
             return jsonify({"error": "No connected source node found"}), 404
-
-        # 查找源文本节点
-        source_node = next(
-            (
-                node
-                for node in initial_nodes
-                if node["id"] == related_edge["source"] and node["type"] == "text"
-            ),
-            None,
-        )
-        if not source_node:
-            return jsonify({"error": "No connected text node found"}), 404
-
-        generate_text = Generator().generate_with_default_messages(
-            source_node["data"].get("text", "")
-        )
-
-        return jsonify(
-            {
-                "generated_text": generate_text,
-                "node_id": node_id,
-                "source_node_id": related_edge["source"],
-            }
-        )
+            
+        return jsonify({
+            "generated_text": generated_text,
+            "node_id": target_id,
+            "source_node_id": source_id
+        })
     except Exception as e:
         print(f"Error in generate_text_basic_straight: {e}")
         return jsonify({"error": str(e)}), 500
 
 
+# Socket.IO事件处理
 @socketio.on("node_move")
 def handle_node_move(data):
-    global initial_nodes
+    """处理节点移动事件"""
     node_id = data.get("nodeId")
     x = data.get("x")
     y = data.get("y")
-    for i, node in enumerate(initial_nodes):
-        if node["id"] == node_id:
-            initial_nodes[i]["position"] = {"x": x, "y": y}
-            socketio.emit(
-                "node_updated", {"nodeId": node_id, "x": x, "y": y}, include_self=False
-            )
-            break
+    if node_service.update_node_position(node_id, x, y):
+        socketio.emit("node_updated", {"nodeId": node_id, "x": x, "y": y}, include_self=False)
 
 
 @socketio.on("node_status_update")
 def handle_node_status_update(data):
-    global initial_nodes
+    """处理节点状态更新事件"""
     node_id = data.get("nodeId")
     status = data.get("status")
-    for node in initial_nodes:
-        if node["id"] == node_id:
-            node["data"]["status"] = status
-            socketio.emit("node_status_push", {"nodeId": node_id, "status": status})
-            break
+    if node_service.update_node_status(node_id, status):
+        socketio.emit("node_status_push", {"nodeId": node_id, "status": status})
