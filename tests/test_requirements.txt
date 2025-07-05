@@ -1,0 +1,23 @@
+# 基本测试依赖
+pytest==7.4.0
+pytest-cov==4.1.0
+requests==2.31.0
+unittest2==1.1.0
+
+# 性能测试依赖
+matplotlib==3.7.2
+tqdm==4.65.0
+
+# 集成测试依赖（可选）
+selenium==4.11.2
+webdriver-manager==4.0.0
+
+# HTTP和网络工具
+requests-mock==1.11.0
+httpx==0.24.1
+
+# 测试数据生成
+faker==19.3.0
+
+# 模拟和打桩工具
+mock==5.1.0 
