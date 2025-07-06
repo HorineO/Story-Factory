@@ -135,7 +135,6 @@ const BaseNodeTemplate = ({
     // 渲染连接点
     const renderHandles = (handles, side) => {
         const layers = side === 'left' ? validatedData.leftLayers : validatedData.rightLayers;
-        const maxLayers = Math.max(layers.length, 1);
 
         return handles.map((handle, index) => {
             // 计算连接点的垂直位置，与内容层对齐
