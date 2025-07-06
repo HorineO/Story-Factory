@@ -3,6 +3,9 @@ from backend.database import NodeDatabase, EdgeDatabase
 from backend.models import Node, Edge
 from backend.api_generate import Generator
 
+# 移除循环导入
+# from backend.execution_engine import WorkflowEngine, NodeStatus
+
 
 class NodeService:
     """节点服务类"""
@@ -146,3 +149,24 @@ class GenerationService:
         generated_text = self.generator.generate_with_default_messages(text)
         
         return generated_text, node_id, source_id 
+
+
+class WorkflowExecutionService:
+    """工作流执行服务类"""
+    
+    def __init__(self):
+        # 延迟导入，避免循环依赖
+        from backend.execution_engine import WorkflowEngine
+        self.workflow_engine = WorkflowEngine()
+    
+    def execute_workflow(self, start_node_id: Optional[str] = None) -> Dict[str, Any]:
+        """执行工作流"""
+        return self.workflow_engine.execute_workflow(start_node_id)
+    
+    def execute_node(self, node_id: str, input_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """执行单个节点"""
+        return self.workflow_engine.execute_single_node(node_id, input_data)
+    
+    def get_execution_status(self) -> Dict[str, Any]:
+        """获取执行状态"""
+        return self.workflow_engine.get_execution_status() 
