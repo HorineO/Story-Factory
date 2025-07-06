@@ -2,37 +2,35 @@ import React from 'react';
 import BaseNodeTemplate from './BaseNodeTemplate';
 
 /**
- * 开始节点组件
- * 使用BaseNodeTemplate规范化实现
+ * 开始节点组件 - 使用工厂模式配置
+ * 连接点配置统一在NodeFactory中管理
  */
 const StartNode = ({ data }) => {
-    // 定义连接点配置 - 开始节点只有输出
-    const handles = [
-        { type: 'source', position: 'right', id: 'output' }
-    ];
-
     // 自定义头部内容
     const customHeader = (
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>▶️</span>
-            <span>{data.label || '开始'}</span>
+            <span>{data.label || '开始节点'}</span>
         </div>
     );
 
-    // 自定义主体内容 - 只显示简短的描述文字
-    const customBody = (
-        <div className="node-text">
-            开始节点
-        </div>
-    );
+    // 准备输出内容数据 - 开始节点只有输出
+    const rightLayers = data.rightLayers || [
+        { label: '开始输出', content: data.startOutput || '开始输出' }
+    ];
+
+    // 合并数据
+    const nodeData = {
+        ...data,
+        leftLayers: [], // 开始节点没有输入
+        rightLayers
+    };
 
     return (
         <BaseNodeTemplate
-            data={data}
+            data={nodeData}
             nodeType="start-node"
-            handles={handles}
             customHeader={customHeader}
-            customBody={customBody}
         />
     );
 };

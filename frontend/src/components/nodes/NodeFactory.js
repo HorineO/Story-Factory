@@ -25,7 +25,6 @@ class NodeFactory {
         'text': {
             nodeType: 'text-node',
             handles: [
-                { type: 'target', position: 'left', id: 'input' },
                 { type: 'source', position: 'right', id: 'output' }
             ],
             icon: '📝',

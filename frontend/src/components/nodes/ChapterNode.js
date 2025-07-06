@@ -2,38 +2,39 @@ import React from 'react';
 import BaseNodeTemplate from './BaseNodeTemplate';
 
 /**
- * 章节节点组件
- * 使用BaseNodeTemplate规范化实现
+ * 章节节点组件 - 使用工厂模式配置
+ * 连接点配置统一在NodeFactory中管理
  */
 const ChapterNode = ({ data }) => {
-    // 定义连接点配置 - 章节节点有输入和输出
-    const handles = [
-        { type: 'target', position: 'left', id: 'input' },
-        { type: 'source', position: 'right', id: 'output' }
-    ];
-
     // 自定义头部内容
     const customHeader = (
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>📖</span>
-            <span>{data.label || '章节'}</span>
+            <span>{data.label || '章节节点'}</span>
         </div>
     );
 
-    // 自定义主体内容 - 只显示简短的描述文字
-    const customBody = (
-        <div className="node-text">
-            章节内容
-        </div>
-    );
+    // 准备左右两侧的内容层数据
+    const leftLayers = data.leftLayers || [
+        { label: '章节输入', content: data.inputContent || '输入章节内容' }
+    ];
+
+    const rightLayers = data.rightLayers || [
+        { label: '章节输出', content: data.outputContent || '输出章节内容' }
+    ];
+
+    // 合并数据
+    const nodeData = {
+        ...data,
+        leftLayers,
+        rightLayers
+    };
 
     return (
         <BaseNodeTemplate
-            data={data}
+            data={nodeData}
             nodeType="chapter-node"
-            handles={handles}
             customHeader={customHeader}
-            customBody={customBody}
         />
     );
 };

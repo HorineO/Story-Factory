@@ -2,38 +2,39 @@ import React from 'react';
 import BaseNodeTemplate from './BaseNodeTemplate';
 
 /**
- * 文本节点组件
- * 使用BaseNodeTemplate规范化实现
+ * 文本节点组件 - 使用工厂模式配置
+ * 连接点配置统一在NodeFactory中管理
  */
 const TextNode = ({ data }) => {
-    // 定义连接点配置 - 文本节点有输入和输出
-    const handles = [
-        { type: 'target', position: 'left', id: 'input' },
-        { type: 'source', position: 'right', id: 'output' }
-    ];
-
     // 自定义头部内容
     const customHeader = (
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>📝</span>
-            <span>{data.label || '文本'}</span>
+            <span>{data.label || '文本节点'}</span>
         </div>
     );
 
-    // 自定义主体内容 - 只显示简短的描述文字
-    const customBody = (
-        <div className="node-text">
-            文本内容
-        </div>
-    );
+    // 准备左右两侧的内容层数据
+    const leftLayers = data.leftLayers || [
+        { label: '文本输入', content: data.inputText || '输入文本内容' }
+    ];
+
+    const rightLayers = data.rightLayers || [
+        { label: '文本输出', content: data.outputText || '输出文本内容' }
+    ];
+
+    // 合并数据
+    const nodeData = {
+        ...data,
+        leftLayers,
+        rightLayers
+    };
 
     return (
         <BaseNodeTemplate
-            data={data}
+            data={nodeData}
             nodeType="text-node"
-            handles={handles}
             customHeader={customHeader}
-            customBody={customBody}
         />
     );
 };

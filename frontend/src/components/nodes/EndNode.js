@@ -2,37 +2,35 @@ import React from 'react';
 import BaseNodeTemplate from './BaseNodeTemplate';
 
 /**
- * 结束节点组件
- * 使用BaseNodeTemplate规范化实现
+ * 结束节点组件 - 使用工厂模式配置
+ * 连接点配置统一在NodeFactory中管理
  */
 const EndNode = ({ data }) => {
-    // 定义连接点配置 - 结束节点只有输入
-    const handles = [
-        { type: 'target', position: 'left', id: 'input' }
-    ];
-
     // 自定义头部内容
     const customHeader = (
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>⏹️</span>
-            <span>{data.label || '结束'}</span>
+            <span>{data.label || '结束节点'}</span>
         </div>
     );
 
-    // 自定义主体内容 - 只显示简短的描述文字
-    const customBody = (
-        <div className="node-text">
-            结束节点
-        </div>
-    );
+    // 准备输入内容数据 - 结束节点只有输入
+    const leftLayers = data.leftLayers || [
+        { label: '结束输入', content: data.endInput || '结束输入' }
+    ];
+
+    // 合并数据
+    const nodeData = {
+        ...data,
+        leftLayers,
+        rightLayers: [] // 结束节点没有输出
+    };
 
     return (
         <BaseNodeTemplate
-            data={data}
+            data={nodeData}
             nodeType="end-node"
-            handles={handles}
             customHeader={customHeader}
-            customBody={customBody}
         />
     );
 };
