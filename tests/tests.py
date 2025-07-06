@@ -130,6 +130,154 @@ class TestModels(unittest.TestCase):
         self.assertEqual(edge_with_all_props["style"]["stroke"], "red")
         self.assertEqual(edge_with_all_props["markerEnd"], "arrow")
 
+    def test_node_create_with_extreme_values(self):
+        """测试使用极端值创建节点"""
+        # 测试极大位置值
+        node_with_large_position = Node.create(
+            node_type="test",
+            data={"label": "Large Position Node"},
+            position={"x": 999999, "y": 999999}
+        )
+        self.assertEqual(node_with_large_position["position"]["x"], 999999)
+        self.assertEqual(node_with_large_position["position"]["y"], 999999)
+        
+        # 测试负值位置
+        node_with_negative_position = Node.create(
+            node_type="test",
+            data={"label": "Negative Position Node"},
+            position={"x": -500, "y": -500}
+        )
+        self.assertEqual(node_with_negative_position["position"]["x"], -500)
+        self.assertEqual(node_with_negative_position["position"]["y"], -500)
+        
+        # 测试非常长的节点类型
+        long_type = "a" * 1000  # 1000个字符
+        node_with_long_type = Node.create(
+            node_type=long_type,
+            data={"label": "Long Type Node"},
+            position={"x": 10, "y": 10}
+        )
+        self.assertEqual(node_with_long_type["type"], long_type)
+        
+        # 测试非常长的标签
+        long_label = "a" * 1000  # 1000个字符
+        node_with_long_label = Node.create(
+            node_type="test",
+            data={"label": long_label},
+            position={"x": 10, "y": 10}
+        )
+        self.assertEqual(node_with_long_label["data"]["label"], long_label)
+        
+        # 测试包含特殊字符的节点ID
+        special_id = "test-id!@#$%^&*()_+"
+        node_with_special_id = Node.create(
+            node_type="test",
+            data={"label": "Special ID Node"},
+            position={"x": 10, "y": 10},
+            node_id=special_id
+        )
+        self.assertEqual(node_with_special_id["id"], special_id)
+    
+    def test_edge_create_with_extreme_values(self):
+        """测试使用极端值创建边"""
+        # 测试非常长的源和目标ID
+        long_id = "a" * 1000  # 1000个字符
+        edge_with_long_ids = Edge.create(
+            source=long_id,
+            target=long_id
+        )
+        self.assertEqual(edge_with_long_ids["source"], long_id)
+        self.assertEqual(edge_with_long_ids["target"], long_id)
+        
+        # 测试特殊字符作为标签
+        special_label = "!@#$%^&*()_+<>?:\"{}|"
+        edge_with_special_label = Edge.create(
+            source="node1",
+            target="node2",
+            edge_data={"label": special_label}
+        )
+        self.assertEqual(edge_with_special_label["label"], special_label)
+        
+        # 测试复杂的样式数据
+        edge_with_style = Edge.create(
+            source="node1",
+            target="node2",
+            edge_data={
+                "style": {"stroke": "red", "strokeWidth": 2},
+                "markerEnd": "arrow"
+            }
+        )
+        self.assertEqual(edge_with_style["style"]["stroke"], "red")
+        self.assertEqual(edge_with_style["style"]["strokeWidth"], 2)
+        self.assertEqual(edge_with_style["markerEnd"], "arrow")
+        
+        # 测试多种属性组合
+        edge_with_multiple_props = Edge.create(
+            source="node1",
+            target="node2",
+            edge_data={
+                "label": "Multi-prop Edge",
+                "animated": True,
+                "type": "custom",
+                "zIndex": 999
+            }
+        )
+        self.assertEqual(edge_with_multiple_props["label"], "Multi-prop Edge")
+        self.assertTrue(edge_with_multiple_props["animated"])
+        self.assertEqual(edge_with_multiple_props["type"], "custom")
+        self.assertEqual(edge_with_multiple_props["zIndex"], 999)
+    
+    def test_node_create_with_unicode_characters(self):
+        """测试使用Unicode字符创建节点"""
+        # 测试中文
+        chinese_label = "测试节点"
+        node_with_chinese = Node.create(
+            node_type="test",
+            data={"label": chinese_label},
+            position={"x": 10, "y": 10}
+        )
+        self.assertEqual(node_with_chinese["data"]["label"], chinese_label)
+        
+        # 测试表情符号
+        emoji_label = "😀👍🚀"
+        node_with_emoji = Node.create(
+            node_type="test",
+            data={"label": emoji_label},
+            position={"x": 10, "y": 10}
+        )
+        self.assertEqual(node_with_emoji["data"]["label"], emoji_label)
+        
+        # 测试特殊Unicode字符
+        special_unicode = "∑π√∞♠♣♥♦"
+        node_with_special_unicode = Node.create(
+            node_type="test",
+            data={"label": special_unicode},
+            position={"x": 10, "y": 10}
+        )
+        self.assertEqual(node_with_special_unicode["data"]["label"], special_unicode)
+    
+    def test_node_create_with_special_types(self):
+        """测试使用特殊类型创建节点"""
+        # 测试所有可能的节点类型
+        node_types = ["start", "end", "text", "input", "output", "chapter", "generate", "default"]
+        for node_type in node_types:
+            node = Node.create(
+                node_type=node_type,
+                data={"label": f"{node_type.capitalize()} Node"},
+                position={"x": 10, "y": 10}
+            )
+            self.assertEqual(node["type"], node_type)
+            self.assertEqual(node["data"]["label"], f"{node_type.capitalize()} Node")
+        
+        # 测试自定义节点类型
+        custom_type = "custom_node_type"
+        node = Node.create(
+            node_type=custom_type,
+            data={"label": "Custom Node"},
+            position={"x": 10, "y": 10}
+        )
+        self.assertEqual(node["type"], custom_type)
+
 
 class TestDatabase(unittest.TestCase):
     """测试数据库类"""

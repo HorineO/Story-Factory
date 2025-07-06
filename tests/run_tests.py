@@ -214,6 +214,25 @@ def run_tests(with_coverage=False):
         TestGenerationService, TestAPIEndpoints, TestAPIIntegration
     )
     
+    try:
+        # 尝试导入新增的安全测试和前端测试
+        from tests.security_test import SecurityTest
+        from tests.frontend_test import FrontendTest
+        has_extra_tests = True
+        logger.info("找到额外的测试类: SecurityTest, FrontendTest")
+    except ImportError:
+        has_extra_tests = False
+        logger.warning("未找到安全测试或前端测试模块，将仅运行核心测试")
+    
+    try:
+        # 尝试导入复杂场景测试
+        from tests.complex_scenario_test import ComplexScenarioTest
+        has_scenario_test = True
+        logger.info("找到复杂场景测试类: ComplexScenarioTest")
+    except ImportError:
+        has_scenario_test = False
+        logger.warning("未找到复杂场景测试模块，将不运行复杂场景测试")
+    
     # 创建测试加载器
     loader = unittest.TestLoader()
     
@@ -229,6 +248,14 @@ def run_tests(with_coverage=False):
         TestAPIEndpoints,
         TestAPIIntegration  # 新增的API集成测试
     ]
+    
+    # 如果额外测试可用，添加它们
+    if has_extra_tests:
+        test_classes.extend([SecurityTest, FrontendTest])
+        
+    # 如果复杂场景测试可用，添加它
+    if has_scenario_test:
+        test_classes.append(ComplexScenarioTest)
     
     for test_class in test_classes:
         suite.addTest(loader.loadTestsFromTestCase(test_class))
