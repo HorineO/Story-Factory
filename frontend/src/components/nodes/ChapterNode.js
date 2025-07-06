@@ -1,20 +1,40 @@
 import React from 'react';
-import { Handle, Position } from 'reactflow';
-import './NodeStyles.css';
+import BaseNodeTemplate from './BaseNodeTemplate';
 
+/**
+ * 章节节点组件
+ * 使用BaseNodeTemplate规范化实现
+ */
 const ChapterNode = ({ data }) => {
-    return (
-        <div className="node-base chapter-node">
-            <Handle type="target" position={Position.Left} className="react-flow__handle-left" />
-            <div className="node-header">
-                {data.label}
-            </div>
-            <div className="node-body">
-                {/* Node-specific content can go here */}
-                Chapter Node Content
-            </div>
-            <Handle type="source" position={Position.Right} className="react-flow__handle-right" />
+    // 定义连接点配置 - 章节节点有输入和输出
+    const handles = [
+        { type: 'target', position: 'left', id: 'input' },
+        { type: 'source', position: 'right', id: 'output' }
+    ];
+
+    // 自定义头部内容
+    const customHeader = (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>📖</span>
+            <span>{data.label || '章节'}</span>
         </div>
+    );
+
+    // 自定义主体内容
+    const customBody = (
+        <div className="node-text">
+            {data.content || data.text || '章节内容'}
+        </div>
+    );
+
+    return (
+        <BaseNodeTemplate
+            data={data}
+            nodeType="chapter-node"
+            handles={handles}
+            customHeader={customHeader}
+            customBody={customBody}
+        />
     );
 };
 

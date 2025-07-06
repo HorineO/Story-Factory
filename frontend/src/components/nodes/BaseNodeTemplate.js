@@ -22,7 +22,7 @@ import './NodeStyles.css';
  * @param {string} props.additionalClasses - 额外的CSS类名
  */
 const BaseNodeTemplate = ({
-    data,
+    data = {},
     nodeType = 'text-node',
     handles = [],
     showHeader = true,
@@ -31,34 +31,52 @@ const BaseNodeTemplate = ({
     customBody,
     additionalClasses = ''
 }) => {
+    // 数据验证和默认值处理
+    const validatedData = {
+        label: data?.label || '节点',
+        content: data?.content || data?.text || '节点内容',
+        ...data
+    };
+
+    // 验证nodeType
+    const validNodeTypes = ['text-node', 'chapter-node', 'generate-node', 'start-node', 'end-node'];
+    const validatedNodeType = validNodeTypes.includes(nodeType) ? nodeType : 'text-node';
+
     // 获取Position枚举
     const getPosition = (pos) => {
-        switch (pos) {
-            case 'top': return Position.Top;
-            case 'right': return Position.Right;
-            case 'bottom': return Position.Bottom;
-            case 'left': return Position.Left;
-            default: return Position.Right;
-        }
+        const positionMap = {
+            'top': Position.Top,
+            'right': Position.Right,
+            'bottom': Position.Bottom,
+            'left': Position.Left
+        };
+        return positionMap[pos] || Position.Right;
     };
 
     // 获取连接点CSS类名
     const getHandleClass = (pos) => {
-        switch (pos) {
-            case 'top': return 'react-flow__handle-top';
-            case 'right': return 'react-flow__handle-right';
-            case 'bottom': return 'react-flow__handle-bottom';
-            case 'left': return 'react-flow__handle-left';
-            default: return 'react-flow__handle-right';
-        }
+        const classMap = {
+            'top': 'react-flow__handle-top',
+            'right': 'react-flow__handle-right',
+            'bottom': 'react-flow__handle-bottom',
+            'left': 'react-flow__handle-left'
+        };
+        return classMap[pos] || 'react-flow__handle-right';
     };
 
+    // 验证handles配置
+    const validatedHandles = handles.filter(handle => {
+        const isValidType = ['source', 'target'].includes(handle.type);
+        const isValidPosition = ['top', 'right', 'bottom', 'left'].includes(handle.position);
+        return isValidType && isValidPosition;
+    });
+
     return (
-        <div className={`node-base ${nodeType} ${additionalClasses}`}>
+        <div className={`node-base ${validatedNodeType} ${additionalClasses}`}>
             {/* 渲染连接点 */}
-            {handles.map((handle, index) => (
+            {validatedHandles.map((handle, index) => (
                 <Handle
-                    key={handle.id || index}
+                    key={handle.id || `${handle.type}-${handle.position}-${index}`}
                     type={handle.type}
                     position={getPosition(handle.position)}
                     className={getHandleClass(handle.position)}
@@ -69,7 +87,7 @@ const BaseNodeTemplate = ({
             {/* 渲染头部 */}
             {showHeader && (
                 <div className="node-header">
-                    {customHeader || data.label || 'Node'}
+                    {customHeader || validatedData.label}
                 </div>
             )}
 
@@ -78,7 +96,7 @@ const BaseNodeTemplate = ({
                 <div className="node-body">
                     {customBody || (
                         <div className="node-text">
-                            {data.content || data.text || 'Node content'}
+                            {validatedData.content}
                         </div>
                     )}
                 </div>
