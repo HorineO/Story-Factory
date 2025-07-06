@@ -111,44 +111,7 @@
     background-color: var(--node-header-bg);
 }
 
-/* 输入节点 */
-.input-node {
-    --node-border-color: #fd7e14;
-    --node-header-bg: #fd7e14;
-    --node-type: 'input';
-    padding: 8px;
-    text-align: center;
-}
 
-.input-node .node-header {
-    background-color: var(--node-header-bg);
-}
-
-/* 输出节点 */
-.output-node {
-    --node-border-color: #20c997;
-    --node-header-bg: #20c997;
-    --node-type: 'output';
-    padding: 8px;
-    text-align: center;
-}
-
-.output-node .node-header {
-    background-color: var(--node-header-bg);
-}
-
-/* 默认节点 */
-.default-node {
-    --node-border-color: #6c757d;
-    --node-header-bg: #6c757d;
-    --node-type: 'default';
-    padding: 8px;
-    text-align: center;
-}
-
-.default-node .node-header {
-    background-color: var(--node-header-bg);
-}
 
 /* ========================================
  * 应用边框颜色到所有节点类型
@@ -157,10 +120,7 @@
 .chapter-node,
 .generate-node,
 .start-node,
-.end-node,
-.input-node,
-.output-node,
-.default-node {
+.end-node {
     border-color: var(--node-border-color);
 }
 

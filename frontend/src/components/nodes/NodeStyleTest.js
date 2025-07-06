@@ -4,9 +4,6 @@ import ChapterNode from './ChapterNode';
 import GenerateNode from './GenerateNode';
 import StartNode from './StartNode';
 import EndNode from './EndNode';
-import InputNode from './InputNode';
-import OutputNode from './OutputNode';
-import DefaultNode from './DefaultNode';
 import ExampleCustomNode from './ExampleCustomNode';
 import './NodeStyles.css';
 
@@ -21,9 +18,6 @@ const NodeStyleTest = () => {
         generate: { label: 'Generate Node', content: 'AI generation node' },
         start: { label: 'Start Node', content: 'Story beginning' },
         end: { label: 'End Node', content: 'Story ending' },
-        input: { label: 'Input Node', text: 'User input data' },
-        output: { label: 'Output Node', text: 'Generated output' },
-        default: { label: 'Default Node', content: 'Default content' },
         custom: { label: 'Custom Node', content: 'Custom content', status: 'active' }
     };
 
@@ -75,21 +69,6 @@ const NodeStyleTest = () => {
             <div style={nodeContainerStyle}>
                 <div style={labelStyle}>End Node</div>
                 <EndNode data={testData.end} />
-            </div>
-
-            <div style={nodeContainerStyle}>
-                <div style={labelStyle}>Input Node</div>
-                <InputNode data={testData.input} />
-            </div>
-
-            <div style={nodeContainerStyle}>
-                <div style={labelStyle}>Output Node</div>
-                <OutputNode data={testData.output} />
-            </div>
-
-            <div style={nodeContainerStyle}>
-                <div style={labelStyle}>Default Node</div>
-                <DefaultNode data={testData.default} />
             </div>
 
             <div style={nodeContainerStyle}>

@@ -38,16 +38,13 @@
 
 ## 现有节点类型
 
-| 节点类型   | 组件文件          | 颜色主题       | 描述         |
-| ---------- | ----------------- | -------------- | ------------ |
-| `default`  | `DefaultNode.js`  | 灰色 (#6c757d) | 默认节点类型 |
-| `text`     | `TextNode.js`     | 蓝色 (#17a2b8) | 文本节点     |
-| `chapter`  | `ChapterNode.js`  | 紫色 (#6f42c1) | 章节节点     |
-| `generate` | `GenerateNode.js` | 黄色 (#ffc107) | 生成节点     |
-| `start`    | `StartNode.js`    | 绿色 (#28a745) | 开始节点     |
-| `end`      | `EndNode.js`      | 红色 (#dc3545) | 结束节点     |
-| `input`    | `InputNode.js`    | 橙色 (#fd7e14) | 输入节点     |
-| `output`   | `OutputNode.js`   | 青色 (#20c997) | 输出节点     |
+| 节点类型   | 组件文件          | 颜色主题       | 描述     |
+| ---------- | ----------------- | -------------- | -------- |
+| `text`     | `TextNode.js`     | 蓝色 (#17a2b8) | 文本节点 |
+| `chapter`  | `ChapterNode.js`  | 紫色 (#6f42c1) | 章节节点 |
+| `generate` | `GenerateNode.js` | 黄色 (#ffc107) | 生成节点 |
+| `start`    | `StartNode.js`    | 绿色 (#28a745) | 开始节点 |
+| `end`      | `EndNode.js`      | 红色 (#dc3545) | 结束节点 |
 
 ## 创建新节点类型
 

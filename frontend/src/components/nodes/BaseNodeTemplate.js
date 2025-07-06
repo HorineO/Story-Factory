@@ -23,7 +23,7 @@ import './NodeStyles.css';
  */
 const BaseNodeTemplate = ({
     data,
-    nodeType = 'default-node',
+    nodeType = 'text-node',
     handles = [],
     showHeader = true,
     showBody = true,
