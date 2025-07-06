@@ -1,5 +1,6 @@
 import React from 'react';
 import { Handle, Position } from 'reactflow';
+import './NodeStyles.css';
 
 function StartNode({ data }) {
     return (
@@ -8,7 +9,7 @@ function StartNode({ data }) {
                 {data.label}
             </div>
             <div className="node-body">
-                <Handle type="source" position={Position.Right} />
+                <Handle type="source" position={Position.Right} className="react-flow__handle-right" />
                 <div>
                     <strong>{data.label}</strong>
                 </div>
