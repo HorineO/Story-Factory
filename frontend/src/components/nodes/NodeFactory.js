@@ -83,12 +83,45 @@ class NodeFactory {
             </div>
         );
 
-        // 创建自定义主体
-        const customBody = (
-            <div className="node-text">
-                {nodeData.content}
-            </div>
-        );
+        // 创建自定义主体 - 为生成节点和文本节点使用固定描述文字
+        let customBody;
+        if (type === 'start') {
+            customBody = (
+                <div className="node-text">
+                    开始节点
+                </div>
+            );
+        } else if (type === 'generate') {
+            customBody = (
+                <div className="node-text">
+                    生成内容
+                </div>
+            );
+        } else if (type === 'text') {
+            customBody = (
+                <div className="node-text">
+                    文本内容
+                </div>
+            );
+        } else if (type === 'chapter') {
+            customBody = (
+                <div className="node-text">
+                    章节内容
+                </div>
+            );
+        } else if (type === 'end') {
+            customBody = (
+                <div className="node-text">
+                    结束节点
+                </div>
+            );
+        } else {
+            customBody = (
+                <div className="node-text">
+                    {nodeData.content}
+                </div>
+            );
+        }
 
         return (
             <BaseNodeTemplate

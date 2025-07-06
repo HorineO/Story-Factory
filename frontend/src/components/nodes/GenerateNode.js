@@ -20,10 +20,10 @@ const GenerateNode = ({ data }) => {
         </div>
     );
 
-    // 自定义主体内容
+    // 自定义主体内容 - 只显示简短的描述文字
     const customBody = (
         <div className="node-text">
-            {data.content || data.text || '生成内容'}
+            生成内容
         </div>
     );
 

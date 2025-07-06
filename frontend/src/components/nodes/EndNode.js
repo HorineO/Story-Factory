@@ -19,10 +19,10 @@ const EndNode = ({ data }) => {
         </div>
     );
 
-    // 自定义主体内容
+    // 自定义主体内容 - 只显示简短的描述文字
     const customBody = (
         <div className="node-text">
-            {data.content || data.text || '结束节点'}
+            结束节点
         </div>
     );
 
