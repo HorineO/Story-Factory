@@ -1,18 +1,41 @@
 import React from 'react';
-import { Handle, Position } from 'reactflow';
-import './NodeStyles.css';
+import BaseNodeTemplate from './BaseNodeTemplate';
 
+/**
+ * 文本节点组件 - 使用工厂模式配置
+ * 连接点配置统一在NodeFactory中管理
+ */
 const TextNode = ({ data }) => {
-    return (
-        <div className="node-base text-node">
-            <div className="node-header">
-                {data.label}
-            </div>
-            <div className="node-body">
-                {data.text}
-            </div>
-            <Handle type="source" position={Position.Right} className="react-flow__handle-right" />
+    // 自定义头部内容
+    const customHeader = (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>📝</span>
+            <span>{data.label || '文本节点'}</span>
         </div>
+    );
+
+    // 准备左右两侧的内容层数据
+    const leftLayers = data.leftLayers || [
+        { label: '文本输入', content: data.inputText || '输入文本内容' }
+    ];
+
+    const rightLayers = data.rightLayers || [
+        { label: '文本输出', content: data.outputText || '输出文本内容' }
+    ];
+
+    // 合并数据
+    const nodeData = {
+        ...data,
+        leftLayers,
+        rightLayers
+    };
+
+    return (
+        <BaseNodeTemplate
+            data={nodeData}
+            nodeType="text-node"
+            customHeader={customHeader}
+        />
     );
 };
 

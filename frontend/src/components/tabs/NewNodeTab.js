@@ -2,31 +2,10 @@ import React, { useState } from 'react';
 import './NewNodeTab.css';
 
 const NewNodeTab = ({ onDragStart }) => {
-    const [isReactNodesCollapsed, setIsReactNodesCollapsed] = useState(true);
     const [isBasicNodesCollapsed, setIsBasicNodesCollapsed] = useState(false);
 
     return (
         <div>
-            <div
-                className="collapsible-header"
-                onClick={() => setIsReactNodesCollapsed(!isReactNodesCollapsed)}
-            >
-                React自带节点 {isReactNodesCollapsed ? '▼' : '▲'}
-            </div>
-            {!isReactNodesCollapsed && (
-                <div className="collapsible-content">
-                    <div className="dndnode" data-type="default" onDragStart={(event) => onDragStart(event, 'default')} draggable>
-                        默认节点
-                    </div>
-                    <div className="dndnode" data-type="input" onDragStart={(event) => onDragStart(event, 'input')} draggable>
-                        输入节点
-                    </div>
-                    <div className="dndnode" data-type="output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
-                        输出节点
-                    </div>
-                    {/* 可以添加更多类型的节点 */}
-                </div>
-            )}
             <div
                 className="collapsible-header"
                 onClick={() => setIsBasicNodesCollapsed(!isBasicNodesCollapsed)}

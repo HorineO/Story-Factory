@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_socketio import emit
-from backend.services import NodeService, EdgeService, GenerationService
+from backend.services import NodeService, EdgeService, GenerationService, WorkflowExecutionService
 from backend.extensions import socketio
 
 api_bp = Blueprint("api", __name__)
@@ -9,6 +9,7 @@ api_bp = Blueprint("api", __name__)
 node_service = NodeService()
 edge_service = EdgeService()
 generation_service = GenerationService()
+workflow_service = WorkflowExecutionService()
 
 
 # 节点相关路由
@@ -149,6 +150,94 @@ def generate_text_basic_straight():
         })
     except Exception as e:
         print(f"Error in generate_text_basic_straight: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@api_bp.route("/nodes/<node_id>/generate", methods=["POST"])
+def generate_from_node(node_id):
+    """从指定节点生成文本"""
+    try:
+        generated_text, target_id, source_id = generation_service.generate_text_from_connected_node(node_id)
+        
+        if not generated_text:
+            return jsonify({"error": "No connected source node found"}), 404
+            
+        # 更新目标节点的文本
+        node_service.update_node_text(node_id, generated_text)
+        
+        return jsonify({
+            "generated_text": generated_text,
+            "node_id": target_id,
+            "source_node_id": source_id
+        })
+    except Exception as e:
+        print(f"Error in generate_from_node: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# 工作流执行相关路由
+@api_bp.route("/workflow/execute", methods=["POST"])
+def execute_workflow():
+    """执行完整工作流"""
+    try:
+        data = request.get_json() or {}
+        start_node_id = data.get("start_node_id")
+        
+        result = workflow_service.execute_workflow(start_node_id)
+        
+        # 通知前端工作流执行完成
+        if result.get("success"):
+            socketio.emit("workflow_completed", {
+                "success": True,
+                "executed_nodes": list(result.get("executed_nodes", {}).keys())
+            })
+        else:
+            socketio.emit("workflow_error", {
+                "error": result.get("error", "Unknown error"),
+                "executed_nodes": list(result.get("executed_nodes", {}).keys())
+            })
+            
+        return jsonify(result), 200
+    except Exception as e:
+        print(f"Error in execute_workflow: {e}")
+        return jsonify({"error": str(e), "success": False}), 500
+
+
+@api_bp.route("/workflow/status", methods=["GET"])
+def get_workflow_status():
+    """获取工作流执行状态"""
+    try:
+        status = workflow_service.get_execution_status()
+        return jsonify(status), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@api_bp.route("/nodes/<node_id>/execute", methods=["POST"])
+def execute_node(node_id):
+    """执行单个节点"""
+    try:
+        data = request.get_json() or {}
+        input_data = data.get("input_data", {})
+        
+        result = workflow_service.execute_node(node_id, input_data)
+        
+        # 通知前端节点执行完成
+        if result.get("status") == "completed":
+            socketio.emit("node_executed", {
+                "node_id": node_id,
+                "success": True,
+                "output": result.get("output")
+            })
+        else:
+            socketio.emit("node_execution_error", {
+                "node_id": node_id,
+                "error": result.get("error", "Unknown error")
+            })
+            
+        return jsonify(result), 200
+    except Exception as e:
+        print(f"Error in execute_node: {e}")
         return jsonify({"error": str(e)}), 500
 
 

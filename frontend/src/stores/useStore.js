@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import {
   applyNodeChanges,
@@ -24,8 +23,10 @@ const useStore = create((set, get) => ({
   edges: [],
   activeTab: 'tab1', // 默认标签页
   selectedNode: null, // 新增 selectedNode 状态
+  contextMenu: null, // 右键菜单状态
   setActiveTab: (tabId) => set({ activeTab: tabId }),
   setSelectedNode: (node) => set({ selectedNode: node }),
+  setContextMenu: (menuData) => set({ contextMenu: menuData }),
   onNodeClick: (event, node) => set({ selectedNode: node }),
   onPaneClick: () => set({ selectedNode: null }),
   fetchNodesAndEdges: async () => {

@@ -1,20 +1,38 @@
 import React from 'react';
-import { Handle, Position } from 'reactflow';
+import BaseNodeTemplate from './BaseNodeTemplate';
 
-function EndNode({ data }) {
-    return (
-        <div className="node-base end-node">
-            <div className="node-header">
-                {data.label}
-            </div>
-            <div className="node-body">
-                <Handle type="target" position={Position.Left} />
-                <div>
-                    <strong>{data.label}</strong>
-                </div>
-            </div>
+/**
+ * 结束节点组件 - 使用工厂模式配置
+ * 连接点配置统一在NodeFactory中管理
+ */
+const EndNode = ({ data }) => {
+    // 自定义头部内容
+    const customHeader = (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>⏹️</span>
+            <span>{data.label || '结束节点'}</span>
         </div>
     );
-}
+
+    // 准备输入内容数据 - 结束节点只有输入
+    const leftLayers = data.leftLayers || [
+        { label: '结束输入', content: data.endInput || '结束输入' }
+    ];
+
+    // 合并数据
+    const nodeData = {
+        ...data,
+        leftLayers,
+        rightLayers: [] // 结束节点没有输出
+    };
+
+    return (
+        <BaseNodeTemplate
+            data={nodeData}
+            nodeType="end-node"
+            customHeader={customHeader}
+        />
+    );
+};
 
 export default EndNode;

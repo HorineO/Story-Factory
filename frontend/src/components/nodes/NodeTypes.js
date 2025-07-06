@@ -1,21 +1,20 @@
-import DefaultNode from './DefaultNode';
-import InputNode from './InputNode';
-import OutputNode from './OutputNode';
-import GenerateNode from './GenerateNode';
-import TextNode from './TextNode';
-import ChapterNode from './ChapterNode';
-import StartNode from './StartNode';
-import EndNode from './EndNode';
+import NodeFactory from './NodeFactory';
 
-const nodeTypes = {
-    default: DefaultNode,
-    input: InputNode,
-    output: OutputNode,
-    generate: GenerateNode,
-    text: TextNode,
-    chapter: ChapterNode,
-    start: StartNode,
-    end: EndNode,
+// 使用工厂模式创建节点组件
+const createNodeComponent = (type) => {
+    return ({ data }) => NodeFactory.createNode(type, data);
 };
+
+// 节点类型映射 - 统一使用工厂模式
+const nodeTypes = {
+    generate: createNodeComponent('generate'),
+    text: createNodeComponent('text'),
+    chapter: createNodeComponent('chapter'),
+    start: createNodeComponent('start'),
+    end: createNodeComponent('end'),
+};
+
+// 导出工厂类，供其他组件使用
+export { NodeFactory };
 
 export default nodeTypes;
