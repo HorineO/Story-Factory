@@ -285,12 +285,6 @@
 /* ========================================
  * 节点状态样式
  * ======================================== */
-.react-flow__node.selected {
-    /* 移除选中时的蓝色边框 */
-    /* border-color: #007bff; */
-    /* border-radius: 6px; */
-    /* box-shadow: 0 0 0 2px #007bff, 0 0 0 4px rgba(0, 123, 255, 0.3); */
-}
 
 .react-flow__node:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
