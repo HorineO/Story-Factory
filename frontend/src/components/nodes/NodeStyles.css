@@ -2,155 +2,171 @@
  * text-node, chapter-node, generate-node
  * These styles are applied to the nodes in the React Flow diagram.
  */
+
+/* ========================================
+ * 基础节点样式模板
+ * 所有节点类型都可以继承这些基础样式
+ * ======================================== */
+
+/* 基础节点容器样式 */
 .node-base {
     border-radius: 3px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 12px;
     color: #e0e0e0;
-    /* Light gray text for dark background */
     overflow: hidden;
-    /* Ensures content stays within rounded corners */
+    min-width: 120px;
+    background-color: #2a2a2a;
+    border: 1px solid;
+    transition: all 0.2s ease;
 }
 
+/* 基础节点头部样式 */
 .node-header {
     padding: 2px;
     font-weight: bold;
     color: #ffffff;
-    /* White text for header */
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    min-height: 20px;
 }
 
+/* 基础节点主体样式 */
 .node-body {
     padding: 2px;
     background-color: #3c3c3c;
     color: #e0e0e0;
     font-size: 12px;
+    min-height: 16px;
 }
 
-/* Specific node colors */
+/* 基础节点文本样式 */
+.node-text {
+    font-size: 10px;
+    color: #b0b0b0;
+    margin-top: 4px;
+    word-break: break-word;
+    text-align: center;
+}
+
+/* ========================================
+ * 节点类型样式 - 使用CSS变量实现主题化
+ * ======================================== */
+
+/* 文本节点 */
 .text-node {
-    background-color: #2a2a2a;
-    /* Dark background for text node */
-    border: 1px solid #17a2b8;
-    /* Blue border */
+    --node-border-color: #17a2b8;
+    --node-header-bg: #17a2b8;
+    --node-type: 'text';
 }
 
 .text-node .node-header {
-    background-color: #17a2b8;
-    /* Blue header */
+    background-color: var(--node-header-bg);
 }
 
+/* 章节节点 */
 .chapter-node {
-    background-color: #2a2a2a;
-    /* Dark background for chapter node */
-    border: 1px solid #6f42c1;
-    /* Purple border */
+    --node-border-color: #6f42c1;
+    --node-header-bg: #6f42c1;
+    --node-type: 'chapter';
 }
 
 .chapter-node .node-header {
-    background-color: #6f42c1;
-    /* Purple header */
+    background-color: var(--node-header-bg);
 }
 
+/* 生成节点 */
 .generate-node {
-    background-color: #2a2a2a;
-    /* Dark background for generate node */
-    border: 1px solid #ffc107;
-    /* Yellow border */
+    --node-border-color: #ffc107;
+    --node-header-bg: #ffc107;
+    --node-type: 'generate';
 }
 
 .generate-node .node-header {
-    background-color: #ffc107;
-    /* Yellow header */
+    background-color: var(--node-header-bg);
 }
 
-/* Start Node Styles */
+/* 开始节点 */
 .start-node {
-    background-color: #2a2a2a;
-    /* Dark background */
-    border: 1px solid #28a745;
-    /* Green border */
+    --node-border-color: #28a745;
+    --node-header-bg: #28a745;
+    --node-type: 'start';
 }
 
 .start-node .node-header {
-    background-color: #28a745;
-    /* Green header */
+    background-color: var(--node-header-bg);
 }
 
-/* End Node Styles */
+/* 结束节点 */
 .end-node {
-    background-color: #2a2a2a;
-    /* Dark background */
-    border: 1px solid #dc3545;
-    /* Red border */
+    --node-border-color: #dc3545;
+    --node-header-bg: #dc3545;
+    --node-type: 'end';
 }
 
 .end-node .node-header {
-    background-color: #dc3545;
-    /* Red header */
+    background-color: var(--node-header-bg);
 }
 
-/* Input Node Styles */
+/* 输入节点 */
 .input-node {
-    background-color: #2a2a2a;
-    border: 1px solid #fd7e14;
-    border-radius: 3px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 12px;
-    color: #e0e0e0;
+    --node-border-color: #fd7e14;
+    --node-header-bg: #fd7e14;
+    --node-type: 'input';
     padding: 8px;
-    min-width: 120px;
     text-align: center;
 }
 
-.input-node .node-text {
-    font-size: 10px;
-    color: #b0b0b0;
-    margin-top: 4px;
-    word-break: break-word;
+.input-node .node-header {
+    background-color: var(--node-header-bg);
 }
 
-/* Output Node Styles */
+/* 输出节点 */
 .output-node {
-    background-color: #2a2a2a;
-    border: 1px solid #20c997;
-    border-radius: 3px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 12px;
-    color: #e0e0e0;
+    --node-border-color: #20c997;
+    --node-header-bg: #20c997;
+    --node-type: 'output';
     padding: 8px;
-    min-width: 120px;
     text-align: center;
 }
 
-.output-node .node-text {
-    font-size: 10px;
-    color: #b0b0b0;
-    margin-top: 4px;
-    word-break: break-word;
+.output-node .node-header {
+    background-color: var(--node-header-bg);
 }
 
-/* Default Node Styles */
+/* 默认节点 */
 .default-node {
-    background-color: #2a2a2a;
-    border: 1px solid #6c757d;
-    border-radius: 3px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 12px;
-    color: #e0e0e0;
+    --node-border-color: #6c757d;
+    --node-header-bg: #6c757d;
+    --node-type: 'default';
     padding: 8px;
-    min-width: 120px;
     text-align: center;
 }
 
-/* Handle styles */
+.default-node .node-header {
+    background-color: var(--node-header-bg);
+}
+
+/* ========================================
+ * 应用边框颜色到所有节点类型
+ * ======================================== */
+.text-node,
+.chapter-node,
+.generate-node,
+.start-node,
+.end-node,
+.input-node,
+.output-node,
+.default-node {
+    border-color: var(--node-border-color);
+}
+
+/* ========================================
+ * 连接点样式
+ * ======================================== */
 .react-flow__handle {
     width: 8px;
     height: 8px;
@@ -158,31 +174,102 @@
     border: 1px solid #888;
     border-radius: 50%;
     transform: none;
-    /* Remove default transform */
+    transition: all 0.2s ease;
+}
+
+.react-flow__handle:hover {
+    background: #777;
+    border-color: #999;
+    transform: scale(1.2);
 }
 
 .react-flow__handle-left {
     left: -4px;
-    /* Adjust position */
 }
 
 .react-flow__handle-right {
     right: -4px;
-    /* Adjust position */
 }
 
 .react-flow__handle-top {
     top: -4px;
-    /* Adjust position */
 }
 
 .react-flow__handle-bottom {
     bottom: -4px;
-    /* Adjust position */
 }
 
+/* ========================================
+ * 节点状态样式
+ * ======================================== */
 .react-flow__node.selected {
     border-color: #007bff;
     border-radius: 4px;
     box-shadow: 0 0 0 1px #007bff, 0 0 0 2px rgba(0, 123, 255, 0.5);
+}
+
+.react-flow__node:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+/* ========================================
+ * 响应式设计
+ * ======================================== */
+@media (max-width: 768px) {
+    .node-base {
+        font-size: 11px;
+        min-width: 100px;
+    }
+
+    .node-header {
+        padding: 1px;
+        min-height: 18px;
+    }
+
+    .node-body {
+        padding: 1px;
+        min-height: 14px;
+    }
+}
+
+/* ========================================
+ * 动画效果
+ * ======================================== */
+@keyframes nodeAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.node-base {
+    animation: nodeAppear 0.3s ease-out;
+}
+
+/* ========================================
+ * 工具类
+ * ======================================== */
+.node-compact {
+    min-width: 80px;
+    font-size: 10px;
+}
+
+.node-large {
+    min-width: 160px;
+    font-size: 14px;
+}
+
+.node-rounded {
+    border-radius: 8px;
+}
+
+.node-flat {
+    box-shadow: none;
+    border-width: 2px;
 }

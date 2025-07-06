@@ -4,10 +4,17 @@ import './NodeStyles.css'; // 引入样式文件
 
 const OutputNode = ({ data }) => {
     return (
-        <div className="output-node">
-            <Handle type="target" position={Position.Top} className="react-flow__handle-top" />
-            <div>{data.label}</div>
-            {data.text && <div className="node-text">{data.text.length > 20 ? data.text.substring(0, 20) + '...' : data.text}</div>}
+        <div className="node-base output-node">
+            <Handle type="target" position={Position.Left} className="react-flow__handle-left" />
+            <div className="node-header">
+                {data.label || 'Output'}
+            </div>
+            <div className="node-body">
+                <div className="node-text">
+                    {data.text || 'Output content'}
+                </div>
+            </div>
+            <Handle type="source" position={Position.Right} className="react-flow__handle-right" />
         </div>
     );
 };

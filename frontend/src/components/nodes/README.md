@@ -1,112 +1,165 @@
-# 节点样式规范
+# 节点组件系统
 
 ## 概述
 
-本文档定义了 Story Factory 项目中所有节点的样式规范，确保节点在视觉上保持一致性和专业性。
+这个目录包含了 Story Factory 应用中所有 React Flow 节点的组件。我们使用了一个模块化的样式系统，让所有节点都可以继承基础样式模板。
 
-## 基础样式类
+## 样式系统架构
 
-### node-base
+### 基础样式模板 (`NodeStyles.css`)
 
-所有节点都应该使用的基础样式类，包含：
+所有节点都基于以下基础样式：
 
-- 圆角边框 (3px)
-- 阴影效果
-- 字体设置
-- 颜色主题
+- **`.node-base`** - 基础节点容器样式
+- **`.node-header`** - 节点头部样式
+- **`.node-body`** - 节点主体样式
+- **`.node-text`** - 节点文本样式
 
-### node-header
+### 节点类型样式
 
-节点标题区域样式，包含：
+每种节点类型都有自己的 CSS 变量定义：
 
-- 白色文字
-- 粗体字重
-- 底部边框
-- 弹性布局
+```css
+.text-node {
+  --node-border-color: #17a2b8;
+  --node-header-bg: #17a2b8;
+  --node-type: "text";
+}
+```
 
-### node-body
+### 工具类
 
-节点内容区域样式，包含：
+提供了一些实用的工具类：
 
-- 深色背景
-- 浅色文字
-- 内边距
+- **`.node-compact`** - 紧凑型节点
+- **`.node-large`** - 大型节点
+- **`.node-rounded`** - 圆角节点
+- **`.node-flat`** - 扁平化节点
 
-## 节点类型颜色方案
+## 现有节点类型
 
-| 节点类型 | 主色调 | 边框颜色 | 用途         |
-| -------- | ------ | -------- | ------------ |
-| text     | 蓝色   | #17a2b8  | 文本内容节点 |
-| chapter  | 紫色   | #6f42c1  | 章节节点     |
-| generate | 黄色   | #ffc107  | 生成节点     |
-| start    | 绿色   | #28a745  | 开始节点     |
-| end      | 红色   | #dc3545  | 结束节点     |
-| input    | 橙色   | #fd7e14  | 输入节点     |
-| output   | 青色   | #20c997  | 输出节点     |
-| default  | 灰色   | #6c757d  | 默认节点     |
+| 节点类型   | 组件文件          | 颜色主题       | 描述         |
+| ---------- | ----------------- | -------------- | ------------ |
+| `default`  | `DefaultNode.js`  | 灰色 (#6c757d) | 默认节点类型 |
+| `text`     | `TextNode.js`     | 蓝色 (#17a2b8) | 文本节点     |
+| `chapter`  | `ChapterNode.js`  | 紫色 (#6f42c1) | 章节节点     |
+| `generate` | `GenerateNode.js` | 黄色 (#ffc107) | 生成节点     |
+| `start`    | `StartNode.js`    | 绿色 (#28a745) | 开始节点     |
+| `end`      | `EndNode.js`      | 红色 (#dc3545) | 结束节点     |
+| `input`    | `InputNode.js`    | 橙色 (#fd7e14) | 输入节点     |
+| `output`   | `OutputNode.js`   | 青色 (#20c997) | 输出节点     |
 
-## Handle 样式规范
+## 创建新节点类型
 
-所有 Handle 都应该使用以下类名：
-
-- `react-flow__handle-left` - 左侧 Handle
-- `react-flow__handle-right` - 右侧 Handle
-- `react-flow__handle-top` - 顶部 Handle
-- `react-flow__handle-bottom` - 底部 Handle
-
-## 开发规范
-
-### 1. 导入样式文件
+### 方法 1: 使用 BaseNodeTemplate (推荐)
 
 ```javascript
+import React from "react";
+import BaseNodeTemplate from "./BaseNodeTemplate";
+
+const MyCustomNode = ({ data }) => {
+  const handles = [
+    { type: "target", position: "left" },
+    { type: "source", position: "right" },
+  ];
+
+  return (
+    <BaseNodeTemplate
+      data={data}
+      nodeType="text-node" // 使用现有样式
+      handles={handles}
+      customHeader={<div>🚀 {data.label}</div>}
+      additionalClasses="node-compact"
+    />
+  );
+};
+
+export default MyCustomNode;
+```
+
+### 方法 2: 手动创建
+
+```javascript
+import React from "react";
+import { Handle, Position } from "reactflow";
 import "./NodeStyles.css";
+
+const MyCustomNode = ({ data }) => {
+  return (
+    <div className="node-base text-node node-compact">
+      <Handle type="target" position={Position.Left} />
+      <div className="node-header">{data.label}</div>
+      <div className="node-body">
+        <div className="node-text">{data.content}</div>
+      </div>
+      <Handle type="source" position={Position.Right} />
+    </div>
+  );
+};
+
+export default MyCustomNode;
 ```
 
-### 2. 使用基础样式类
+### 方法 3: 创建新的样式主题
+
+在 `NodeStyles.css` 中添加新的样式：
+
+```css
+.my-custom-node {
+  --node-border-color: #your-color;
+  --node-header-bg: #your-color;
+  --node-type: "my-custom";
+}
+
+.my-custom-node .node-header {
+  background-color: var(--node-header-bg);
+}
+```
+
+## 节点数据格式
+
+所有节点都期望接收以下数据格式：
 
 ```javascript
-// 对于有header和body的节点
-<div className="node-base [node-type]-node">
-    <div className="node-header">{data.label}</div>
-    <div className="node-body">{content}</div>
-</div>
-
-// 对于简单节点
-<div className="[node-type]-node">
-    {content}
-</div>
+{
+    label: "节点标签",
+    content: "节点内容", // 或 text
+    // 其他自定义属性...
+}
 ```
 
-### 3. Handle 样式
+## 连接点配置
+
+连接点可以通过以下方式配置：
 
 ```javascript
-<Handle
-  type="source"
-  position={Position.Right}
-  className="react-flow__handle-right"
-/>
+const handles = [
+  { type: "target", position: "left", id: "input1" },
+  { type: "source", position: "right", id: "output1" },
+  { type: "source", position: "bottom", id: "output2" },
+];
 ```
 
-### 4. 添加新节点类型
+## 响应式设计
 
-1. 在`NodeStyles.css`中添加新的样式类
-2. 遵循颜色方案选择适当的颜色
-3. 确保样式与现有节点保持一致
-4. 在`NodeTypes.js`中注册新节点
+节点样式已经包含了响应式设计：
 
-## 注意事项
+- 在小屏幕上自动调整字体大小和间距
+- 支持触摸设备的交互优化
 
-1. **颜色一致性**: 新节点必须遵循既定的颜色方案
-2. **尺寸统一**: 所有节点都应该有合适的最小宽度和高度
-3. **字体统一**: 使用统一的字体族和大小
-4. **间距统一**: 保持内边距和外边距的一致性
-5. **响应式设计**: 确保节点在不同屏幕尺寸下都能正常显示
+## 动画效果
 
-## 测试检查清单
+节点包含以下动画效果：
 
-- [ ] 节点在正常状态下显示正确
-- [ ] 节点在选中状态下有高亮效果
-- [ ] Handle 位置和样式正确
-- [ ] 文字可读性良好
-- [ ] 颜色对比度符合可访问性标准
-- [ ] 在不同主题下显示正常
+- 出现动画 (`nodeAppear`)
+- 悬停效果
+- 选择状态高亮
+- 连接点悬停缩放
+
+## 最佳实践
+
+1. **使用 BaseNodeTemplate** - 对于大多数新节点类型，推荐使用 BaseNodeTemplate
+2. **保持一致性** - 使用现有的颜色主题和样式模式
+3. **响应式设计** - 确保节点在不同屏幕尺寸下都能正常显示
+4. **性能优化** - 避免在节点组件中使用复杂的计算或大量 DOM 操作
+5. **可访问性** - 确保节点有适当的标签和键盘导航支持
