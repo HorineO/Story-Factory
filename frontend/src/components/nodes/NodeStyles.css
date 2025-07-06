@@ -140,7 +140,6 @@
 .react-flow__handle:hover {
     background: #777;
     border-color: #999;
-    transform: scale(1.2);
 }
 
 .react-flow__handle-left {
