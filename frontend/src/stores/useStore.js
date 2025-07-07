@@ -21,7 +21,7 @@ const socket = io(API_BASE_URL);
 const useStore = create((set, get) => ({
   nodes: [],
   edges: [],
-  activeTab: 'tab1', // 默认标签页
+  activeTab: 'tab2', // 默认标签页（新建节点）
   selectedNode: null, // 新增 selectedNode 状态
   contextMenu: null, // 右键菜单状态
   setActiveTab: (tabId) => set({ activeTab: tabId }),
