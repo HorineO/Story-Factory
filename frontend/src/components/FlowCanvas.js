@@ -23,10 +23,10 @@ const FlowCanvas = () => {
     } = useStore();
 
     return (
-        <div className="flex flex-row w-full h-full">
+        <div className="flex flex-row w-full flex-1 overflow-hidden">
             <LeftPanel />
 
-            <div className="flex-1">
+            <div className="flex-1 h-full overflow-hidden">
                 <ReactFlowWrapper
                     nodes={nodes}
                     edges={edges}

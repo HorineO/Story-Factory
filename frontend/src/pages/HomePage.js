@@ -19,11 +19,13 @@ const HomePage = () => {
                     <FileSystemHandler>
                         {(fileProps) => (
                             <>
-                                <NavigationBar
-                                    onSave={fileProps.handleSave}
-                                    onOpen={fileProps.handleOpen}
-                                />
-                                <FlowCanvas {...nodeProps} />
+                                <div className="flex flex-col h-full">
+                                    <NavigationBar
+                                        onSave={fileProps.handleSave}
+                                        onOpen={fileProps.handleOpen}
+                                    />
+                                    <FlowCanvas {...nodeProps} />
+                                </div>
                             </>
                         )}
                     </FileSystemHandler>

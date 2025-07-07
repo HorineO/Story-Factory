@@ -95,7 +95,7 @@ const ReactFlowWrapper = ({
             onDrop={onDrop}
             nodeTypes={nodeTypes}
             fitView
-            className="bg-gray-900"
+            className="w-full h-full bg-gray-900"
             proOptions={{ hideAttribution: true }}
         >
             <FlowControls />
