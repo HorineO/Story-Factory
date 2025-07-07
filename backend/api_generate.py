@@ -6,7 +6,7 @@ except ImportError:
     # 处理导入错误，在后续代码中添加检查
     OpenAI = None
 
-from backend.config import OPENAI_BASE_URL, OPENAI_API_KEY, DEFAULT_MODEL
+from backend.config import settings
 
 
 class Generator:
@@ -19,9 +19,9 @@ class Generator:
         default_model: Optional[str] = None,
     ):
         # 使用提供的参数或配置中的默认值
-        self.base_url = base_url or OPENAI_BASE_URL
-        self.api_key = api_key or OPENAI_API_KEY
-        self.default_model = default_model or DEFAULT_MODEL
+        self.base_url = base_url or settings.openai_base_url
+        self.api_key = api_key or settings.openai_api_key
+        self.default_model = default_model or settings.default_model
         
         # 检查OpenAI是否已成功导入
         if OpenAI is None:

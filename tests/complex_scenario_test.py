@@ -34,7 +34,7 @@ logger = logging.getLogger('complex_scenario_tests')
 from backend.app import create_app
 from backend.models import Node, Edge
 from backend.services import NodeService, EdgeService, GenerationService
-from backend.database import NodeDatabase, EdgeDatabase
+from backend.db.memory import NodeDatabase, EdgeDatabase
 
 
 class ComplexScenarioTest(unittest.TestCase):

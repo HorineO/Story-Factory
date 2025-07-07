@@ -7,7 +7,9 @@ from flask import Flask
 # 添加项目根目录到Python路径
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from backend.execution_engine import WorkflowEngine, NodeExecutor, DataFlowManager, NodeStatus
+from backend.core.execution_engine import WorkflowEngine
+from backend.core.node_executor import NodeExecutor, NodeStatus
+from backend.core.data_flow import DataFlowManager
 from backend.services import NodeService, EdgeService, WorkflowExecutionService
 from backend.models import Node, Edge
 
@@ -183,7 +185,7 @@ class TestExecutionEngine(unittest.TestCase):
         
         # 获取执行状态
         status = self.workflow_service.get_execution_status()
-        self.assertFalse(status["is_running"])
+        self.assertFalse(status["running"])
         self.assertIn(self.start_node["id"], status["executed_nodes"])
         
         print("工作流服务测试通过")

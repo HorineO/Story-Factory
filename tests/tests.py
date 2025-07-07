@@ -14,7 +14,7 @@ sys.path.append(parent_dir)
 from backend.app import create_app
 from backend.models import Node, Edge
 from backend.services import NodeService, EdgeService, GenerationService
-from backend.database import NodeDatabase, EdgeDatabase
+from backend.db.memory import NodeDatabase, EdgeDatabase
 
 class TestModels(unittest.TestCase):
     """测试模型类"""
