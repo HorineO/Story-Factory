@@ -43,12 +43,14 @@ const ContextMenuHandler = ({ deleteNode }) => {
         return null;
     }
 
+    const { event, id } = menu;
+
     return (
         <ContextMenu
-            {...menu}
+            id={id}
+            event={event}
             onDelete={handleDelete}
             onDuplicate={handleDuplicate}
-            onClose={() => setContextMenu(null)}
         />
     );
 };

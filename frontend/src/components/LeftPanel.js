@@ -25,8 +25,9 @@ const LeftPanel = () => {
 
     // 当组件挂载时，若当前 activeTab 与第一个 tab 不一致，则设置为默认（第一个）
     useEffect(() => {
-        setActiveTab(tabs[0].id);
-    }, []);
+        // 默认选中"新建节点"标签页（tab2）
+        setActiveTab('tab2');
+    }, [setActiveTab]);
 
     return (
         <div

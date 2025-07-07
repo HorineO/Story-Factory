@@ -28,23 +28,18 @@ const ReactFlowWrapper = ({
     const addNode = useStore((state) => state.addNode);
 
     const handleNodeContextMenu = useCallback((event, node) => {
-        const contextMenuHandler = useStore.getState().setContextMenu;
+        // Prevent default browser menu
         event.preventDefault();
 
-        const { width, height } = reactFlowInstance.getViewport();
-        const { x: flowX, y: flowY } = reactFlowInstance.project({
-            x: event.clientX,
-            y: event.clientY
-        });
+        // Persist the event so we can use it asynchronously (react pools synthetic events)
+        event.persist();
 
-        contextMenuHandler({
+        // Store the native event and node id for the ContextMenuHandler
+        useStore.getState().setContextMenu({
             id: node.id,
-            top: flowY < height - 200 && flowY,
-            left: flowX < width - 200 && flowX,
-            right: flowX >= width - 200 && width - flowX,
-            bottom: flowY >= height - 200 && height - flowY,
+            event: event.nativeEvent || event,
         });
-    }, [reactFlowInstance]);
+    }, []);
 
     const handlePaneClickInternal = useCallback(() => {
         useStore.getState().setContextMenu(null);
