@@ -4,7 +4,7 @@
  */
 import React, { useCallback } from 'react';
 import LeftPanel from './LeftPanel'; // 引入左侧面板组件
-import './FlowCanvas.css'; // 引入样式文件
+// import './FlowCanvas.css'; // Tailwind migration: old styles removed
 import useStore from '../stores/useStore'; // 引入 useStore
 import ReactFlowWrapper from './flow/ReactFlowWrapper';
 import ContextMenuHandler from './flow/ContextMenuHandler';
@@ -23,10 +23,10 @@ const FlowCanvas = () => {
     } = useStore();
 
     return (
-        <div className="flow-container">
+        <div className="flex flex-row w-full h-full">
             <LeftPanel />
 
-            <div className="flow-canvas-wrapper">
+            <div className="flex-1">
                 <ReactFlowWrapper
                     nodes={nodes}
                     edges={edges}

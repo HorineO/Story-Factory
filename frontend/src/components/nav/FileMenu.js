@@ -6,12 +6,12 @@ import React from 'react';
 
 const FileMenu = ({ onSave, onOpen }) => {
     return (
-        <li className="dropdown">
-            <button className="dropbtn">文件</button>
-            <div className="dropdown-content">
-                <button>新建节点项目文件</button>
-                <button onClick={onOpen}>打开节点项目文件</button>
-                <button onClick={onSave}>保存节点项目文件</button>
+        <li className="relative group">
+            <button className="px-2 py-1 text-xs text-white rounded-md hover:bg-white/10">文件</button>
+            <div className="absolute left-0 mt-1 hidden w-40 max-h-72 overflow-y-auto rounded-md bg-gray-700 shadow-lg z-10 group-hover:block">
+                <button className="block w-full text-left px-4 py-1 text-xs text-white hover:bg-white/10 truncate">新建节点项目文件</button>
+                <button className="block w-full text-left px-4 py-1 text-xs text-white hover:bg-white/10 truncate" onClick={onOpen}>打开节点项目文件</button>
+                <button className="block w-full text-left px-4 py-1 text-xs text-white hover:bg-white/10 truncate" onClick={onSave}>保存节点项目文件</button>
             </div>
         </li>
     );
