@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; // 导入 useNavigate
-import './NavigationBar.css'; // 导入CSS文件
+// import './NavigationBar.css'; // Tailwind migration: old styles removed
 import FileMenu from './nav/FileMenu';
 import EditMenu from './nav/EditMenu';
 import HelpMenu from './nav/HelpMenu';
@@ -17,9 +17,9 @@ const NavigationBar = ({ onSave, onOpen }) => {
     };
 
     return (
-        <nav className="navbar">
-            <ul className="nav-links">
-                <li><button onClick={() => handleNavigation('/')}>主页</button></li>
+        <nav className="w-full bg-gray-700 border border-black px-5 py-1 text-white box-border">
+            <ul className="flex items-center space-x-1">
+                <li><button className="px-2 py-1 text-xs text-white rounded-md hover:bg-white/10" onClick={() => handleNavigation('/')}>主页</button></li>
                 <FileMenu onSave={onSave} onOpen={onOpen} />
                 <EditMenu />
                 <HelpMenu onNavigate={handleNavigation} />

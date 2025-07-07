@@ -1,6 +1,15 @@
 import React from 'react';
 import { Handle, Position } from 'reactflow';
-import './NodeStyles.css';
+// import './NodeStyles.css'; // Tailwind migration: styles replaced with utility classes
+
+// 颜色映射：节点类型 -> Tailwind 边框/头部背景
+const typeStyles = {
+    text: { border: 'border-cyan-600', headerBg: 'bg-cyan-600' },
+    chapter: { border: 'border-purple-700', headerBg: 'bg-purple-700' },
+    generate: { border: 'border-yellow-400', headerBg: 'bg-yellow-400 text-black' },
+    start: { border: 'border-green-600', headerBg: 'bg-green-600' },
+    end: { border: 'border-red-600', headerBg: 'bg-red-600' },
+};
 
 /**
  * 通用节点组件模板 - 使用工厂模式配置
@@ -45,6 +54,19 @@ const BaseNodeTemplate = ({
     // 验证nodeType
     const validNodeTypes = ['text-node', 'chapter-node', 'generate-node', 'start-node', 'end-node'];
     const validatedNodeType = validNodeTypes.includes(nodeType) ? nodeType : 'text-node';
+
+    const typeKey = validatedNodeType.replace('-node', '');
+    const colorStyle = typeStyles[typeKey] || { border: 'border-gray-500', headerBg: 'bg-gray-600' };
+
+    // 公共 Tailwind 样式常量
+    const baseClasses = `rounded-md shadow-lg text-xs text-gray-200 overflow-hidden min-w-[160px] max-w-[280px] flex flex-col transition-all duration-300 bg-gray-800 border-2 ${colorStyle.border} ${additionalClasses}`;
+    const headerClasses = `px-2 py-1 font-bold flex items-center justify-center min-h-[24px] border-b border-white/10 ${colorStyle.headerBg}`;
+    const bodyClasses = 'flex min-h-[40px] bg-gray-700';
+    const leftContentClasses = 'flex-1 p-1.5 flex flex-col gap-1 border-r border-white/10';
+    const rightContentClasses = 'flex-1 p-1.5 flex flex-col gap-1';
+    const singleContentClasses = 'flex-1 p-2 flex flex-col gap-1 justify-center items-center';
+    const contentLayerClass = 'px-1.5 py-1 bg-white/5 rounded border border-white/10 min-h-[18px] flex items-center text-[11px] text-gray-400 transition hover:bg-white/10 hover:border-white/20 break-words';
+    const singleLayerClass = 'px-2 py-1 bg-white/5 rounded border border-white/10 min-h-[20px] flex items-center justify-center text-[11px] text-gray-400 text-center break-words';
 
     // 如果没有提供handles，尝试从工厂获取
     let finalHandles = handles;
@@ -92,14 +114,14 @@ const BaseNodeTemplate = ({
     const renderContentLayers = (layers, side) => {
         if (!layers || layers.length === 0) {
             return (
-                <div className="node-single-layer">
+                <div className={singleLayerClass}>
                     {side === 'left' ? '输入内容' : '输出内容'}
                 </div>
             );
         }
 
         return layers.map((layer, index) => (
-            <div key={index} className="node-content-layer">
+            <div key={index} className={contentLayerClass}>
                 {layer.label || layer.content || `${side === 'left' ? '输入' : '输出'} ${index + 1}`}
             </div>
         ));
@@ -109,7 +131,7 @@ const BaseNodeTemplate = ({
     const renderSingleContent = (layers, side) => {
         if (!layers || layers.length === 0) {
             return (
-                <div className="node-single-layer">
+                <div className={singleLayerClass}>
                     {side === 'left' ? '输入内容' : '输出内容'}
                 </div>
             );
@@ -118,7 +140,7 @@ const BaseNodeTemplate = ({
         // 如果只有一层，使用简化显示
         if (layers.length === 1) {
             return (
-                <div className="node-single-layer">
+                <div className={singleLayerClass}>
                     {layers[0].label || layers[0].content || `${side === 'left' ? '输入' : '输出'}内容`}
                 </div>
             );
@@ -126,7 +148,7 @@ const BaseNodeTemplate = ({
 
         // 多层时使用标准显示
         return layers.map((layer, index) => (
-            <div key={index} className="node-content-layer">
+            <div key={index} className={contentLayerClass}>
                 {layer.label || layer.content || `${side === 'left' ? '输入' : '输出'} ${index + 1}`}
             </div>
         ));
@@ -178,18 +200,18 @@ const BaseNodeTemplate = ({
     };
 
     return (
-        <div className={`node-base ${validatedNodeType} ${additionalClasses}`}>
+        <div className={baseClasses}>
             {/* 连接点容器 */}
-            <div className="node-handles-container">
+            <div className="absolute inset-0 pointer-events-none">
                 {/* 左侧连接点 */}
                 {hasInput && (
-                    <div className="node-left-handles">
+                    <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-around pointer-events-none">
                         {renderHandles(leftHandles, 'left')}
                     </div>
                 )}
                 {/* 右侧连接点 */}
                 {hasOutput && (
-                    <div className="node-right-handles">
+                    <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-around pointer-events-none">
                         {renderHandles(rightHandles, 'right')}
                     </div>
                 )}
@@ -197,16 +219,16 @@ const BaseNodeTemplate = ({
 
             {/* 渲染头部 */}
             {showHeader && (
-                <div className="node-header">
+                <div className={headerClasses}>
                     {customHeader || validatedData.label}
                 </div>
             )}
 
             {/* 渲染主体 - 根据节点类型选择布局 */}
-            <div className="node-body">
+            <div className={bodyClasses}>
                 {isSingleSide ? (
                     // 单侧布局 - 只有输入或只有输出
-                    <div className="node-single-content">
+                    <div className={singleContentClasses}>
                         {customLeftContent || customRightContent ||
                             renderSingleContent(
                                 hasInput ? validatedData.leftLayers : validatedData.rightLayers,
@@ -217,11 +239,11 @@ const BaseNodeTemplate = ({
                     // 双侧布局 - 既有输入又有输出
                     <>
                         {/* 左侧内容 */}
-                        <div className="node-left-content">
+                        <div className={leftContentClasses}>
                             {customLeftContent || renderContentLayers(validatedData.leftLayers, 'left')}
                         </div>
                         {/* 右侧内容 */}
-                        <div className="node-right-content">
+                        <div className={rightContentClasses}>
                             {customRightContent || renderContentLayers(validatedData.rightLayers, 'right')}
                         </div>
                     </>

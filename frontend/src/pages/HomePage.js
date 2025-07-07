@@ -11,7 +11,7 @@ import FlowCanvas from '../components/FlowCanvas';
 import NodeStateManager from './NodeStateManager';
 import FileSystemHandler from './FileSystemHandler';
 
-import './HomePage.css';
+// import './HomePage.css'; // Tailwind migration: old styles removed
 
 const HomePage = () => {
     return (
