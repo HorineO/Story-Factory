@@ -12,10 +12,10 @@ const ContextMenu = ({ top, left, right, bottom, onDelete, onClose, onDuplicate 
 
     return (
         <div className="absolute bg-gray-700 border border-gray-600 rounded shadow-lg z-50 text-sm text-gray-200" style={positionStyles}>
-            <div className="px-3 py-1 cursor-pointer hover:bg-gray-600" onClick={onDuplicate}>
+            <div className="px-3 py-1 cursor-pointer hover:bg-gray-600 focus:outline-none focus-visible:ring focus-visible:ring-white/50" onClick={onDuplicate}>
                 复制节点
             </div>
-            <div className="px-3 py-1 cursor-pointer hover:bg-gray-600" onClick={onDelete}>
+            <div className="px-3 py-1 cursor-pointer hover:bg-gray-600 focus:outline-none focus-visible:ring focus-visible:ring-white/50" onClick={onDelete}>
                 删除
             </div>
         </div>

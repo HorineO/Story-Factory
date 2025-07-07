@@ -1,6 +1,5 @@
 import React from 'react';
 import { Handle, Position } from 'reactflow';
-// import './NodeStyles.css'; // Tailwind migration: styles replaced with utility classes
 
 // 颜色映射：节点类型 -> Tailwind 边框/头部背景
 const typeStyles = {

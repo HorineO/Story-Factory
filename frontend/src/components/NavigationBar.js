@@ -19,7 +19,7 @@ const NavigationBar = ({ onSave, onOpen }) => {
     return (
         <nav className="w-full bg-gray-700 border border-black px-5 py-1 text-white box-border">
             <ul className="flex items-center space-x-1">
-                <li><button className="px-2 py-1 text-xs text-white rounded-md hover:bg-white/10" onClick={() => handleNavigation('/')}>主页</button></li>
+                <li><button className="px-2 py-1 text-xs text-white rounded-md hover:bg-white/10 focus:outline-none focus-visible:ring focus-visible:ring-white/50" onClick={() => handleNavigation('/')}>主页</button></li>
                 <FileMenu onSave={onSave} onOpen={onOpen} />
                 <EditMenu />
                 <HelpMenu onNavigate={handleNavigation} />

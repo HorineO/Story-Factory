@@ -45,7 +45,7 @@ const NewNodeTab = ({ onDragStart }) => {
                             data-type={node.type}
                             draggable
                             onDragStart={(event) => onDragStart(event, node.type)}
-                            className={`text-white px-4 py-2 mb-2 rounded cursor-grab font-bold transition hover:opacity-90 border ${typeClasses(node.type)}`}
+                            className={`text-white px-4 py-2 mb-2 rounded cursor-grab active:cursor-grabbing font-bold transition hover:opacity-90 border focus:outline-none focus-visible:ring focus-visible:ring-white/50 ${typeClasses(node.type)}`}
                         >
                             {node.label}
                         </div>
