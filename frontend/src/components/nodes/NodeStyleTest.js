@@ -2,8 +2,6 @@ import React from 'react';
 import TextNode from './TextNode';
 import ChapterNode from './ChapterNode';
 import GenerateNode from './GenerateNode';
-import StartNode from './StartNode';
-import EndNode from './EndNode';
 import ExampleCustomNode from './ExampleCustomNode';
 
 /**
@@ -41,21 +39,6 @@ const NodeStyleTest = () => {
             ],
             rightLayers: [
                 { label: '生成输出', content: '输出生成内容' }
-            ]
-        },
-
-        // 单侧节点数据（只有输入或只有输出）
-        startNodeData: {
-            label: '开始节点',
-            rightLayers: [
-                { label: '开始输出', content: '开始输出' }
-            ]
-        },
-
-        endNodeData: {
-            label: '结束节点',
-            leftLayers: [
-                { label: '结束输入', content: '结束输入' }
             ]
         },
 
@@ -102,22 +85,6 @@ const NodeStyleTest = () => {
                     </div>
                     <div className={nodeContainerClasses}>
                         <GenerateNode data={testData.generateNodeData} />
-                    </div>
-                </div>
-            </div>
-
-            {/* 单侧节点类型（只有输入或只有输出） */}
-            <div className={sectionClasses}>
-                <h2 className={titleClasses}>单侧节点类型（只有输入或只有输出）</h2>
-                <p className="text-content mb-4">
-                    这些节点只有输入或只有输出，使用单侧布局，更加简洁
-                </p>
-                <div className={gridClasses}>
-                    <div className={nodeContainerClasses}>
-                        <StartNode data={testData.startNodeData} />
-                    </div>
-                    <div className={nodeContainerClasses}>
-                        <EndNode data={testData.endNodeData} />
                     </div>
                 </div>
             </div>

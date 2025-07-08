@@ -6,8 +6,6 @@ const typeStyles = {
     text: { border: 'border-cyan-600', headerBg: 'bg-cyan-600' },
     chapter: { border: 'border-purple-700', headerBg: 'bg-purple-700' },
     generate: { border: 'border-yellow-400', headerBg: 'bg-yellow-400 text-black' },
-    start: { border: 'border-green-600', headerBg: 'bg-green-600' },
-    end: { border: 'border-red-600', headerBg: 'bg-red-600' },
 };
 
 /**
@@ -51,7 +49,7 @@ const BaseNodeTemplate = ({
     };
 
     // 验证nodeType
-    const validNodeTypes = ['text-node', 'chapter-node', 'generate-node', 'start-node', 'end-node'];
+    const validNodeTypes = ['text-node', 'chapter-node', 'generate-node'];
     const validatedNodeType = validNodeTypes.includes(nodeType) ? nodeType : 'text-node';
 
     const typeKey = validatedNodeType.replace('-node', '');

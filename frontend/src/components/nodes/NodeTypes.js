@@ -10,8 +10,6 @@ const nodeTypes = {
     generate: createNodeComponent('generate'),
     text: createNodeComponent('text'),
     chapter: createNodeComponent('chapter'),
-    start: createNodeComponent('start'),
-    end: createNodeComponent('end'),
 };
 
 // 导出工厂类，供其他组件使用

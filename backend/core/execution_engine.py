@@ -34,10 +34,12 @@ class WorkflowEngine:
             # Auto-detect start node when not provided
             if start_node_id is None:
                 nodes = self.node_service.get_all_nodes()
-                start_nodes = [n["id"] for n in nodes if n["type"] == "start"]
-                if not start_nodes:
-                    raise ValueError("没有找到开始节点")
-                start_node_id = start_nodes[0]
+                edges = self.data_flow_manager.edge_service.get_all_edges()
+                incoming_targets = {e["target"] for e in edges}
+                candidate_nodes = [n["id"] for n in nodes if n["id"] not in incoming_targets]
+                if not candidate_nodes:
+                    raise ValueError("无法确定工作流起始节点（没有入度为0的节点）")
+                start_node_id = candidate_nodes[0]
 
             # Depth-first execution
             self._execute_node_and_successors(cast(str, start_node_id))

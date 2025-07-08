@@ -6,22 +6,8 @@ import BaseNodeTemplate from './BaseNodeTemplate';
  * 用于统一创建和验证节点实例
  */
 class NodeFactory {
-    // 节点类型配置
+    // 节点类型配置（已移除 start / end）
     static nodeConfigs = {
-        'start': {
-            nodeType: 'start-node',
-            handles: [{ type: 'source', position: 'right', id: 'output' }],
-            icon: '▶️',
-            defaultLabel: '开始',
-            defaultContent: '开始节点'
-        },
-        'end': {
-            nodeType: 'end-node',
-            handles: [{ type: 'target', position: 'left', id: 'input' }],
-            icon: '⏹️',
-            defaultLabel: '结束',
-            defaultContent: '结束节点'
-        },
         'text': {
             nodeType: 'text-node',
             handles: [
@@ -84,13 +70,7 @@ class NodeFactory {
 
         // 创建自定义主体 - 为生成节点和文本节点使用固定描述文字
         let customBody;
-        if (type === 'start') {
-            customBody = (
-                <div className="node-text">
-                    开始节点
-                </div>
-            );
-        } else if (type === 'generate') {
+        if (type === 'generate') {
             customBody = (
                 <div className="node-text">
                     生成内容
@@ -106,12 +86,6 @@ class NodeFactory {
             customBody = (
                 <div className="node-text">
                     章节内容
-                </div>
-            );
-        } else if (type === 'end') {
-            customBody = (
-                <div className="node-text">
-                    结束节点
                 </div>
             );
         } else {

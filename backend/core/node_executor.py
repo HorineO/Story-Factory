@@ -28,8 +28,6 @@ class NodeExecutor:
         self._executors = {
             "text": self._execute_text_node,
             "generate": self._execute_generate_node,
-            "start": self._execute_start_node,
-            "end": self._execute_end_node,
             "default": self._execute_default_node,
         }
 
@@ -98,12 +96,6 @@ class NodeExecutor:
             "input_text": input_text,
             "type": "generated",
         }
-
-    def _execute_start_node(self, _node: Dict[str, Any], _input: Dict[str, Any]) -> Dict[str, Any]:
-        return {"type": "start", "message": "工作流开始"}
-
-    def _execute_end_node(self, _node: Dict[str, Any], input_data: Dict[str, Any]) -> Dict[str, Any]:
-        return {"type": "end", "final_result": input_data, "message": "工作流结束"}
 
     def _execute_default_node(self, node: Dict[str, Any], input_data: Dict[str, Any]) -> Dict[str, Any]:
         return {"type": "default", "data": node["data"], "input": input_data}

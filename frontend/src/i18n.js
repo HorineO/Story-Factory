@@ -43,8 +43,6 @@ const resources = {
                 'generateNode': 'Generate Node',
                 'textNode': 'Text Node',
                 'chapterNode': 'Chapter Node',
-                'startNode': 'Start Node',
-                'endNode': 'End Node'
             },
             'directory': {
                 'content': 'Directory content'
@@ -95,8 +93,6 @@ const resources = {
                 'generateNode': '生成节点',
                 'textNode': '文本节点',
                 'chapterNode': '章节节点',
-                'startNode': '开始节点',
-                'endNode': '结束节点'
             },
             'directory': {
                 'content': '目录内容'

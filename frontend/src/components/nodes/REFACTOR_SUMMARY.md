@@ -87,6 +87,8 @@
 ```css
 .node-left-content     /* 左侧内容区域 */
 /* 左侧内容区域 */
+/* 左侧内容区域 */
+/* 左侧内容区域 */
 .node-right-content    /* 右侧内容区域 */
 .node-content-layer    /* 内容层样式 */
 .node-handles-container /* 连接点容器 */
@@ -158,12 +160,10 @@ const handles = [
 3. **TextNode.js** - 适配新数据结构
 4. **ChapterNode.js** - 适配新数据结构
 5. **GenerateNode.js** - 适配新数据结构
-6. **StartNode.js** - 适配新数据结构
-7. **EndNode.js** - 适配新数据结构
-8. **ExampleCustomNode.js** - 展示多层结构功能
-9. **NodeStyleTest.js** - 更新测试组件
-10. **NodeSystemTest.js** - 更新系统测试
-11. **README.md** - 更新文档说明
+6. **ExampleCustomNode.js** - 展示多层结构功能
+7. **NodeStyleTest.js** - 更新测试组件
+8. **NodeSystemTest.js** - 更新系统测试
+9. **README.md** - 更新文档说明
 
 ### 新增功能
 

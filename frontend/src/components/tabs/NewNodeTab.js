@@ -14,10 +14,6 @@ const NewNodeTab = ({ onDragStart }) => {
                 return 'bg-purple-700 border-purple-700';
             case 'generate':
                 return 'bg-yellow-400 border-yellow-400 text-black';
-            case 'start':
-                return 'bg-green-600 border-green-600';
-            case 'end':
-                return 'bg-red-600 border-red-600';
             default:
                 return 'bg-gray-800 border-gray-700';
         }
@@ -38,8 +34,6 @@ const NewNodeTab = ({ onDragStart }) => {
                         { type: 'generate', label: t('newNode.generateNode') },
                         { type: 'text', label: t('newNode.textNode') },
                         { type: 'chapter', label: t('newNode.chapterNode') },
-                        { type: 'start', label: t('newNode.startNode') },
-                        { type: 'end', label: t('newNode.endNode') },
                     ].map((node) => (
                         <div
                             key={node.type}

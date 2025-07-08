@@ -129,18 +129,6 @@ const isSingleSide = !hasInput || !hasOutput;
 
 ### 4. 节点类型优化
 
-#### StartNode 优化
-
-- **布局**: 改为单侧布局，只显示输出内容
-- **数据结构**: `leftLayers: []`，`rightLayers: [{ label: '开始输出', content: '开始输出' }]`
-- **视觉效果**: 更加简洁，避免不必要的空白
-
-#### EndNode 优化
-
-- **布局**: 改为单侧布局，只显示输入内容
-- **数据结构**: `leftLayers: [{ label: '结束输入', content: '结束输入' }]`，`rightLayers: []`
-- **视觉效果**: 更加简洁，避免不必要的空白
-
 #### 其他节点
 
 - **TextNode、ChapterNode、GenerateNode**: 保持双侧布局，有输入有输出
@@ -154,6 +142,12 @@ const isSingleSide = !hasInput || !hasOutput;
 
 ```css
 .node-single-content     /* 单侧内容区域 */
+/* 单侧内容区域 */
+/* 单侧内容区域 */
+/* 单侧内容区域 */
+/* 单侧内容区域 */
+/* 单侧内容区域 */
+/* 单侧内容区域 */
 /* 单侧内容区域 */
 .node-single-layer; /* 单层内容样式 */
 ```
@@ -174,7 +168,6 @@ const isSingleSide = !hasInput || !hasOutput;
 
 #### 节点组件更新
 
-- StartNode 和 EndNode 使用单侧布局
 - 其他节点保持双侧布局
 - 统一数据结构和接口
 
