@@ -14,6 +14,15 @@ import useStore from '../../stores/useStore';
 import FlowControls from './FlowControls';
 import 'reactflow/dist/style.css';
 
+// 定义各节点类型的输入/输出字段映射
+// key 为节点 type，value 为 { input, output }
+// 若无对应映射，则默认为空对象
+const IO_MAPPINGS = {
+    text: { output: 'text' },
+    generate: { input: 'text', output: 'generate' },
+    chapter: { input: 'text', output: 'text' }
+};
+
 const ReactFlowWrapper = ({
     nodes,
     edges,
@@ -72,6 +81,8 @@ const ReactFlowWrapper = ({
             type,
             position,
             data: { label: `${type} Node` },
+            // 为新节点添加 source 映射，用于后续数据流转
+            source: IO_MAPPINGS[type] || {},
         };
 
         const newNode = await addNode(newNodeData);

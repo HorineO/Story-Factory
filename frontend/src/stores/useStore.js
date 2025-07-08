@@ -18,6 +18,13 @@ import { API_BASE_URL } from '../config';
 
 const socket = io(API_BASE_URL);
 
+// IO 映射：定义每种节点类型的输入/输出字段
+const IO_MAPPINGS = {
+  text: { output: 'text' },
+  generate: { input: 'text', output: 'generate' },
+  chapter: { input: 'text', output: 'text' },
+};
+
 const useStore = create((set, get) => ({
   nodes: [],
   edges: [],
@@ -83,6 +90,50 @@ const useStore = create((set, get) => ({
   onConnect: async (connection) => {
     try {
       await addEdgeApi(connection);
+
+      // 在本地状态中根据连接关系传递数据
+      const { source: sourceId, target: targetId } = connection;
+      const nodes = get().nodes;
+
+      const sourceNode = nodes.find((n) => n.id === sourceId);
+      const targetNode = nodes.find((n) => n.id === targetId);
+
+      if (!sourceNode || !targetNode) return;
+
+      // 解析输入/输出字段
+      const sourceMapping = sourceNode.source || IO_MAPPINGS[sourceNode.type] || {};
+      const targetMapping = targetNode.source || IO_MAPPINGS[targetNode.type] || {};
+
+      const outputKey = sourceMapping.output;
+      const inputKey = targetMapping.input;
+
+      if (!outputKey || !inputKey) return;
+
+      const valueToTransfer = sourceNode.data?.[outputKey];
+
+      if (typeof valueToTransfer === 'undefined') return;
+
+      // 更新目标节点数据
+      const updatedNodes = nodes.map((node) => {
+        if (node.id === targetId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              [inputKey]: valueToTransfer,
+            },
+          };
+        }
+        return node;
+      });
+
+      // 更新节点集合，同时如果当前选中的节点被修改，也同步更新 selectedNode
+      const { selectedNode } = get();
+      const newSelectedNode = selectedNode && selectedNode.id === targetId
+        ? updatedNodes.find(n => n.id === targetId)
+        : selectedNode;
+
+      set({ nodes: updatedNodes, selectedNode: newSelectedNode });
     } catch (error) {
       console.error('Error adding edge:', error);
     }

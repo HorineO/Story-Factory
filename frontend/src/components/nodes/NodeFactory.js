@@ -53,12 +53,33 @@ class NodeFactory {
             return this.createNode('text', data);
         }
 
-        // 合并默认数据
+        // 合并默认数据，并动态构建左右内容层，便于 UI 实时展示 I/O 数据
         const nodeData = {
             label: data.label || config.defaultLabel,
             content: data.content || data.text || config.defaultContent,
             ...data
         };
+
+        // 动态填充左右层内容，使节点在数据更新后可以正确显示
+        if (type === 'text') {
+            nodeData.rightLayers = [
+                { label: '文本输出', content: nodeData.text || nodeData.content || '文本内容' },
+            ];
+        } else if (type === 'generate') {
+            nodeData.leftLayers = [
+                { label: '生成输入', content: nodeData.text || nodeData.content || '输入内容' },
+            ];
+            nodeData.rightLayers = [
+                { label: '生成输出', content: nodeData.generate || '输出内容' },
+            ];
+        } else if (type === 'chapter') {
+            nodeData.leftLayers = [
+                { label: '章节输入', content: nodeData.text || nodeData.content || '章节内容' },
+            ];
+            nodeData.rightLayers = [
+                { label: '章节输出', content: nodeData.generate || nodeData.content || '章节生成' },
+            ];
+        }
 
         // 创建自定义头部
         const customHeader = (
