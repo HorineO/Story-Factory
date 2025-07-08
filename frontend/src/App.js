@@ -18,8 +18,8 @@ const App = () => {
 
     return (
         <Router>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-                <div style={{ flexGrow: 1, overflow: 'hidden' }}>
+            <div className="flex flex-col h-screen">
+                <div className="flex-1 overflow-hidden">
                     {/* 使用 Suspense 处理懒加载组件的加载状态 */}
                     <Suspense fallback={<div className="flex items-center justify-center h-full">Loading...</div>}>
                         <Routes>

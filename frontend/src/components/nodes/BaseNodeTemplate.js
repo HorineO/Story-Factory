@@ -168,25 +168,14 @@ const BaseNodeTemplate = ({
             return (
                 <div
                     key={handle.id || `${handle.type}-${handle.position}-${index}`}
-                    style={{
-                        position: 'absolute',
-                        top: `${topPercentage}%`,
-                        transform: 'translateY(-50%)',
-                        pointerEvents: 'all'
-                    }}
+                    className="absolute -translate-y-1/2 pointer-events-auto"
+                    style={{ top: `${topPercentage}%` }}
                 >
                     <Handle
                         type={handle.type}
                         position={getPosition(handle.position)}
                         id={handle.id}
-                        style={{
-                            width: '10px',
-                            height: '10px',
-                            background: '#555',
-                            border: '2px solid #888',
-                            borderRadius: '50%',
-                            transition: 'all 0.2s ease'
-                        }}
+                        className="w-[10px] h-[10px] bg-gray-600 border-2 border-gray-400 rounded-full transition duration-200"
                     />
                     {handle.label && (
                         <div className={`handle-label handle-label-${handle.position}`}>

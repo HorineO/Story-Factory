@@ -74,107 +74,73 @@ const NodeStyleTest = () => {
         }
     };
 
-    const containerStyle = {
-        padding: '20px',
-        backgroundColor: '#1a1a1a',
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px'
-    };
-
-    const sectionStyle = {
-        backgroundColor: '#2a2a2a',
-        padding: '20px',
-        borderRadius: '8px',
-        border: '1px solid #444'
-    };
-
-    const titleStyle = {
-        color: '#fff',
-        fontSize: '18px',
-        fontWeight: 'bold',
-        marginBottom: '15px',
-        borderBottom: '2px solid #555',
-        paddingBottom: '8px'
-    };
-
-    const gridStyle = {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '20px',
-        marginTop: '15px'
-    };
-
-    const nodeContainerStyle = {
-        display: 'flex',
-        justifyContent: 'center',
-        padding: '10px',
-        backgroundColor: '#333',
-        borderRadius: '6px',
-        border: '1px solid #555'
-    };
+    // Tailwind utility classes
+    const containerClasses = 'p-5 bg-[#1a1a1a] min-h-screen flex flex-col gap-5';
+    const sectionClasses = 'bg-[#2a2a2a] p-5 rounded-lg border border-[#444]';
+    const titleClasses = 'text-white text-lg font-bold mb-4 border-b-2 border-[#555] pb-2';
+    const gridClasses = 'grid gap-5 sm:grid-cols-2 md:grid-cols-3 mt-4';
+    const nodeContainerClasses = 'flex justify-center p-2.5 bg-[#333] rounded-md border border-[#555]';
 
     return (
-        <div style={containerStyle}>
-            <h1 style={{ color: '#fff', textAlign: 'center', marginBottom: '30px' }}>
+        <div className={containerClasses}>
+            <h1 className="text-white text-center mb-8 text-2xl font-bold">
                 节点样式重构测试
             </h1>
 
             {/* 双侧节点类型（有输入有输出） */}
-            <div style={sectionStyle}>
-                <h2 style={titleStyle}>双侧节点类型（有输入有输出）</h2>
-                <p style={{ color: '#ccc', marginBottom: '15px' }}>
+            <div className={sectionClasses}>
+                <h2 className={titleClasses}>双侧节点类型（有输入有输出）</h2>
+                <p className="text-gray-300 mb-4">
                     这些节点既有输入又有输出，使用左右两侧布局
                 </p>
-                <div style={gridStyle}>
-                    <div style={nodeContainerStyle}>
+                <div className={gridClasses}>
+                    <div className={nodeContainerClasses}>
                         <TextNode data={testData.textNodeData} />
                     </div>
-                    <div style={nodeContainerStyle}>
+                    <div className={nodeContainerClasses}>
                         <ChapterNode data={testData.chapterNodeData} />
                     </div>
-                    <div style={nodeContainerStyle}>
+                    <div className={nodeContainerClasses}>
                         <GenerateNode data={testData.generateNodeData} />
                     </div>
                 </div>
             </div>
 
             {/* 单侧节点类型（只有输入或只有输出） */}
-            <div style={sectionStyle}>
-                <h2 style={titleStyle}>单侧节点类型（只有输入或只有输出）</h2>
-                <p style={{ color: '#ccc', marginBottom: '15px' }}>
+            <div className={sectionClasses}>
+                <h2 className={titleClasses}>单侧节点类型（只有输入或只有输出）</h2>
+                <p className="text-gray-300 mb-4">
                     这些节点只有输入或只有输出，使用单侧布局，更加简洁
                 </p>
-                <div style={gridStyle}>
-                    <div style={nodeContainerStyle}>
+                <div className={gridClasses}>
+                    <div className={nodeContainerClasses}>
                         <StartNode data={testData.startNodeData} />
                     </div>
-                    <div style={nodeContainerStyle}>
+                    <div className={nodeContainerClasses}>
                         <EndNode data={testData.endNodeData} />
                     </div>
                 </div>
             </div>
 
             {/* 多层结构节点 */}
-            <div style={sectionStyle}>
-                <h2 style={titleStyle}>多层结构节点</h2>
-                <p style={{ color: '#ccc', marginBottom: '15px' }}>
+            <div className={sectionClasses}>
+                <h2 className={titleClasses}>多层结构节点</h2>
+                <p className="text-gray-300 mb-4">
                     展示支持多层输入输出的节点，每个连接点与对应的内容层平行对齐
                 </p>
-                <div style={gridStyle}>
-                    <div style={nodeContainerStyle}>
+                <div className={gridClasses}>
+                    <div className={nodeContainerClasses}>
                         <ExampleCustomNode data={testData.multiLayerData} />
                     </div>
                 </div>
             </div>
 
             {/* 功能说明 */}
-            <div style={sectionStyle}>
-                <h2 style={titleStyle}>重构功能说明</h2>
-                <div style={{ color: '#ccc', lineHeight: '1.6' }}>
-                    <h3 style={{ color: '#fff', marginBottom: '10px' }}>主要改进：</h3>
-                    <ul style={{ paddingLeft: '20px' }}>
+            <div className={sectionClasses}>
+                <h2 className={titleClasses}>重构功能说明</h2>
+                <div className="text-gray-300 leading-relaxed">
+                    <h3 className="text-white mb-3">主要改进：</h3>
+                    <ul className="list-disc pl-5">
                         <li><strong>智能布局：</strong>根据节点类型自动选择单侧或双侧布局</li>
                         <li><strong>规范尺寸：</strong>统一节点大小，提供更好的视觉一致性</li>
                         <li><strong>单侧优化：</strong>只有输入或输出的节点使用单侧布局，避免空白区域</li>
@@ -185,16 +151,16 @@ const NodeStyleTest = () => {
                         <li><strong>连接点标签：</strong>支持为连接点添加标签，提高可读性</li>
                     </ul>
 
-                    <h3 style={{ color: '#fff', marginTop: '20px', marginBottom: '10px' }}>布局规则：</h3>
-                    <ul style={{ paddingLeft: '20px' }}>
+                    <h3 className="text-white mt-5 mb-3">布局规则：</h3>
+                    <ul className="list-disc pl-5">
                         <li><strong>双侧布局：</strong>当节点既有输入又有输出时使用</li>
                         <li><strong>单侧布局：</strong>当节点只有输入或只有输出时使用</li>
                         <li><strong>尺寸规范：</strong>最小宽度160px，最大宽度280px，响应式调整</li>
                         <li><strong>内容显示：</strong>单层内容使用简化显示，多层内容使用标准显示</li>
                     </ul>
 
-                    <h3 style={{ color: '#fff', marginTop: '20px', marginBottom: '10px' }}>使用方法：</h3>
-                    <ul style={{ paddingLeft: '20px' }}>
+                    <h3 className="text-white mt-5 mb-3">使用方法：</h3>
+                    <ul className="list-disc pl-5">
                         <li>通过 <code>leftLayers</code> 和 <code>rightLayers</code> 数组定义内容层</li>
                         <li>通过 <code>handles</code> 数组定义连接点，使用 <code>layerIndex</code> 指定对应层</li>
                         <li>每个连接点可以添加 <code>label</code> 属性显示标签</li>

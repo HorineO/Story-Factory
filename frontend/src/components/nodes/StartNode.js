@@ -8,7 +8,7 @@ import BaseNodeTemplate from './BaseNodeTemplate';
 const StartNode = ({ data }) => {
     // 自定义头部内容
     const customHeader = (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div className="flex items-center gap-1">
             <span>▶️</span>
             <span>{data.label || '开始节点'}</span>
         </div>
