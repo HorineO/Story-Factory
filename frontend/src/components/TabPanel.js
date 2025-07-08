@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 // import './TabPanel.css'; // Tailwind migration: old styles removed
 import useStore from '../stores/useStore';
 
@@ -12,7 +13,8 @@ const TabPanel = ({ tabs }) => {
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
-                        className={`px-3 py-1 font-bold text-sm focus:outline-none ${activeTab === tab.id ? 'bg-gray-600 text-white border-b-2 border-blue-500' : 'text-gray-300 hover:bg-gray-600'}`}
+                        className={clsx('tab-btn',
+                            activeTab === tab.id ? 'bg-gray-600 text-white border-b-2 border-blue-500' : 'text-gray-300 hover:bg-gray-600')}
                         onClick={() => setActiveTab(tab.id)}
                     >
                         {tab.label}

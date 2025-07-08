@@ -4,12 +4,13 @@
  */
 // frontend/src/pages/HomePage.js
 // 此文件作为Homepage应用程序的主入口点，负责导入和组合各个模块。
-import React from 'react';
+import React, { Suspense } from 'react';
 import { ReactFlowProvider } from 'reactflow';
-import NavigationBar from '../components/NavigationBar';
-import FlowCanvas from '../components/FlowCanvas';
 import NodeStateManager from './NodeStateManager';
 import FileSystemHandler from './FileSystemHandler';
+
+const NavigationBar = React.lazy(() => import('../components/NavigationBar'));
+const FlowCanvas = React.lazy(() => import('../components/FlowCanvas'));
 
 const HomePage = () => {
     return (
@@ -20,11 +21,15 @@ const HomePage = () => {
                         {(fileProps) => (
                             <>
                                 <div className="flex flex-col h-full">
-                                    <NavigationBar
-                                        onSave={fileProps.handleSave}
-                                        onOpen={fileProps.handleOpen}
-                                    />
-                                    <FlowCanvas {...nodeProps} />
+                                    <Suspense fallback={<div className="text-white p-4">Loading UI...</div>}>
+                                        <NavigationBar
+                                            onSave={fileProps.handleSave}
+                                            onOpen={fileProps.handleOpen}
+                                        />
+                                    </Suspense>
+                                    <Suspense fallback={<div className="flex-1 flex items-center justify-center text-white">Loading Canvas...</div>}>
+                                        <FlowCanvas {...nodeProps} />
+                                    </Suspense>
                                 </div>
                             </>
                         )}

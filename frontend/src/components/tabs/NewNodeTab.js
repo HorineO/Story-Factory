@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-// import './NewNodeTab.css'; // Tailwind migration: old styles removed
+import { useTranslation } from 'react-i18next';
 
 const NewNodeTab = ({ onDragStart }) => {
     const [isBasicNodesCollapsed, setIsBasicNodesCollapsed] = useState(false);
+    const { t } = useTranslation();
 
     // 根据节点类型返回颜色类
     const typeClasses = (type) => {
@@ -28,17 +29,17 @@ const NewNodeTab = ({ onDragStart }) => {
                 className="bg-gray-800 text-white px-4 py-2 cursor-pointer rounded mb-2 font-bold flex justify-between items-center hover:bg-gray-700 select-none"
                 onClick={() => setIsBasicNodesCollapsed(!isBasicNodesCollapsed)}
             >
-                <span>基础节点</span>
+                <span>{t('newNode.basicNodes')}</span>
                 <span>{isBasicNodesCollapsed ? '▼' : '▲'}</span>
             </div>
             {!isBasicNodesCollapsed && (
                 <div className="py-1 border-t border-gray-700">
                     {[
-                        { type: 'generate', label: '生成节点' },
-                        { type: 'text', label: '文本节点' },
-                        { type: 'chapter', label: '章节节点' },
-                        { type: 'start', label: '开始节点' },
-                        { type: 'end', label: '结束节点' },
+                        { type: 'generate', label: t('newNode.generateNode') },
+                        { type: 'text', label: t('newNode.textNode') },
+                        { type: 'chapter', label: t('newNode.chapterNode') },
+                        { type: 'start', label: t('newNode.startNode') },
+                        { type: 'end', label: t('newNode.endNode') },
                     ].map((node) => (
                         <div
                             key={node.type}

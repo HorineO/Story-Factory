@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import useStore from '../../stores/useStore';
 import { API_BASE_URL } from '../../config';
+import { useTranslation } from 'react-i18next';
 
 const NodePropertiesTab = () => {
+    const { t } = useTranslation();
     const selectedNode = useStore((state) => state.selectedNode);
     const updateNodeText = useStore((state) => state.updateNodeText);
     const [nodeText, setNodeText] = useState('');
@@ -32,34 +34,27 @@ const NodePropertiesTab = () => {
     };
 
     return (
-        <div style={{ padding: '10px', color: 'white' }}>
+        <div className="p-2 text-white">
             {selectedNode ? (
                 <div>
-                    <h3>节点属性</h3>
-                    <p>ID: {selectedNode.id}</p>
-                    <p>类型: {selectedNode.type}</p>
+                    <h3 className="text-lg font-bold mb-2">{t('nodeProps.header')}</h3>
+                    <p className="mb-1">{t('nodeProps.id')}: {selectedNode.id}</p>
+                    <p className="mb-2">{t('nodeProps.type')}: {selectedNode.type}</p>
                     {selectedNode.type === 'text' && (
-                        <div style={{ marginTop: '10px' }}>
-                            <label htmlFor="nodeText" style={{ display: 'block', marginBottom: '5px' }}>文本内容:</label>
+                        <div className="mt-2">
+                            <label htmlFor="nodeText" className="block mb-1">{t('nodeProps.textContent')}:</label>
                             <textarea
                                 id="nodeText"
                                 value={nodeText}
                                 onChange={handleTextChange}
-                                style={{
-                                    width: '100%',
-                                    minHeight: '100px',
-                                    backgroundColor: '#333',
-                                    color: 'white',
-                                    border: '1px solid #555',
-                                    padding: '5px',
-                                    boxSizing: 'border-box'
-                                }}
+                                className="w-full min-h-[100px] bg-gray-800 text-white border border-gray-600 p-2 box-border"
                             />
                         </div>
                     )}
                     {selectedNode.type === 'generate' && (
-                        <div style={{ marginTop: '10px' }}>
+                        <div className="mt-2">
                             <button
+                                className="btn bg-blue-600 hover:bg-blue-500 mb-2"
                                 onClick={async () => {
                                     setIsGenerating(true);
                                     try {
@@ -80,79 +75,43 @@ const NodePropertiesTab = () => {
                                         setNodeText(generatedContent); // Update local state for preview
                                     } catch (error) {
                                         console.error('Error generating content:', error);
-                                        alert('生成内容失败: ' + error.message);
+                                        alert(t('nodeProps.generateFail', { msg: error.message }));
                                     } finally {
                                         setIsGenerating(false);
                                     }
                                 }}
-                                style={{
-                                    padding: '8px 15px',
-                                    backgroundColor: '#007bff',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
-                                    marginBottom: '10px'
-                                }}
                             >
                                 {isGenerating ? (
-                                    <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-                                        <span style={{
-                                            display: 'inline-block',
-                                            width: '16px',
-                                            height: '16px',
-                                            border: '2px solid rgba(255,255,255,0.3)',
-                                            borderRadius: '50%',
-                                            borderTopColor: 'white',
-                                            animation: 'spin 1s linear infinite',
-                                            marginRight: '8px'
-                                        }}></span>
-                                        生成中...
+                                    <span className="inline-flex items-center">
+                                        <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                                        {t('nodeProps.generating')}
                                     </span>
-                                ) : '生成'}
+                                ) : t('nodeProps.generate')}
                             </button>
-                            <label htmlFor="generatedTextPreview" style={{ display: 'block', marginBottom: '5px' }}>生成内容预览:</label>
+                            <label htmlFor="generatedTextPreview" className="block mb-1">{t('nodeProps.generatePreview')}:</label>
                             <textarea
                                 id="generatedTextPreview"
                                 value={nodeText} // Use nodeText for preview
                                 readOnly
-                                style={{
-                                    width: '100%',
-                                    minHeight: '150px',
-                                    backgroundColor: '#333',
-                                    color: 'white',
-                                    border: '1px solid #555',
-                                    padding: '5px',
-                                    boxSizing: 'border-box',
-                                    resize: 'vertical'
-                                }}
+                                className="w-full min-h-[150px] bg-gray-800 text-white border border-gray-600 p-2 resize-y"
                             />
                         </div>
                     )}
                     {selectedNode.type === 'chapter' && (
-                        <div style={{ marginTop: '10px' }}>
-                            <label htmlFor="chapterTextPreview" style={{ display: 'block', marginBottom: '5px' }}>章节内容预览:</label>
+                        <div className="mt-2">
+                            <label htmlFor="chapterTextPreview" className="block mb-1">{t('nodeProps.chapterPreview')}:</label>
                             <textarea
                                 id="chapterTextPreview"
                                 value={nodeText} // Use nodeText for preview
                                 readOnly
-                                style={{
-                                    width: '100%',
-                                    minHeight: '150px',
-                                    backgroundColor: '#333',
-                                    color: 'white',
-                                    border: '1px solid #555',
-                                    padding: '5px',
-                                    boxSizing: 'border-box',
-                                    resize: 'vertical'
-                                }}
+                                className="w-full min-h-[150px] bg-gray-800 text-white border border-gray-600 p-2 resize-y"
                             />
                         </div>
                     )}
                     <p>数据: {JSON.stringify(selectedNode.data)}</p>
                 </div>
             ) : (
-                <p>请选择一个节点以查看其属性。</p>
+                <p>{t('nodeProps.selectPrompt')}</p>
             )}
         </div>
     );
