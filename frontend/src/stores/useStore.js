@@ -134,6 +134,18 @@ const useStore = create((set, get) => ({
         : selectedNode;
 
       set({ nodes: updatedNodes, selectedNode: newSelectedNode });
+
+      // 将数据同步到后端，确保刷新后目标节点仍保留该字段
+      try {
+        if (inputKey === 'text') {
+          // 专门的文本字段更新接口
+          await updateNodeTextApi(targetId, valueToTransfer);
+        } else {
+          // TODO: 如果未来需要支持其他字段，可在此添加通用更新逻辑
+        }
+      } catch (syncError) {
+        console.error('Failed to persist node data to backend:', syncError);
+      }
     } catch (error) {
       console.error('Error adding edge:', error);
     }
