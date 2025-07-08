@@ -14,6 +14,7 @@ module.exports = {
         surfacebg: '#333333',
         borderdark: '#444444',
         borderlight: '#555555',
+        'flow-grid': '#cccccc',
       },
     },
   },

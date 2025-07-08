@@ -74,23 +74,23 @@ const NodeStyleTest = () => {
         }
     };
 
-    // Tailwind utility classes with custom palette/component classes
+    // Using component classes
     const containerClasses = 'page-container';
     const sectionClasses = 'section-box';
-    const titleClasses = 'text-white text-lg font-bold mb-4 border-b-2 border-borderlight pb-2';
-    const gridClasses = 'grid gap-5 sm:grid-cols-2 md:grid-cols-3 mt-4';
+    const titleClasses = 'section-title';
+    const gridClasses = 'content-grid';
     const nodeContainerClasses = 'node-box';
 
     return (
         <div className={containerClasses}>
-            <h1 className="text-white text-center mb-8 text-2xl font-bold">
+            <h1 className="page-title">
                 节点样式重构测试
             </h1>
 
             {/* 双侧节点类型（有输入有输出） */}
             <div className={sectionClasses}>
                 <h2 className={titleClasses}>双侧节点类型（有输入有输出）</h2>
-                <p className="text-gray-300 mb-4">
+                <p className="text-content mb-4">
                     这些节点既有输入又有输出，使用左右两侧布局
                 </p>
                 <div className={gridClasses}>
@@ -109,7 +109,7 @@ const NodeStyleTest = () => {
             {/* 单侧节点类型（只有输入或只有输出） */}
             <div className={sectionClasses}>
                 <h2 className={titleClasses}>单侧节点类型（只有输入或只有输出）</h2>
-                <p className="text-gray-300 mb-4">
+                <p className="text-content mb-4">
                     这些节点只有输入或只有输出，使用单侧布局，更加简洁
                 </p>
                 <div className={gridClasses}>
@@ -125,7 +125,7 @@ const NodeStyleTest = () => {
             {/* 多层结构节点 */}
             <div className={sectionClasses}>
                 <h2 className={titleClasses}>多层结构节点</h2>
-                <p className="text-gray-300 mb-4">
+                <p className="text-content mb-4">
                     展示支持多层输入输出的节点，每个连接点与对应的内容层平行对齐
                 </p>
                 <div className={gridClasses}>
@@ -138,9 +138,9 @@ const NodeStyleTest = () => {
             {/* 功能说明 */}
             <div className={sectionClasses}>
                 <h2 className={titleClasses}>重构功能说明</h2>
-                <div className="text-gray-300 leading-relaxed">
+                <div className="text-content">
                     <h3 className="text-white mb-3">主要改进：</h3>
-                    <ul className="list-disc pl-5">
+                    <ul className="text-content-list">
                         <li><strong>智能布局：</strong>根据节点类型自动选择单侧或双侧布局</li>
                         <li><strong>规范尺寸：</strong>统一节点大小，提供更好的视觉一致性</li>
                         <li><strong>单侧优化：</strong>只有输入或输出的节点使用单侧布局，避免空白区域</li>
@@ -152,7 +152,7 @@ const NodeStyleTest = () => {
                     </ul>
 
                     <h3 className="text-white mt-5 mb-3">布局规则：</h3>
-                    <ul className="list-disc pl-5">
+                    <ul className="text-content-list">
                         <li><strong>双侧布局：</strong>当节点既有输入又有输出时使用</li>
                         <li><strong>单侧布局：</strong>当节点只有输入或只有输出时使用</li>
                         <li><strong>尺寸规范：</strong>最小宽度160px，最大宽度280px，响应式调整</li>
@@ -160,7 +160,7 @@ const NodeStyleTest = () => {
                     </ul>
 
                     <h3 className="text-white mt-5 mb-3">使用方法：</h3>
-                    <ul className="list-disc pl-5">
+                    <ul className="text-content-list">
                         <li>通过 <code>leftLayers</code> 和 <code>rightLayers</code> 数组定义内容层</li>
                         <li>通过 <code>handles</code> 数组定义连接点，使用 <code>layerIndex</code> 指定对应层</li>
                         <li>每个连接点可以添加 <code>label</code> 属性显示标签</li>

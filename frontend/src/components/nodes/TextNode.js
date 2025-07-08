@@ -8,7 +8,7 @@ import BaseNodeTemplate from './BaseNodeTemplate';
 const TextNode = ({ data }) => {
     // 自定义头部内容
     const customHeader = (
-        <div className="flex items-center gap-1">
+        <div className="flex-center">
             <span>📝</span>
             <span>{data.label || '文本节点'}</span>
         </div>

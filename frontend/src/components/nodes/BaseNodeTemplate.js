@@ -61,9 +61,9 @@ const BaseNodeTemplate = ({
     const baseClasses = `rounded-md shadow-lg text-xs text-gray-200 overflow-hidden min-w-[160px] max-w-[280px] flex flex-col transition-all duration-300 bg-gray-800 border-2 ${colorStyle.border} ${additionalClasses}`;
     const headerClasses = `px-2 py-1 font-bold flex items-center justify-center min-h-[24px] border-b border-white/10 ${colorStyle.headerBg}`;
     const bodyClasses = 'flex min-h-[40px] bg-gray-700';
-    const leftContentClasses = 'flex-1 p-1.5 flex flex-col gap-1 border-r border-white/10';
-    const rightContentClasses = 'flex-1 p-1.5 flex flex-col gap-1';
-    const singleContentClasses = 'flex-1 p-2 flex flex-col gap-1 justify-center items-center';
+    const leftContentClasses = 'flex-1 p-1.5 flex-col-center border-r border-white/10';
+    const rightContentClasses = 'flex-1 p-1.5 flex-col-center';
+    const singleContentClasses = 'flex-1 p-2 flex-col-center justify-center items-center';
     const contentLayerClass = 'px-1.5 py-1 bg-white/5 rounded border border-white/10 min-h-[18px] flex items-center text-[11px] text-gray-400 transition hover:bg-white/10 hover:border-white/20 break-words';
     const singleLayerClass = 'px-2 py-1 bg-white/5 rounded border border-white/10 min-h-[20px] flex items-center justify-center text-[11px] text-gray-400 text-center break-words';
 

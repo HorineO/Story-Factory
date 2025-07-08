@@ -76,7 +76,7 @@ class NodeFactory {
 
         // 创建自定义头部
         const customHeader = (
-            <div className="flex items-center gap-1">
+            <div className="flex-center">
                 <span>{config.icon}</span>
                 <span>{nodeData.label}</span>
             </div>

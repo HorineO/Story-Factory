@@ -49,4 +49,50 @@ code {
     .node-box {
         @apply flex justify-center p-2.5 bg-surfacebg rounded-md border border-borderlight;
     }
+
+    /* Button variants */
+    .btn-primary {
+        @apply btn bg-blue-600 hover:bg-blue-500 text-white;
+    }
+
+    .btn-secondary {
+        @apply btn text-white;
+    }
+
+    /* Layout components */
+    .flex-center {
+        @apply flex items-center gap-1;
+    }
+
+    .flex-col-center {
+        @apply flex flex-col gap-1;
+    }
+
+    .card-container {
+        @apply max-w-[1200px] mx-auto bg-panelbg rounded-lg p-5 shadow-lg;
+    }
+
+    .page-title {
+        @apply text-white text-center mb-8 text-2xl font-bold;
+    }
+
+    .section-title {
+        @apply text-white text-lg font-bold mb-4 border-b-2 border-borderlight pb-2;
+    }
+
+    .content-grid {
+        @apply grid gap-5 sm:grid-cols-2 md:grid-cols-3 mt-4;
+    }
+
+    .info-box {
+        @apply bg-surfacebg p-4 rounded-md mb-5 border border-borderlight;
+    }
+
+    .text-content {
+        @apply text-gray-300 leading-relaxed;
+    }
+
+    .text-content-list {
+        @apply text-gray-300 leading-relaxed list-disc pl-5;
+    }
 }

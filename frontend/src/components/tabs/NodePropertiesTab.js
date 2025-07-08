@@ -54,7 +54,7 @@ const NodePropertiesTab = () => {
                     {selectedNode.type === 'generate' && (
                         <div className="mt-2">
                             <button
-                                className="btn bg-blue-600 hover:bg-blue-500 mb-2"
+                                className="btn-primary mb-2"
                                 onClick={async () => {
                                     setIsGenerating(true);
                                     try {
