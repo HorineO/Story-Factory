@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; // 导入 useNavigate
+import { useTranslation } from 'react-i18next';
 // import './NavigationBar.css'; // Tailwind migration: old styles removed
 import FileMenu from './nav/FileMenu';
 import EditMenu from './nav/EditMenu';
@@ -11,15 +12,24 @@ import HelpMenu from './nav/HelpMenu';
 
 const NavigationBar = ({ onSave, onOpen }) => {
     const navigate = useNavigate(); // 获取 navigate 函数
+    const { t } = useTranslation();
 
     const handleNavigation = (path) => {
         navigate(path); // 使用 navigate 进行路由跳转
     };
 
     return (
-        <nav className="w-full bg-gray-700 border border-black px-5 py-1 text-white box-border">
+        <nav role="navigation" aria-label="Main navigation" className="w-full bg-gray-700 border border-black px-5 py-1 text-white box-border">
             <ul className="flex items-center space-x-1">
-                <li><button className="px-2 py-1 text-xs text-white rounded-md hover:bg-white/10 focus:outline-none focus-visible:ring focus-visible:ring-white/50" onClick={() => handleNavigation('/')}>主页</button></li>
+                <li>
+                    <button
+                        aria-label={t('nav.home')}
+                        className="px-2 py-1 text-xs text-white rounded-md hover:bg-white/10 focus:outline-none focus-visible:ring focus-visible:ring-white/50"
+                        onClick={() => handleNavigation('/')}
+                    >
+                        {t('nav.home')}
+                    </button>
+                </li>
                 <FileMenu onSave={onSave} onOpen={onOpen} />
                 <EditMenu />
                 <HelpMenu onNavigate={handleNavigation} />
