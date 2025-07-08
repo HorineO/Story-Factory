@@ -34,7 +34,7 @@ const useStore = create((set, get) => ({
   setActiveTab: (tabId) => set({ activeTab: tabId }),
   setSelectedNode: (node) => set({ selectedNode: node }),
   setContextMenu: (menuData) => set({ contextMenu: menuData }),
-  onNodeClick: (event, node) => set({ selectedNode: node }),
+  onNodeClick: (event, node) => set({ selectedNode: node, activeTab: 'tab4' }),
   onPaneClick: () => set({ selectedNode: null }),
   fetchNodesAndEdges: async () => {
     try {
