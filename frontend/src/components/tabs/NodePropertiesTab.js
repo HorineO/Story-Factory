@@ -7,6 +7,7 @@ const NodePropertiesTab = () => {
     const { t } = useTranslation();
     const selectedNode = useStore((state) => state.selectedNode);
     const updateNodeText = useStore((state) => state.updateNodeText);
+    const updateNodeGenerate = useStore((state) => state.updateNodeGenerate);
     const [nodeText, setNodeText] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
 
@@ -15,11 +16,10 @@ const NodePropertiesTab = () => {
         if (selectedNode && selectedNode.type === 'text') {
             setNodeText(selectedNode.data.text || '');
         } else if (selectedNode && selectedNode.type === 'generate') {
-            setNodeText(selectedNode.data.text || selectedNode.data.generatedText || ''); // Support both data.text and data.generatedText
+            setNodeText(selectedNode.data.generate || '');
         } else if (selectedNode && selectedNode.type === 'chapter') {
             setNodeText(selectedNode.data.chapterText || ''); // Assuming chapterText will be stored in node data
-        }
-        else {
+        } else {
             setNodeText('');
         }
     }, [selectedNode]);
@@ -58,12 +58,12 @@ const NodePropertiesTab = () => {
                                 onClick={async () => {
                                     setIsGenerating(true);
                                     try {
-                                        const response = await fetch(`${API_BASE_URL}/api/generate/basic_straight`, {
+                                        const response = await fetch(`${API_BASE_URL}/api/generate/`, {
                                             method: 'POST',
                                             headers: {
                                                 'Content-Type': 'application/json',
                                             },
-                                            body: JSON.stringify({ nodeId: selectedNode.id }), // Pass node ID if needed by backend
+                                            body: JSON.stringify({ user_content: selectedNode.data.text }), // Send data.text directly
                                         });
                                         if (!response.ok) {
                                             throw new Error(`HTTP error! status: ${response.status}`);
@@ -71,7 +71,7 @@ const NodePropertiesTab = () => {
                                         const data = await response.json();
                                         // Assuming the API returns an object with a 'generated_text' field
                                         const generatedContent = data.generated_text || 'No content generated.';
-                                        updateNodeText(selectedNode.id, generatedContent); // Update the node's text
+                                        updateNodeGenerate(selectedNode.id, generatedContent); // Update the node's generate field
                                         setNodeText(generatedContent); // Update local state for preview
                                     } catch (error) {
                                         console.error('Error generating content:', error);

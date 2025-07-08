@@ -239,6 +239,20 @@ const useStore = create((set, get) => ({
       }));
     }
   },
+
+  // 添加新的方法以在前端存储生成结果
+  updateNodeGenerate: (nodeId, generatedText) => {
+    set((state) => ({
+      nodes: state.nodes.map((node) =>
+        node.id === nodeId ? { ...node, data: { ...node.data, generate: generatedText } } : node
+      ),
+      // 同步更新 selectedNode（如果当前选中）
+      selectedNode: state.selectedNode && state.selectedNode.id === nodeId
+        ? { ...state.selectedNode, data: { ...state.selectedNode.data, generate: generatedText } }
+        : state.selectedNode,
+    }));
+    // TODO: 如果后端未来支持存储 generate 字段，可在此处添加 API 调用
+  },
 }));
 
 export default useStore;
