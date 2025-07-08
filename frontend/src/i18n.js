@@ -8,7 +8,17 @@ const resources = {
                 'home': 'Home',
                 'file': 'File',
                 'edit': 'Edit',
-                'help': 'Help'
+                'help': 'Help',
+                'about': 'About',
+                'saveFile': 'Save Node Project',
+                'openFile': 'Open Node Project',
+                'newFile': 'New Node Project',
+                'undo': 'Undo (Ctrl+Z)',
+                'redo': 'Redo (Ctrl+Y)',
+                'cut': 'Cut',
+                'copy': 'Copy',
+                'paste': 'Paste',
+                'newNode': 'New Node',
             }
         }
     },
@@ -18,7 +28,17 @@ const resources = {
                 'home': '主页',
                 'file': '文件',
                 'edit': '编辑',
-                'help': '帮助'
+                'help': '帮助',
+                'about': '关于',
+                'saveFile': '保存节点项目文件',
+                'openFile': '打开节点项目文件',
+                'newFile': '新建节点项目文件',
+                'undo': '撤销(Ctrl+Z)',
+                'redo': '重做(Ctrl+Y)',
+                'cut': '剪切',
+                'copy': '复制',
+                'paste': '粘贴',
+                'newNode': '新建节点',
             }
         }
     }

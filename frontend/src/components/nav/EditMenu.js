@@ -3,18 +3,21 @@
  * @description 编辑操作相关的导航菜单组件
  */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
 const EditMenu = () => {
+    const { t } = useTranslation();
     return (
         <li className="relative group">
-            <button className="px-2 py-1 text-xs text-white rounded-md hover:bg-white/10 focus:outline-none focus-visible:ring focus-visible:ring-white/50">编辑</button>
+            <button className="btn text-white">{t('nav.edit')}</button>
             <div className="absolute left-0 mt-1 hidden w-40 max-h-72 overflow-y-auto rounded-md bg-gray-700 shadow-lg z-10 group-hover:block">
-                <button className="block w-full text-left px-4 py-1 text-xs text-white hover:bg-white/10 truncate focus:outline-none focus-visible:ring focus-visible:ring-white/50">撤销(Ctrl+Z)</button>
-                <button className="block w-full text-left px-4 py-1 text-xs text-white hover:bg-white/10 truncate">重做(Ctrl+Y)</button>
-                <button className="block w-full text-left px-4 py-1 text-xs text-white hover:bg-white/10 truncate">剪切(Ctrl+X)</button>
-                <button className="block w-full text-left px-4 py-1 text-xs text-white hover:bg-white/10 truncate">复制(Ctrl+C)</button>
-                <button className="block w-full text-left px-4 py-1 text-xs text-white hover:bg-white/10 truncate">粘贴(Ctrl+V)</button>
-                <button className="block w-full text-left px-4 py-1 text-xs text-white hover:bg-white/10 truncate">新建节点</button>
+                <button className="dropdown-item">{t('nav.undo')}</button>
+                <button className="dropdown-item">{t('nav.redo')}</button>
+                <button className={clsx('dropdown-item')}>{t('nav.cut')}</button>
+                <button className="dropdown-item">{t('nav.copy')}</button>
+                <button className="dropdown-item">{t('nav.paste')}</button>
+                <button className="dropdown-item">{t('nav.newNode')}</button>
             </div>
         </li>
     );

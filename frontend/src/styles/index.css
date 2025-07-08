@@ -22,3 +22,13 @@ code {
         transform: rotate(360deg);
     }
 }
+
+@layer components {
+    .btn {
+        @apply px-2 py-1 text-xs rounded-md hover:bg-white/10 focus:outline-none focus-visible:ring focus-visible:ring-white/50 transition;
+    }
+
+    .dropdown-item {
+        @apply block w-full text-left px-4 py-1 text-xs text-white hover:bg-white/10 truncate focus:outline-none focus-visible:ring focus-visible:ring-white/50;
+    }
+}
