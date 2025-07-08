@@ -7,13 +7,13 @@ import NodeStyleTest from './NodeStyleTest';
  */
 const NodeSystemTest = () => {
     return (
-        <div className="bg-[#1a1a1a] min-h-screen p-5">
-            <div className="max-w-[1200px] mx-auto bg-[#2a2a2a] rounded-lg p-5 shadow-lg">
+        <div className="page-container">
+            <div className="max-w-[1200px] mx-auto bg-panelbg rounded-lg p-5 shadow-lg">
                 <h1 className="text-white text-center mb-8 text-2xl font-bold">
                     节点系统重构测试
                 </h1>
 
-                <div className="bg-[#333] p-4 rounded-md mb-5 border border-[#555]">
+                <div className="bg-surfacebg p-4 rounded-md mb-5 border border-borderlight">
                     <h2 className="text-white text-lg mb-2">
                         测试说明
                     </h2>

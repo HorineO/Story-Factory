@@ -74,12 +74,12 @@ const NodeStyleTest = () => {
         }
     };
 
-    // Tailwind utility classes
-    const containerClasses = 'p-5 bg-[#1a1a1a] min-h-screen flex flex-col gap-5';
-    const sectionClasses = 'bg-[#2a2a2a] p-5 rounded-lg border border-[#444]';
-    const titleClasses = 'text-white text-lg font-bold mb-4 border-b-2 border-[#555] pb-2';
+    // Tailwind utility classes with custom palette/component classes
+    const containerClasses = 'page-container';
+    const sectionClasses = 'section-box';
+    const titleClasses = 'text-white text-lg font-bold mb-4 border-b-2 border-borderlight pb-2';
     const gridClasses = 'grid gap-5 sm:grid-cols-2 md:grid-cols-3 mt-4';
-    const nodeContainerClasses = 'flex justify-center p-2.5 bg-[#333] rounded-md border border-[#555]';
+    const nodeContainerClasses = 'node-box';
 
     return (
         <div className={containerClasses}>

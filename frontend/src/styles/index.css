@@ -36,4 +36,17 @@ code {
         @apply px-3 py-1 font-bold text-sm whitespace-nowrap focus:outline-none;
         /* base */
     }
+
+    /* Reusable layout components */
+    .page-container {
+        @apply p-5 bg-darkbg min-h-screen flex flex-col gap-5;
+    }
+
+    .section-box {
+        @apply bg-panelbg p-5 rounded-lg border border-borderdark;
+    }
+
+    .node-box {
+        @apply flex justify-center p-2.5 bg-surfacebg rounded-md border border-borderlight;
+    }
 }
