@@ -1,6 +1,4 @@
-flask-socketio==5.3.6
-flask
-flask-cors
+# 已迁移至 FastAPI 环境，移除 Flask 依赖
 pydantic>=2.0
 pydantic-settings
 fastapi

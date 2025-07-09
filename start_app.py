@@ -43,13 +43,10 @@ def install_dependencies():
                 "-m",
                 "pip",
                 "install",
-                # New FastAPI stack
+                # FastAPI 依赖
                 "fastapi",
                 "uvicorn[standard]",
                 "python-socketio[asgi]",
-                # Keep Flask dependencies for legacy compatibility
-                "Flask",
-                "Flask-CORS",
             ],
             stdout=subprocess.DEVNULL,  # 隐藏pip的详细输出
             stderr=subprocess.PIPE,
