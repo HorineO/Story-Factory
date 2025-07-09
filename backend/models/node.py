@@ -10,6 +10,7 @@ class Node:
         node_type: str,
         data: Dict[str, Any],
         position: Dict[str, float],
+        source: Optional[Dict[str, Any]] = None,
         source_position: Optional[str] = None,
         target_position: Optional[str] = None,
         node_id: Optional[str] = None,
@@ -20,6 +21,10 @@ class Node:
             "data": data,
             "position": position,
         }
+
+        # Persist source mapping (input/output field mapping) if provided
+        if source is not None:
+            node["source"] = source
         if source_position:
             node["sourcePosition"] = source_position
         if target_position:

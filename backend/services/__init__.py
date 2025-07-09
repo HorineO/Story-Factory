@@ -25,6 +25,7 @@ class NodeService:
         position = node_data.get("position", {"x": 0, "y": 0})
         source_position = node_data.get("sourcePosition")
         target_position = node_data.get("targetPosition")
+        source_mapping = node_data.get("source")
 
         # Text node template
         if node_type == "text":
@@ -39,13 +40,14 @@ class NodeService:
             node_type=node_type,
             data=data,
             position=position,
+            source=source_mapping,
             source_position=source_position,
             target_position=target_position,
         )
         return self.db.add(new_node)
 
     def update_node(self, node_id: str, node_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        update_data = {k: node_data[k] for k in ("type", "data", "position") if k in node_data}
+        update_data = {k: node_data[k] for k in ("type", "data", "position", "source") if k in node_data}
         return self.db.update(node_id, update_data)
 
     def update_node_text(self, node_id: str, text: str) -> Optional[Dict[str, Any]]:
