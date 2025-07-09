@@ -46,9 +46,12 @@ class NodeDatabase:
         return None
 
     def update_position(self, node_id: str, x: float, y: float) -> Optional[Dict[str, Any]]:
+        # Round coordinates to 3 decimal places to avoid unnecessary precision
+        x_rounded = round(x, 3)
+        y_rounded = round(y, 3)
         for i, node in enumerate(self._nodes):
             if node["id"] == node_id:
-                self._nodes[i]["position"] = {"x": x, "y": y}
+                self._nodes[i]["position"] = {"x": x_rounded, "y": y_rounded}
                 return self._nodes[i]
         return None
 

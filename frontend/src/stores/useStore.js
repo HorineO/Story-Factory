@@ -73,8 +73,8 @@ const useStore = create((set, get) => ({
         if (node) {
           socket.emit('node_move', {
             nodeId: node.id,
-            x: node.position.x,
-            y: node.position.y
+            x: Math.round(node.position.x * 1000) / 1000,
+            y: Math.round(node.position.y * 1000) / 1000
           });
         }
       }

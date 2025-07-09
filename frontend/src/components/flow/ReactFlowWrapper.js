@@ -77,6 +77,10 @@ const ReactFlowWrapper = ({
             y: event.clientY,
         });
 
+        // Round position coordinates to 3 decimal places for reasonable precision
+        position.x = Math.round(position.x * 1000) / 1000;
+        position.y = Math.round(position.y * 1000) / 1000;
+
         const newNodeData = {
             type,
             position,
