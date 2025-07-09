@@ -38,7 +38,19 @@ def install_dependencies():
     print("安装后端依赖...")
     try:
         subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "Flask", "Flask-CORS"],
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                # New FastAPI stack
+                "fastapi",
+                "uvicorn[standard]",
+                "python-socketio[asgi]",
+                # Keep Flask dependencies for legacy compatibility
+                "Flask",
+                "Flask-CORS",
+            ],
             stdout=subprocess.DEVNULL,  # 隐藏pip的详细输出
             stderr=subprocess.PIPE,
         )
@@ -64,7 +76,17 @@ def install_dependencies():
 def start_backend():
     print("启动后端服务...")
     process = subprocess.Popen(
-        [sys.executable, _get_project_path(os.path.join("backend", "app.py"))],
+        [
+            sys.executable,
+            "-m",
+            "uvicorn",
+            "backend.fastapi_app:app",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "5000",
+            "--reload",
+        ],
         stdout=sys.stdout,
         stderr=sys.stderr,
     )
