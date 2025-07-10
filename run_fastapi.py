@@ -82,6 +82,57 @@ def _install_dependencies(skip_frontend: bool) -> None:
             print(f"安装前端依赖失败: {exc.stderr.decode().strip()}")
             sys.exit(1)
 
+# ---------------------------------------------------------------------------
+# 端口占用检测与清理
+# ---------------------------------------------------------------------------
+
+def _get_pids_on_port(port: int) -> List[int]:
+    """
+    返回正在监听给定 TCP 端口的所有进程 PID 列表。支持 Windows 与类 Unix 系统。
+    """
+    try:
+        if sys.platform.startswith("win"):
+            output = subprocess.check_output(
+                ["netstat", "-ano"],
+                text=True,
+                stderr=subprocess.DEVNULL,
+            )
+            pids: List[int] = []
+            for line in output.splitlines():
+                if f":{port} " in line and "LISTENING" in line.upper():
+                    parts = line.split()
+                    if parts and parts[-1].isdigit():
+                        pids.append(int(parts[-1]))
+            return pids
+        else:
+            output = subprocess.check_output(
+                ["lsof", "-ti", f":{port}"],
+                text=True,
+                stderr=subprocess.DEVNULL,
+            )
+            return [int(pid) for pid in output.split()]
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return []
+
+def _free_port(port: int) -> None:
+    """若端口被占用则强制终止对应进程。"""
+    pids = _get_pids_on_port(port)
+    if not pids:
+        return
+    print(f"检测到端口 {port} 被占用，正在终止进程: {', '.join(map(str, pids))}")
+    for pid in pids:
+        try:
+            if sys.platform.startswith("win"):
+                subprocess.check_call(
+                    ["taskkill", "/PID", str(pid), "/F", "/T"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+            else:
+                os.kill(pid, 9)
+            print(f"  PID {pid} 已终止")
+        except Exception as exc:
+            print(f"  无法终止 PID {pid}: {exc}")
 
 # ---------------------------------------------------------------------------
 # 启动子进程
@@ -148,6 +199,11 @@ def main() -> None:
     parser.add_argument("--skip-install", action="store_true", help="跳过依赖安装")
     parser.add_argument("--port", type=int, default=5000, help="后端端口，默认 5000")
     args = parser.parse_args()
+
+    # 在安装依赖和启动服务之前，确保端口可用
+    _free_port(args.port)
+    if not args.backend_only:
+        _free_port(3000)
 
     if not args.skip_install:
         _install_dependencies(skip_frontend=args.backend_only)
