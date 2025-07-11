@@ -1,96 +1,86 @@
-# 节点系统规范文档
+# 节点系统综合规范文档
 
-## 概述
+## 1. 概述
 
-本项目的节点系统已经进行了重构，实现了智能布局和多层结构支持。所有节点现在都基于 `BaseNodeTemplate` 实现，并统一使用 `NodeFactory` 进行配置管理，确保了一致性和可维护性。
+本文档是 Story Factory 节点系统的综合规范，旨在为开发者提供一个清晰、统一的指南。经过多次重构和优化，目前的节点系统具备**智能布局**、**多层结构**和**统一配置**等核心特性，所有节点均基于 `BaseNodeTemplate` 模板和 `NodeFactory` 工厂进行构建，确保了高度的可维护性和扩展性。
 
-## 架构设计
+---
 
-### 1. BaseNodeTemplate (基础模板) - 智能布局版
+## 2. 核心特性
 
-- **位置**: `BaseNodeTemplate.js`
-- **作用**: 提供统一的节点渲染逻辑，支持智能布局
-- **特性**:
-  - 智能布局选择（单侧/双侧）
-  - 多层结构支持
-  - 连接点与内容层平行对齐
-  - 数据验证和默认值处理
-  - 统一的 Handle 渲染
-  - 支持自定义头部和左右内容
-  - 错误处理和类型验证
-  - **自动从工厂获取连接点配置**
+- **✅ 智能布局系统**
 
-### 2. NodeFactory (节点工厂) - 统一配置中心
+  - 根据节点配置（是否同时包含输入和输出）自动选择**单侧**或**双侧**布局，避免不必要的空白区域。
 
-- **位置**: `NodeFactory.js`
-- **作用**: 统一创建和验证节点实例，集中管理所有节点配置
-- **特性**:
-  - 集中管理节点配置（连接点、图标、默认标签等）
-  - 数据验证
-  - 默认值处理
-  - 类型安全
-  - **单一配置源，避免重复配置**
+- **✅ 多层内容结构**
 
-### 3. 具体节点实现
+  - 节点内容区域支持多个**内容层**，可用于展示复杂的节点逻辑和数据流。
 
-所有节点都使用 `BaseNodeTemplate` 实现，连接点配置统一在 `NodeFactory` 中管理：
+- **✅ 统一配置中心**
 
-- `TextNode.js` - 文本节点（单侧布局，只有输出）
-- `ChapterNode.js` - 章节节点（双侧布局）
-- `GenerateNode.js` - 生成节点（双侧布局）
+  - 所有节点的配置（如连接点、图标、默认值）都集中在 `NodeFactory` 中管理，实现了**单一配置源**。
 
-## 统一配置系统
+- **✅ 规范化的尺寸和样式**
 
-### 配置管理原则
+  - 节点具有统一的尺寸规范和响应式设计，确保在不同设备上都有一致的视觉体验。
 
-1. **单一配置源**: 所有节点的连接点配置都在 `NodeFactory.nodeConfigs` 中定义
-2. **避免重复**: 节点组件不再重复定义连接点配置
-3. **统一管理**: 修改节点配置只需要在工厂中修改一处
+- **✅ 清晰的连接点对齐**
+  - 连接点（Handle）与内容层精确对齐，直观地反映数据流向。
 
-### 配置示例
+---
 
-```javascript
-// NodeFactory.js 中的统一配置
-static nodeConfigs = {
-    'text': {
-        nodeType: 'text-node',
-        handles: [
-            { type: 'source', position: 'right', id: 'output' }
-        ],
-        icon: '📝',
-        defaultLabel: '文本',
-        defaultContent: '文本内容'
-    },
-    // ... 其他节点配置
-};
-```
+## 3. 架构设计
 
-## 智能布局系统
+### 3.1. `BaseNodeTemplate.js` (基础模板)
 
-### 布局规则
+- **位置**: `frontend/src/components/nodes/BaseNodeTemplate.js`
+- **作用**: 提供所有节点的统一渲染逻辑和核心功能。
+- **核心功能**:
+  - 根据连接点配置自动选择布局。
+  - 渲染左右两侧和多层内容。
+  - 统一处理连接点（Handles）的渲染和对齐。
+  - 内置数据验证和默认值处理。
+  - 支持通过 props 自定义头部和内容区域。
 
-#### 双侧布局（有输入有输出）
+### 3.2. `NodeFactory.js` (节点工厂)
+
+- **位置**: `frontend/src/components/nodes/NodeFactory.js`
+- **作用**: 作为所有节点的**统一配置中心**和实例化工厂。
+- **核心功能**:
+  - 集中管理所有节点类型的配置（连接点、图标、默认标签等）。
+  - 提供创建和验证节点实例的静态方法。
+  - 确保类型安全和数据一致性。
+
+---
+
+## 4. 智能布局系统
+
+### 4.1. 布局规则
+
+系统会根据一个节点是否同时拥有 `target` (输入) 和 `source` (输出) 类型的连接点来自动选择布局。
+
+#### **双侧布局 (Bilateral)**
+
+当节点**同时拥有**输入和输出时使用。
 
 ```
 ┌─────────────────────────────────────┐
 │             节点头部                 │
 ├─────────────┬───────────────────────┤
 │   左侧内容   │      右侧内容         │
-│   区域      │       区域            │
+│  (输入相关)  │      (输出相关)       │
 │             │                       │
 │  ┌─────────┐│ ┌─────────────────┐   │
-│  │ 输入层1  ││ │    输出层1      │   │
-│  └─────────┘│ └─────────────────┘   │
-│             │                       │
-│  ┌─────────┐│ ┌─────────────────┐   │
-│  │ 输入层2  ││ │    输出层2      │   │
+│  │ 输入层 1 ││ │    输出层 1     │   │
 │  └─────────┘│ └─────────────────┘   │
 └─────────────┴───────────────────────┘
     ●           ●           ●
   输入1        输入2        输出1
 ```
 
-#### 单侧布局（只有输入或只有输出）
+#### **单侧布局 (Unilateral)**
+
+当节点**只有**输入或**只有**输出时使用。
 
 ```
 ┌─────────────────────────────────────┐
@@ -99,7 +89,7 @@ static nodeConfigs = {
 │           单侧内容区域               │
 │                                     │
 │         ┌─────────────────┐         │
-│         │    内容层       │         │
+│         │     内容层      │         │
 │         └─────────────────┘         │
 │                                     │
 └─────────────────────────────────────┘
@@ -107,86 +97,102 @@ static nodeConfigs = {
               连接点
 ```
 
-### 智能判断逻辑
+---
 
-- **双侧布局**: 当节点既有输入连接点又有输出连接点时使用
-- **单侧布局**: 当节点只有输入连接点或只有输出连接点时使用
-- **自动选择**: 组件会根据连接点配置自动选择合适的布局
+## 5. 节点配置与类型
 
-## 节点类型配置
+### 5.1. 统一配置原则
 
-### 支持的节点类型
+1.  **单一配置源**: 所有节点的连接点、图标等配置均在 `NodeFactory.nodeConfigs` 中定义。
+2.  **避免重复**: 节点组件本身不再定义连接点等配置信息。
+3.  **统一管理**: 修改或添加节点类型只需在 `NodeFactory` 中进行。
 
-| 类型     | 图标 | 布局类型 | 输入层 | 输出层 | 默认标签 | 默认内容          |
-| -------- | ---- | -------- | ------ | ------ | -------- | ----------------- |
-| text     | 📝   | 单侧     | 0      | 1      | 文本节点 | 文本输出          |
-| chapter  | 📖   | 双侧     | 1      | 1      | 章节节点 | 章节输入/章节输出 |
-| generate | 🤖   | 双侧     | 1      | 1      | 生成节点 | 生成输入/生成输出 |
-
-## 尺寸规范
-
-### 节点尺寸标准
-
-- **最小宽度**: 160px
-- **最大宽度**: 280px
-- **最小高度**: 40px（双侧）/ 35px（单侧）
-- **响应式调整**: 移动端最小宽度 140px，最大宽度 240px
-
-### 内容层尺寸
-
-- **标准层高度**: 18px
-- **单层显示高度**: 20px
-- **内边距**: 4px-8px（根据布局类型调整）
-
-## 使用方法
-
-### 1. 基础节点使用
+### 5.2. 配置示例
 
 ```javascript
-import { NodeFactory } from "./NodeTypes";
-
-// 创建双侧节点
-const bilateralNodeData = {
-  label: "处理节点",
-  leftLayers: [{ label: "输入层", content: "输入内容" }],
-  rightLayers: [{ label: "输出层", content: "输出内容" }],
-};
-
-// 创建单侧节点
-const unilateralNodeData = {
-  label: "开始节点",
-  rightLayers: [{ label: "输出层", content: "开始输出" }],
+// NodeFactory.js
+static nodeConfigs = {
+    'text': {
+        nodeType: 'text-node',
+        handles: [
+            { type: 'source', position: 'right', id: 'output' } // 只有输出 -> 单侧布局
+        ],
+        icon: '📝',
+        defaultLabel: '文本',
+    },
+    'chapter': {
+        nodeType: 'chapter-node',
+        handles: [
+            { type: 'target', position: 'left', id: 'input' },  // 既有输入
+            { type: 'source', position: 'right', id: 'output' } // 也有输出 -> 双侧布局
+        ],
+        icon: '📖',
+        defaultLabel: '章节',
+    },
+    // ... 其他节点配置
 };
 ```
 
-### 2. 多层节点使用
+### 5.3. 内置节点类型
+
+| 类型 (`type`) | 图标 | 布局类型 | 输入 | 输出 | 默认标签 |
+| :------------ | :--: | :------- | :--: | :--: | :------- |
+| `text`        |  📝  | 单侧     |  0   |  1   | 文本节点 |
+| `chapter`     |  📖  | 双侧     |  1   |  1   | 章节节点 |
+| `generate`    |  🤖  | 双侧     |  1   |  1   | 生成节点 |
+
+---
+
+## 6. 尺寸与样式规范
+
+### 6.1. 节点尺寸
+
+- **最小宽度**: `160px` (桌面端), `140px` (移动端)
+- **最大宽度**: `280px` (桌面端), `240px` (移动端)
+- **最小高度**: `40px` (双侧), `35px` (单侧)
+
+### 6.2. 内容层尺寸
+
+- **标准层高度**: `18px`
+- **单层显示高度**: `20px`
+- **内边距**: `4px` 到 `8px` 不等，根据布局类型调整。
+
+---
+
+## 7. 使用方法
+
+### 7.1. 创建标准节点
+
+通过 `NodeFactory` 可以方便地创建节点。
 
 ```javascript
-// 创建多层节点
-const multiLayerData = {
-  label: "多层节点",
-  leftLayers: [
-    { label: "输入层1", content: "输入内容1" },
-    { label: "输入层2", content: "输入内容2" },
-    { label: "输入层3", content: "输入内容3" },
-  ],
-  rightLayers: [
-    { label: "输出层1", content: "输出内容1" },
-    { label: "输出层2", content: "输出内容2" },
-  ],
-};
+import { NodeFactory } from "./NodeFactory"; // 注意路径
+
+// 创建一个双侧布局的节点
+const chapterNode = NodeFactory.createNode("chapter", {
+  label: "第一章",
+  leftLayers: [{ label: "输入", content: "故事背景" }],
+  rightLayers: [{ label: "输出", content: "章节内容" }],
+});
+
+// 创建一个单侧布局的节点
+const textNode = NodeFactory.createNode("text", {
+  label: "开场白",
+  rightLayers: [{ label: "输出", content: "从前有座山..." }],
+});
 ```
 
-### 3. 创建自定义节点
+### 7.2. 创建自定义节点
+
+可以利用 `BaseNodeTemplate` 快速创建符合规范的自定义节点。
 
 ```javascript
 import React from "react";
 import BaseNodeTemplate from "./BaseNodeTemplate";
 
 const CustomNode = ({ data }) => {
-  // 定义连接点 - 组件会根据连接点自动选择布局
+  // 1. 定义连接点，BaseNodeTemplate 会据此自动选择布局
   const handles = [
-    // 双侧节点示例
     {
       type: "target",
       position: "left",
@@ -203,17 +209,18 @@ const CustomNode = ({ data }) => {
     },
   ];
 
+  // 2. (可选) 定义自定义头部
   const customHeader = (
-    <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-      <span>🎯</span>
+    <div style={{ color: "blue" }}>
+      <span>🎨</span>
       <span>{data.label}</span>
     </div>
   );
 
+  // 3. 渲染基础模板
   return (
     <BaseNodeTemplate
       data={data}
-      nodeType="text-node"
       handles={handles}
       customHeader={customHeader}
     />
@@ -221,22 +228,24 @@ const CustomNode = ({ data }) => {
 };
 ```
 
-## 数据规范
+---
 
-### 标准数据字段
+## 8. 数据结构
+
+### 8.1. 节点数据 (`data`)
 
 ```javascript
 const nodeData = {
   label: "节点标题", // 显示在头部
   leftLayers: [
-    // 左侧内容层数组（可选）
+    // 左侧内容层 (输入)
     {
       label: "层标签",
       content: "层内容",
     },
   ],
   rightLayers: [
-    // 右侧内容层数组（可选）
+    // 右侧内容层 (输出)
     {
       label: "层标签",
       content: "层内容",
@@ -246,193 +255,59 @@ const nodeData = {
 };
 ```
 
-### 连接点配置
+### 8.2. 连接点配置 (`handles`)
 
 ```javascript
-const handles = [
-  {
-    type: "target", // 'target' 或 'source'
-    position: "left", // 'left' 或 'right'
-    id: "unique-id", // 唯一标识符
-    label: "连接点标签", // 可选，显示标签
-    layerIndex: 0, // 对应内容层的索引
-  },
-];
+const handleConfig = {
+  type: "target", // 'target' (输入) 或 'source' (输出)
+  position: "left", // 'left' 或 'right'
+  id: "unique-handle-id", // 唯一ID
+  label: "连接点标签", // (可选) 显示在连接点旁的标签
+  layerIndex: 0, // (重要) 对应内容层的索引，用于垂直对齐
+};
 ```
 
-### 布局选择规则
+---
 
-```javascript
-// 双侧布局 - 既有输入又有输出
-const bilateralHandles = [
-  { type: "target", position: "left", id: "input" },
-  { type: "source", position: "right", id: "output" },
-];
+## 9. 最佳实践与迁移指南
 
-// 单侧布局 - 只有输入
-const inputOnlyHandles = [{ type: "target", position: "left", id: "input" }];
+### 9.1. 最佳实践
 
-// 单侧布局 - 只有输出
-const outputOnlyHandles = [{ type: "source", position: "right", id: "output" }];
-```
+- 根据节点功能选择合适的连接点配置，充分利用智能布局。
+- 对于多层内容的节点，使用清晰的 `label` 和 `content` 描述。
+- 设计新节点时，优先复用 `BaseNodeTemplate`。
 
-## 样式系统
+### 9.2. 向后兼容与迁移
 
-### CSS 类名规范
+- **兼容性**: 系统仍兼容旧的数据结构（如只使用 `data.content`），但强烈建议迁移到新的 `leftLayers` 和 `rightLayers` 格式以获得完整功能。
+- **迁移建议**:
+  1.  将旧的 `content` 字段迁移到 `leftLayers` 和/或 `rightLayers`。
+  2.  为连接点（Handles）配置添加 `layerIndex` 属性以确保正确对齐。
+  3.  考虑为连接点添加 `label` 以提高可读性。
 
-- `.node-base` - 基础节点样式
-- `.node-header` - 节点头部样式
-- `.node-body` - 节点主体样式
-- `.node-left-content` - 左侧内容区域（双侧布局）
-- `.node-right-content` - 右侧内容区域（双侧布局）
-- `.node-single-content` - 单侧内容区域（单侧布局）
-- `.node-content-layer` - 内容层样式
-- `.node-single-layer` - 单层内容样式（简化显示）
-- `.node-handles-container` - 连接点容器
-- `.node-left-handles` - 左侧连接点容器
-- `.node-right-handles` - 右侧连接点容器
-- `.text-node` - 文本节点样式
-- `.chapter-node` - 章节节点样式
-- `.generate-node` - 生成节点样式
+---
 
-### 自定义样式
+## 10. 历史重构概要
 
-```css
-/* 添加新的节点类型样式 */
-.custom-node {
-  --node-border-color: #ff6b6b;
-  --node-header-bg: #ff6b6b;
-}
+<details>
+<summary>点击展开查看节点系统的演进历史</summary>
 
-.custom-node .node-header {
-  background-color: var(--node-header-bg);
-}
+### 节点样式重构 (V1)
 
-/* 自定义内容层样式 */
-.custom-node .node-content-layer {
-  background-color: rgba(255, 107, 107, 0.1);
-  border-color: rgba(255, 107, 107, 0.3);
-}
+- **目标**: 解决早期节点样式单一、缺乏结构化布局的问题。
+- **核心改进**:
+  - 引入**左右两侧布局**，用于区分输入和输出。
+  - 增加了**多层结构**支持，允许节点展示更复杂的信息。
+  - 建立了连接点与内容层的**对齐机制**。
+  - 重构了 CSS，并引入了响应式设计。
+- **主要产物**: `REFACTOR_SUMMARY.md`
 
-/* 自定义单层内容样式 */
-.custom-node .node-single-layer {
-  background-color: rgba(255, 107, 107, 0.15);
-  border-color: rgba(255, 107, 107, 0.4);
-}
-```
+### 节点样式优化 (V2)
 
-## 最佳实践
-
-### 1. 布局设计
-
-- 根据节点的实际功能选择合适的连接点配置
-- 只有输入或输出的节点使用单侧布局，避免空白区域
-- 多层内容时使用清晰的标签和描述
-
-### 2. 数据一致性
-
-- 使用 `leftLayers` 和 `rightLayers` 数组定义内容层
-- 通过 `layerIndex` 确保连接点与内容层正确对齐
-- 提供有意义的默认值
-
-### 3. 连接点设计
-
-- 为每个连接点提供唯一的 `id`
-- 使用 `label` 属性提高可读性
-- 确保 `layerIndex` 与对应的内容层索引匹配
-
-### 4. 多层结构
-
-- 合理设计内容层数量，避免过于复杂
-- 使用清晰的层标签和内容描述
-- 考虑响应式设计，确保在小屏幕上也能正常显示
-
-### 5. 性能优化
-
-- 避免在节点组件中进行复杂计算
-- 使用 `React.memo` 优化渲染性能
-- 合理使用 `useCallback` 和 `useMemo`
-
-### 6. 扩展性
-
-- 通过 `NodeFactory.nodeConfigs` 添加新节点类型
-- 使用 `BaseNodeTemplate` 创建自定义节点
-- 保持向后兼容性
-
-## 迁移指南
-
-### 从旧版本迁移
-
-1. **更新数据结构**:
-
-   ```javascript
-   // 旧版本
-   const oldData = {
-     label: "节点",
-     content: "内容",
-   };
-
-   // 新版本 - 双侧节点
-   const bilateralData = {
-     label: "节点",
-     leftLayers: [{ label: "输入", content: "内容" }],
-     rightLayers: [{ label: "输出", content: "内容" }],
-   };
-
-   // 新版本 - 单侧节点
-   const unilateralData = {
-     label: "节点",
-     rightLayers: [{ label: "输出", content: "内容" }],
-   };
-   ```
-
-2. **更新连接点配置**:
-
-   ```javascript
-   // 旧版本
-   const oldHandles = [{ type: "target", position: "left", id: "input" }];
-
-   // 新版本
-   const newHandles = [
-     {
-       type: "target",
-       position: "left",
-       id: "input",
-       label: "输入",
-       layerIndex: 0,
-     },
-   ];
-   ```
-
-3. **布局自动选择**:
-
-   ```javascript
-   // 组件会自动根据连接点选择布局
-   // 无需手动指定布局类型
-   <BaseNodeTemplate data={data} handles={handles} />
-   ```
-
-## 测试
-
-使用 `NodeStyleTest.js` 组件可以测试所有节点类型的样式和功能：
-
-```javascript
-import NodeStyleTest from "./NodeStyleTest";
-
-// 在开发环境中使用
-<NodeStyleTest />;
-```
-
-## 总结
-
-重构后的节点系统提供了：
-
-1. **智能布局选择** - 根据节点类型自动选择最合适的布局
-2. **规范化的尺寸** - 统一的节点大小和视觉一致性
-3. **优化的单侧布局** - 只有输入或输出的节点更加简洁
-4. **灵活的多层结构** - 支持复杂的节点逻辑和数据流
-5. **精确的连接点对齐** - 每个连接点与对应内容层平行
-6. **增强的视觉效果** - 更好的阴影、边框和交互效果
-7. **完善的文档和示例** - 便于开发者理解和使用
-
-重构后的节点系统不仅满足了当前需求，还为未来的功能扩展提供了良好的基础架构。
+- **目标**: 基于用户反馈，解决布局不智能、尺寸不统一的问题。
+- **核心改进**:
+  - 引入**智能布局系统**，根据连接点自动选择单侧或双侧布局。
+  - 制定了严格的**节点尺寸规范**，统一了视觉风格。
+  - 优化了单层和多层内容的显示样式，提升了信息密度。
+- **主要产物**: `OPTIMIZATION_SUMMARY.md`
+</details>
