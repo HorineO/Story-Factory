@@ -1,43 +1,14 @@
 import React from 'react';
 import BaseNodeTemplate from './BaseNodeTemplate';
+import nodeSpecs from '../../config/nodeSpecs';
 
 /**
  * 节点工厂类
  * 用于统一创建和验证节点实例
  */
 class NodeFactory {
-    // 节点类型配置（已移除 start / end）
-    static nodeConfigs = {
-        'text': {
-            nodeType: 'text-node',
-            handles: [
-                { type: 'source', position: 'right', id: 'output' }
-            ],
-            icon: '📝',
-            defaultLabel: '文本',
-            defaultContent: '文本内容'
-        },
-        'chapter': {
-            nodeType: 'chapter-node',
-            handles: [
-                { type: 'target', position: 'left', id: 'input' },
-                { type: 'source', position: 'right', id: 'output' }
-            ],
-            icon: '📖',
-            defaultLabel: '章节',
-            defaultContent: '章节内容'
-        },
-        'generate': {
-            nodeType: 'generate-node',
-            handles: [
-                { type: 'target', position: 'left', id: 'input' },
-                { type: 'source', position: 'right', id: 'output' }
-            ],
-            icon: '🤖',
-            defaultLabel: '生成',
-            defaultContent: '生成内容'
-        }
-    };
+    // 引入外部配置，便于前后端共享与集中维护
+    static nodeConfigs = nodeSpecs;
 
     /**
      * 创建节点组件
@@ -60,26 +31,7 @@ class NodeFactory {
             ...data
         };
 
-        // 动态填充左右层内容，使节点在数据更新后可以正确显示
-        if (type === 'text') {
-            nodeData.rightLayers = [
-                { label: '文本输出', content: nodeData.text || nodeData.content || '文本内容' },
-            ];
-        } else if (type === 'generate') {
-            nodeData.leftLayers = [
-                { label: '生成输入', content: nodeData.text || nodeData.content || '输入内容' },
-            ];
-            nodeData.rightLayers = [
-                { label: '生成输出', content: nodeData.generate || '输出内容' },
-            ];
-        } else if (type === 'chapter') {
-            nodeData.leftLayers = [
-                { label: '章节输入', content: nodeData.text || nodeData.content || '章节内容' },
-            ];
-            nodeData.rightLayers = [
-                { label: '章节输出', content: nodeData.generate || nodeData.content || '章节生成' },
-            ];
-        }
+        // 不再在工厂中人为构造 leftLayers/rightLayers，交由 BaseNodeTemplate 根据 handles 决定占位显示
 
         // 创建自定义头部
         const customHeader = (
