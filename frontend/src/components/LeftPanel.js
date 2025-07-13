@@ -1,5 +1,5 @@
 import React from 'react';
-import './LeftPanel.css';
+// import './LeftPanel.css'; // Tailwind migration: old styles removed
 import TabPanel from './TabPanel'; // 导入 TabPanel 组件
 import NewNodeTab from './tabs/NewNodeTab';
 import DirectoryTab from './tabs/DirectoryTab';
@@ -22,7 +22,7 @@ const LeftPanel = () => {
 
     return (
         <div
-            className="left-panel"
+            className="w-64 bg-gray-700 border border-gray-600 flex flex-col h-full"
         >
             {/* 将 TabPanel 组件放置在 LeftPanel 中 */}
             <TabPanel tabs={tabs} />
